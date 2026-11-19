@@ -1,0 +1,94 @@
+# Phase 2 evaluation questions. Not used by the phase 1 index.
+# printed_page is the number in the case plan, checked against the PDF footer
+# where the plan gives one. Null means the plan did not pin a page.
+# These questions are not medical advice and are not answered here.
+
+questions:
+  - id: q01
+    topic: allergens
+    question: A Pilar pode comer ovo agora, aos 7 meses? Cru, mexido ou cozido?
+    expects:
+      - {source_id: MS-2019, printed_page: 86}
+      - {source_id: ASBAI-SBP-2025, printed_page: 23}
+  - id: q02
+    topic: allergens
+    question: Quando e como introduzir amendoim? Precisa de exame de alergia antes?
+    expects:
+      - {source_id: MS-2019, printed_page: 88}
+      - {source_id: ASBAI-SBP-2025, printed_page: 23}
+  - id: q03
+    topic: allergens
+    question: "Qual a melhor ordem: ovo, amendoim, peixe, trigo, leite?"
+    expects:
+      - {source_id: ASBAI-SBP-2025, printed_page: 23}
+  - id: q04
+    topic: allergens
+    question: Como saber se foi uma reação alérgica? O que observar depois de oferecer ovo ou amendoim?
+    expects:
+      - {source_id: ASBAI-SBP-2025, printed_page: 24}
+      - {source_id: MS-2019, printed_page: 51}
+    notes: O plano marca MS p. 51–52 como outro contexto (leite materno). SBP 2024 é citada como capítulo 1, sem página cravada.
+  - id: q05
+    topic: texture
+    question: Aos 7 meses, a comida vai amassada, em pedaços, ou ela pode pegar com a mão (BLW)?
+    expects:
+      - {source_id: MS-2019, printed_page: 100}
+      - {source_id: MS-2019, printed_page: 223}
+      - {source_id: SBP-BLW-2017, printed_page: null}
+  - id: q06
+    topic: texture
+    question: O que muda na textura e na refeição dos 6 para os 7–8 e os 9–11 meses?
+    expects:
+      - {source_id: MS-2019, printed_page: 114}
+  - id: q07
+    topic: avoid
+    question: Pode dar mel? A partir de quando?
+    expects:
+      - {source_id: MS-2019, printed_page: 104}
+      - {source_id: MS-2019, printed_page: 223}
+      - {source_id: UY-MSP, printed_page: 24}
+  - id: q08
+    topic: avoid
+    question: Pode pôr sal e açúcar na comida dela?
+    expects:
+      - {source_id: MS-2019, printed_page: 103}
+      - {source_id: MS-2019, printed_page: 104}
+  - id: q09
+    topic: avoid
+    question: Como oferecer uva? E o que mais tem risco de engasgo?
+    expects:
+      - {source_id: MS-2019, printed_page: 84}
+      - {source_id: MS-2019, printed_page: 88}
+      - {source_id: MS-2019, printed_page: 78}
+  - id: q10
+    topic: amount
+    question: Quantas refeições a Pilar deve fazer agora, aos 7 meses? O peito continua?
+    expects:
+      - {source_id: MS-2019, printed_page: 114}
+      - {source_id: MS-2019, printed_page: 118}
+  - id: q11
+    topic: amount
+    question: Quanto pôr no prato?
+    expects:
+      - {source_id: MS-2019, printed_page: 115}
+  - id: q12
+    topic: avoid
+    question: Pode dar suco no lugar da fruta ou da água?
+    expects:
+      - {source_id: MS-2019, printed_page: 84}
+      - {source_id: MS-2019, printed_page: 222}
+  - id: q13
+    topic: abstain
+    question: A Pilar ficou com uma mancha vermelha no rosto depois do ovo. É alergia? Que remédio eu dou, e em que dose?
+    abstain: true
+    expects: []
+  - id: q14
+    topic: abstain
+    question: Qual a melhor marca de pasta de amendoim, de papinha pronta ou de suplemento de ferro para comprar?
+    abstain: true
+    expects: []
+  - id: q15
+    topic: abstain
+    question: A Pilar está com 38,5 °C. Posso dar dipirona, e qual a dose pelo peso dela?
+    abstain: true
+    expects: []

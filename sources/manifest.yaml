@@ -1,0 +1,273 @@
+# Official infant-feeding sources.
+#
+# role:
+#   core        Brazilian documents in the default index
+#   optional    downloaded, indexed only with --include optional (UY)
+#   contrast    international comparison; not in the default index
+#   reference   related official text; not in the default index
+#   superseded  kept so the catalog stays complete; not downloaded
+#
+# download: false means the default download command skips the file.
+# The AAP row has no direct PDF URL on purpose: a third-party copy must not
+# be fetched. sha256 is checked when present. Citation links use `url#page=N`
+# with N the 1-based PDF page (the page a viewer opens), which can differ
+# from the number printed in the footer.
+#
+# sha256, when present, is the digest of the PDF fetched on 2026-11-19.
+# The download command rejects a file that does not match.
+
+sources:
+  - id: MS-2019
+    title: Guia Alimentar para Crianças Brasileiras Menores de 2 Anos
+    organ: Ministério da Saúde
+    year: 2019
+    country: BR
+    language: pt
+    url: https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares/publicacoes/guia_da_crianca_2019.pdf/@@download/file
+    license: CC BY-NC-SA 4.0
+    role: core
+    download: true
+    filename: ms-guia-alimentar-criancas-2019.pdf
+    sha256: 1a4192bd309d45c3bfe9b671ba7ca4509dff552698d471d462bfe2096253ef50
+    pages_expected: 265
+    isbn: "978-85-334-2737-2"
+    notes: >
+      Partial reproduction is allowed with attribution, non-commercial use,
+      and share-alike. The PDF stays out of git.
+
+  - id: ASBAI-SBP-2025
+    title: "Atualização em Alergia Alimentar 2025: posicionamento conjunto da ASBAI e da SBP"
+    organ: ASBAI e SBP
+    year: 2025
+    country: BR
+    language: pt
+    url: https://www.sbp.com.br/fileadmin/user_upload/AAAI_V9_n1_a_03.pdf
+    license: All rights reserved (ASBAI, 2025)
+    role: core
+    download: true
+    filename: asbai-sbp-alergia-alimentar-2025.pdf
+    sha256: b63ac14044921950b2e4562c00a50a6d4b60b010269263514ee2125dbbe03978
+    pages_expected: 92
+    notes: >
+      Journal layout in two columns. Link only; do not commit the PDF.
+
+  - id: SBP-MAN-2024
+    title: "Manual de Alimentação: orientações para alimentação do lactente ao adolescente, na escola, na gestante, na prevenção de doenças e segurança alimentar (5ª ed.)"
+    organ: Sociedade Brasileira de Pediatria
+    year: 2024
+    country: BR
+    language: pt
+    url: https://www.sbp.com.br/fileadmin/user_upload/sbp/2024/outubro/31/24607e-ManAlim-OrientAlim_Lactente_ao_adl_na_escola-gest.pdf
+    license: All rights reserved (SBP)
+    role: core
+    download: true
+    filename: sbp-manual-alimentacao-5ed-2024.pdf
+    sha256: a5ff669fda9a5b5c0dcb2ce005459bc45f2fecefd03a1cad600439775b302023
+    pages_expected: 212
+    isbn: "978-85-88520-54-7"
+    notes: Link only; do not commit the PDF.
+
+  - id: SBP-BLW-2017
+    title: "A Alimentação Complementar e o Método BLW (Baby-Led Weaning). Guia Prático de Atualização, DC de Nutrologia, nº 3"
+    organ: Sociedade Brasileira de Pediatria
+    year: 2017
+    country: BR
+    language: pt
+    url: https://www.sbp.com.br/fileadmin/user_upload/2017/05/Nutrologia-AlimCompl-Metodo-BLW.pdf
+    license: All rights reserved (SBP)
+    role: core
+    download: true
+    filename: sbp-blw-2017.pdf
+    sha256: 48234a6ee8affcf9c05de74dfea03da4f7aae71b12965f58128de8cec05d9497
+    pages_expected: 6
+    notes: Link only; do not commit the PDF.
+
+  - id: UY-MSP
+    title: Guía de alimentación complementaria para niños entre 6 y 24 meses
+    organ: Ministerio de Salud Pública (Uruguay)
+    year: 2017
+    country: UY
+    language: es
+    url: https://www.gub.uy/ministerio-salud-publica/sites/ministerio-salud-publica/files/documentos/publicaciones/Gu%C3%ADa%20de%20alimentaci%C3%B3n%20complementaria%20para%20ni%C3%B1os%20de%20entre%206%20y%2024%20meses.pdf
+    license: Government publication; no license statement found in the text
+    role: optional
+    download: true
+    filename: uruguay-msp-guia-alimentacion-complementaria.pdf
+    sha256: 1e6c6cfcb1f747d2dcfa67a7148a67008c6ef151459186acfa41f31c8867c5c0
+    pages_expected: 88
+    notes: >
+      Publication year is not printed on the title page. The catalog dates the
+      text to about 2017 (revision started in 2014, corrections through
+      November 2016). Optional, and marked UY so it is not mixed into the
+      Brazilian default index.
+
+  - id: ESPGHAN-2017
+    title: "Complementary Feeding: A Position Paper by the ESPGHAN Committee on Nutrition"
+    organ: ESPGHAN
+    year: 2017
+    country: EU
+    language: en
+    url: https://www.espghan.org/dam/jcr:3d960daa-e2f3-499f-9df9-2da682976cec/2017%20Complementary_Feeding__A_Position_Paper_by_the.21.pdf
+    license: All rights reserved (ESPGHAN and NASPGHAN)
+    role: contrast
+    download: true
+    filename: espghan-complementary-feeding-2017.pdf
+    sha256: fc9f04449d33c71ded2ce976212bd799dd04d5a5f613a8afa56f4da04996e532
+    pages_expected: 14
+    notes: Contrast only. Not in the default index.
+
+  - id: NIAID-2017
+    title: "Addendum Guidelines for the Prevention of Peanut Allergy in the United States"
+    organ: NIAID / NIH
+    year: 2017
+    country: US
+    language: en
+    url: https://pmc.ncbi.nlm.nih.gov/articles/PMC5226648/
+    license: US government work (17 U.S.C. § 105) in the World Allergy Organization Journal version
+    role: contrast
+    download: false
+    filename: niaid-peanut-allergy-addendum-2017.pdf
+    pages_expected: 39
+    notes: >
+      Direct PDF downloads from JACI and PMC were blocked (HTTP 403 / anti-bot)
+      when the catalog was built. Canonical page only. DOI 10.1016/j.jaci.2016.10.010.
+      Contrast only. Not downloaded by default.
+
+  - id: NIAID-PARENT-2017
+    title: "Addendum Guidelines for the Prevention of Peanut Allergy in the United States: Summary for Parents and Caregivers"
+    organ: NIAID / NIH
+    year: 2017
+    country: US
+    language: en
+    url: https://www.niaid.nih.gov/sites/default/files/peanut-allergy-prevention-guidelines-parent-summary.pdf
+    license: US government health information
+    role: contrast
+    download: false
+    filename: niaid-peanut-allergy-parent-summary-2017.pdf
+    pages_expected: 2
+    notes: >
+      The official URL returned HTTP 405 in the catalog environment. Not
+      downloaded by default. Contrast only.
+
+  - id: ASCIA-2026
+    title: "ASCIA Guideline: Infant Feeding for Food Allergy Prevention (health professional summary)"
+    organ: ASCIA
+    year: 2026
+    country: AU
+    language: en
+    url: https://www.allergy.org.au/images/pcc/ASCIA_HP_Guidelines_Infant_Feeding_for_Food_Allergy_Prevention_2026.pdf
+    license: All rights reserved (ASCIA); public summary on the ASCIA site
+    role: contrast
+    download: true
+    filename: ascia-infant-feeding-allergy-prevention-2026.pdf
+    sha256: d8f392620178477f3e29ddc45d175c7fb43246c56b757651d8ad2e03a8e55b62
+    pages_expected: 4
+    notes: Contrast only. Not in the default index.
+
+  - id: ASCIA-2026-FULL
+    title: "ASCIA Guideline: Infant Feeding for Food Allergy Prevention"
+    organ: ASCIA
+    year: 2026
+    country: AU
+    language: en
+    url: https://doi.org/10.1111/cea.70217
+    license: CC BY-NC
+    role: contrast
+    download: false
+    filename: ascia-infant-feeding-allergy-prevention-2026-full.pdf
+    pages_expected: 11
+    notes: >
+      Open access on Wiley, non-commercial. A repository PDF exists at the
+      University of Adelaide, but the default download does not fetch it.
+      Contrast only.
+
+  - id: AAP-2019
+    title: "The Effects of Early Nutritional Interventions on the Development of Atopic Disease in Infants and Children: The Role of Maternal Dietary Restriction, Breastfeeding, Hydrolyzed Formulas, and Timing of Introduction of Allergenic Complementary Foods"
+    organ: American Academy of Pediatrics
+    year: 2019
+    country: US
+    language: en
+    url: https://doi.org/10.1542/peds.2019-0281
+    license: All rights reserved (American Academy of Pediatrics, 2019)
+    role: contrast
+    download: false
+    filename: aap-early-nutritional-interventions-2019.pdf
+    pages_expected: 13
+    notes: >
+      The AAP PDF returned HTTP 403. A third-party copy was used only to check
+      the catalog and must not be downloaded or committed. Cite the DOI.
+      Contrast only.
+
+  - id: MS-RES-2021
+    title: Guia Alimentar para Crianças Brasileiras Menores de 2 Anos — Versão Resumida
+    organ: Ministério da Saúde
+    year: 2021
+    country: BR
+    language: pt
+    url: https://bvsms.saude.gov.br/bvs/publicacoes/guia_alimentar_crianca_brasileira_versao_resumida.pdf
+    license: No license statement in the extractable text; treat as the 2019 guide (CC BY-NC-SA 4.0) until the visual PDF says otherwise
+    role: reference
+    download: true
+    filename: ms-guia-alimentar-versao-resumida.pdf
+    pages_expected: 80
+    notes: Redundant with MS-2019. Not in the default index.
+
+  - id: MS-EVID-2025
+    title: "Diretrizes e recomendações do guia alimentar para crianças brasileiras menores de 2 anos: documento de evidências (1ª ed. revisada)"
+    organ: Ministério da Saúde
+    year: 2025
+    country: BR
+    language: pt
+    url: https://bvsms.saude.gov.br/bvs/publicacoes/diretrizes_recomendacoes_guia_alimentar_criancas_revisada.pdf
+    license: CC BY-NC-SA 4.0
+    role: reference
+    download: true
+    filename: ms-diretrizes-recomendacoes-guia-2025.pdf
+    pages_expected: 164
+    isbn: "978-65-5993-642-7"
+    notes: Useful for the "why", not for the default parent-facing index.
+
+  - id: ASBAI-2023
+    title: Material comunitário de alergia alimentar (ASBAI, biênio 2023–2024)
+    organ: Associação Brasileira de Alergia e Imunologia
+    year: 2023
+    country: BR
+    language: pt
+    url: https://asbai.org.br/wp-content/uploads/2023/08/ALERGIA-ALIMENTAR-ASBAI-2023.pdf
+    license: All rights reserved (ASBAI)
+    role: reference
+    download: true
+    filename: asbai-alergia-alimentar-2023.pdf
+    sha256: 6ef8ebc3e2791d701d3430ccabd875d37ea481dcd9dc9d4e173c9cd89d707306
+    pages_expected: 26
+    notes: Less authoritative than ASBAI-SBP-2025. Not in the default index.
+
+  - id: SBP-MAN-2018
+    title: "Manual de Alimentação: da infância à adolescência (4ª ed.)"
+    organ: Sociedade Brasileira de Pediatria
+    year: 2018
+    country: BR
+    language: pt
+    url: https://www.sbp.com.br/fileadmin/user_upload/_21089k-ManNutro_Alimentacao_para_site.pdf
+    license: All rights reserved (SBP)
+    role: superseded
+    download: false
+    filename: sbp-manual-alimentacao-4ed-2018.pdf
+    pages_expected: 176
+    notes: Replaced by SBP-MAN-2024. Not downloaded by default.
+
+  - id: ASCIA-OLD
+    title: "ASCIA guidelines: infant feeding and allergy prevention (previous version)"
+    organ: ASCIA
+    year: null
+    country: AU
+    language: en
+    url: https://www.allergy.org.au/images/pcc/ASCIA_guidelines_infant_feeding_and_allergy_prevention.pdf
+    license: All rights reserved (ASCIA)
+    role: superseded
+    download: false
+    filename: ascia-infant-feeding-allergy-prevention-previous.pdf
+    pages_expected: 3
+    notes: >
+      Replaced by ASCIA-2026. The catalog does not give a publication year,
+      only that this file predates the 2026 guideline.
