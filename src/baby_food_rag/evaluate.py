@@ -207,7 +207,7 @@ def _rank_all(
                 k=RRF_K,
             )
             ordered = [by_id[chunk_id] for chunk_id, _score in fused]
-            ranked.append(_collapse(ordered))
+            ranked.append(collapse_pages(ordered))
         return ranked
     raise ValueError(f"Unknown retriever {retriever!r}")
 
@@ -225,24 +225,17 @@ def _dense_scores(index: CorpusIndex, queries: list[str], embedder: object | Non
     return query_matrix @ index.embeddings.T
 
 
-def _pages_from_scores(index: CorpusIndex, scores: np.ndarray) -> list[tuple[str, int]]:
+def pages_from_scores(chunks: list[Chunk], scores: np.ndarray) -> list[tuple[str, int]]:
+    """Positive-score chunks, best first, collapsed to the first sight of each page."""
     order = sorted(
         range(len(scores)),
-        key=lambda i: (-float(scores[i]), index.chunks[i].chunk_id),
+        key=lambda i: (-float(scores[i]), chunks[i].chunk_id),
     )
-    ordered = [index.chunks[i] for i in order if float(scores[i]) > 0]
-    return _collapse(ordered)
+    ordered = [chunks[i] for i in order if float(scores[i]) > 0]
+    return collapse_pages(ordered)
 
 
-def _top_chunk_ids(index: CorpusIndex, scores: np.ndarray) -> list[str]:
-    order = sorted(
-        range(len(scores)),
-        key=lambda i: (-float(scores[i]), index.chunks[i].chunk_id),
-    )
-    return [index.chunks[i].chunk_id for i in order if float(scores[i]) > 0]
-
-
-def _collapse(chunks: list[Chunk]) -> list[tuple[str, int]]:
+def collapse_pages(chunks: list[Chunk]) -> list[tuple[str, int]]:
     seen: set[tuple[str, int]] = set()
     pages: list[tuple[str, int]] = []
     for chunk in chunks:
@@ -252,6 +245,32 @@ def _collapse(chunks: list[Chunk]) -> list[tuple[str, int]]:
         seen.add(key)
         pages.append(key)
     return pages
+
+
+def score_page_list(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> dict:
+    first = None
+    for rank, page in enumerate(pages, start=1):
+        if _hits_any(page, gold, tolerance):
+            first = rank
+            break
+    return {
+        "recall_at_5": _recall(pages[:5], gold, tolerance),
+        "recall_at_10": _recall(pages[:10], gold, tolerance),
+        "reciprocal_rank": (1.0 / first) if first else 0.0,
+        "first_rank": first,
+    }
+
+
+def _pages_from_scores(index: CorpusIndex, scores: np.ndarray) -> list[tuple[str, int]]:
+    return pages_from_scores(index.chunks, scores)
+
+
+def _top_chunk_ids(index: CorpusIndex, scores: np.ndarray) -> list[str]:
+    order = sorted(
+        range(len(scores)),
+        key=lambda i: (-float(scores[i]), index.chunks[i].chunk_id),
+    )
+    return [index.chunks[i].chunk_id for i in order if float(scores[i]) > 0]
 
 
 def _score(
@@ -283,21 +302,8 @@ def _score(
 
 
 def _one(question: dict, pages: list[tuple[str, int]], tolerance: int) -> dict:
-    gold = question["gold"]
-    first = None
-    for rank, page in enumerate(pages, start=1):
-        if _hits_any(page, gold, tolerance):
-            first = rank
-            break
-    row = {
-        "id": question["id"],
-        "origin": question["origin"],
-        "reciprocal_rank": (1.0 / first) if first else 0.0,
-        "first_rank": first,
-    }
-    for k in KS:
-        row[f"recall_at_{k}"] = _recall(pages[:k], gold, tolerance)
-    return row
+    scored = score_page_list(pages, question["gold"], tolerance)
+    return {"id": question["id"], "origin": question["origin"], **scored}
 
 
 def _recall(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> float:

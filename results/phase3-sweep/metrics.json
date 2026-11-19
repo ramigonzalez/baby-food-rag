@@ -1,0 +1,4969 @@
+{
+  "chart_title": "Recall@10 against mean query latency",
+  "selection": "The best configuration is the highest recall@10 on all 32 answerable questions. There is no held-out split. If a hybrid uses a BM25 analyzer other than the phase 2 suffix list, that analyzer was chosen on these same questions.",
+  "hardware": {
+    "cpu_model": "Intel(R) Xeon(R) Processor",
+    "cpus": 4,
+    "device": "cpu",
+    "gpu": false
+  },
+  "page_tolerance": 1,
+  "hit_rule": "same source_id and abs(retrieved pdf_page - gold pdf_page) <= 1; one retrieved page credits one gold page",
+  "fusion_pool": 50,
+  "rrf_k": 60,
+  "rerank_pool": 30,
+  "n_answerable": 32,
+  "chunk_words": 180,
+  "chunk_overlap": 40,
+  "not_run": [
+    {
+      "name": "BAAI/bge-m3",
+      "reason": "Dense BGE-M3 is not in fastembed 0.9.1, the latest release on PyPI. This VM has no GPU and torch is not installed, so the model was not loaded."
+    }
+  ],
+  "comparison": {
+    "diff": -0.02083333333333326,
+    "ci95_low": -0.13020833333333337,
+    "ci95_high": 0.08854166666666674,
+    "significant": false,
+    "n_bootstrap": 10000,
+    "seed": 0,
+    "diff_recall_at_10": -0.02083333333333326,
+    "best": "hybrid-baseline",
+    "challenger": "rerank-m3-top30",
+    "baseline": "hybrid-baseline",
+    "best_recall_at_10": 0.7083333333333334,
+    "challenger_recall_at_10": 0.6875,
+    "baseline_recall_at_10": 0.7083333333333334,
+    "note": "best is the hybrid baseline; the interval is the next config minus that baseline"
+  },
+  "configs": [
+    {
+      "name": "bm25-suffix",
+      "family": "bm25",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.21875,
+      "recall_at_10": 0.3385416666666667,
+      "mrr": 0.31608592256107315,
+      "latency_ms": 1.931308687545652,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.041666666666666664,
+          "mrr": 0.04765364843489844
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.4583333333333333,
+          "mrr": 0.6435042735042735
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.16666666666666666,
+          "recall_at_10": 0.4166666666666667,
+          "mrr": 0.16762242103532263
+        }
+      }
+    },
+    {
+      "name": "bm25-plain",
+      "family": "bm25",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.25,
+      "recall_at_10": 0.3385416666666667,
+      "mrr": 0.2882677846563634,
+      "latency_ms": 1.907479906236631,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.041666666666666664,
+          "mrr": 0.05138759678099915
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.4583333333333333,
+          "mrr": 0.561559829059829
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.25,
+          "recall_at_10": 0.4166666666666667,
+          "mrr": 0.1728958655031405
+        }
+      }
+    },
+    {
+      "name": "bm25-snowball",
+      "family": "bm25",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.2760416666666667,
+      "recall_at_10": 0.4635416666666667,
+      "mrr": 0.3465525407098237,
+      "latency_ms": 2.3104233750643743,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.20833333333333331,
+          "mrr": 0.07515826467439371
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.3194444444444444,
+          "recall_at_10": 0.4305555555555556,
+          "mrr": 0.4765718763138784
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.6666666666666666,
+          "mrr": 0.39746272246272246
+        }
+      }
+    },
+    {
+      "name": "bm25-folded",
+      "family": "bm25",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.3125,
+      "recall_at_10": 0.3385416666666667,
+      "mrr": 0.29246180546794354,
+      "latency_ms": 1.9732739999369642,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.041666666666666664,
+          "mrr": 0.05392249004865104
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.4583333333333333,
+          "mrr": 0.5605476833108413
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.4166666666666667,
+          "mrr": 0.1834021379045742
+        }
+      }
+    },
+    {
+      "name": "bm25-snowball-stop",
+      "family": "bm25",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.3020833333333333,
+      "recall_at_10": 0.46875,
+      "mrr": 0.3301574701566236,
+      "latency_ms": 1.056368937526031,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.041666666666666664,
+          "recall_at_10": 0.22916666666666666,
+          "mrr": 0.09353587067402856
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.3611111111111111,
+          "recall_at_10": 0.47222222222222227,
+          "mrr": 0.41951235039470336
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.625,
+          "mrr": 0.39855032290694054
+        }
+      }
+    },
+    {
+      "name": "bm25-folded-stop",
+      "family": "bm25",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.328125,
+      "recall_at_10": 0.40625,
+      "mrr": 0.314538542038547,
+      "latency_ms": 0.7279145311542834,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0625,
+          "mrr": 0.05214099972354689
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.4583333333333333,
+          "recall_at_10": 0.5416666666666666,
+          "mrr": 0.5899513295346629
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.5,
+          "mrr": 0.21405744941909788
+        }
+      }
+    },
+    {
+      "name": "bm25-suffix-page",
+      "family": "bm25",
+      "chunking": "whole-page",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.28125,
+      "recall_at_10": 0.375,
+      "mrr": 0.27809408276027076,
+      "latency_ms": 0.8782664061754986,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "mrr": 0.055387987188563116
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.5,
+          "mrr": 0.5101195101195101
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.5,
+          "mrr": 0.1945393857821698
+        }
+      }
+    },
+    {
+      "name": "dense-e5",
+      "family": "dense",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.3958333333333333,
+      "recall_at_10": 0.46875,
+      "mrr": 0.3976116143787616,
+      "latency_ms": 132.95856356248237,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.125,
+          "recall_at_10": 0.125,
+          "mrr": 0.16206489218495168
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.47222222222222227,
+          "recall_at_10": 0.625,
+          "mrr": 0.6840277777777778
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5416666666666666,
+          "mrr": 0.268226599108952
+        }
+      }
+    },
+    {
+      "name": "dense-minilm",
+      "family": "dense",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.078125,
+      "recall_at_10": 0.19791666666666666,
+      "mrr": 0.1791773865050987,
+      "latency_ms": 11.427313093832936,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.16666666666666666,
+          "recall_at_10": 0.2708333333333333,
+          "mrr": 0.2061829813350173
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.09722222222222221,
+          "recall_at_10": 0.2222222222222222,
+          "mrr": 0.29044006642512077
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.125,
+          "mrr": 0.04991097669846428
+        }
+      }
+    },
+    {
+      "name": "dense-e5-page",
+      "family": "dense",
+      "chunking": "whole-page",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.4322916666666667,
+      "recall_at_10": 0.5729166666666666,
+      "mrr": 0.41908331718187103,
+      "latency_ms": 126.21501790624734,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.16666666666666666,
+          "recall_at_10": 0.2916666666666667,
+          "mrr": 0.20184017603586207
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.5416666666666666,
+          "recall_at_10": 0.75,
+          "mrr": 0.7175925925925926
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5833333333333334,
+          "mrr": 0.26540280253515547
+        }
+      }
+    },
+    {
+      "name": "dense-minilm-page",
+      "family": "dense",
+      "chunking": "whole-page",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.140625,
+      "recall_at_10": 0.22916666666666666,
+      "mrr": 0.12320975313541395,
+      "latency_ms": 4.674888687389966,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.16666666666666666,
+          "recall_at_10": 0.2708333333333333,
+          "mrr": 0.13099674793696217
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.09722222222222221,
+          "recall_at_10": 0.13888888888888887,
+          "mrr": 0.162416782143606
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.16666666666666666,
+          "recall_at_10": 0.2916666666666667,
+          "mrr": 0.07881139425952308
+        }
+      }
+    },
+    {
+      "name": "hybrid-baseline",
+      "family": "hybrid",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.5052083333333334,
+      "recall_at_10": 0.7083333333333334,
+      "mrr": 0.4076808203378111,
+      "latency_ms": 123.47410690625793,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.2916666666666667,
+          "recall_at_10": 0.3541666666666667,
+          "mrr": 0.16453611203907517
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.5694444444444444,
+          "recall_at_10": 0.8611111111111112,
+          "mrr": 0.636904761904762
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.5833333333333334,
+          "recall_at_10": 0.7916666666666666,
+          "mrr": 0.3405533509700176
+        }
+      }
+    },
+    {
+      "name": "hybrid-snowball-stop-e5",
+      "family": "hybrid",
+      "chunking": "180/40",
+      "selected_on_same_set": true,
+      "n": 32,
+      "recall_at_5": 0.484375,
+      "recall_at_10": 0.640625,
+      "mrr": 0.41700386303161086,
+      "latency_ms": 124.35001606246487,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.16666666666666666,
+          "recall_at_10": 0.3541666666666667,
+          "mrr": 0.1967859153796654
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.5555555555555556,
+          "recall_at_10": 0.7638888888888888,
+          "mrr": 0.5381313131313131
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.625,
+          "recall_at_10": 0.7083333333333334,
+          "mrr": 0.4426883780332056
+        }
+      }
+    },
+    {
+      "name": "rerank-m3-top30",
+      "family": "rerank",
+      "chunking": "180/40",
+      "selected_on_same_set": false,
+      "n": 32,
+      "recall_at_5": 0.6302083333333334,
+      "recall_at_10": 0.6875,
+      "mrr": 0.5685649304406712,
+      "latency_ms": 11744.94751415628,
+      "by_origin": {
+        "real": {
+          "n": 8,
+          "recall_at_5": 0.1875,
+          "recall_at_10": 0.1875,
+          "mrr": 0.2233127520657152
+        },
+        "plan": {
+          "n": 12,
+          "recall_at_5": 0.7222222222222222,
+          "recall_at_10": 0.8333333333333334,
+          "mrr": 0.8708333333333332
+        },
+        "synthetic": {
+          "n": 12,
+          "recall_at_5": 0.8333333333333334,
+          "recall_at_10": 0.875,
+          "mrr": 0.49646464646464644
+        }
+      }
+    }
+  ],
+  "per_question": [
+    {
+      "config": "bm25-suffix",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 1.8506930000512511
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.030303030303030304,
+      "first_rank": 33,
+      "latency_ms": 2.4300610002683243
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.01098901098901099,
+      "first_rank": 91,
+      "latency_ms": 1.2251460002516978
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.023809523809523808,
+      "first_rank": 42,
+      "latency_ms": 1.2350540000625188
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 1.8307219997950597
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03125,
+      "first_rank": 32,
+      "latency_ms": 1.0324049999326235
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0625,
+      "first_rank": 16,
+      "latency_ms": 1.6261470000245026
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.045454545454545456,
+      "first_rank": 22,
+      "latency_ms": 1.9081659993389621
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.0621700004994636
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.2743910003555357
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 1.4633990003858344
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.06666666666666667,
+      "first_rank": 15,
+      "latency_ms": 3.446771000199078
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.813275999869802
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.04,
+      "first_rank": 25,
+      "latency_ms": 4.047411999636097
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.0407949996297248
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.7838429994299076
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 3.2510739993085735
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.096806000736251
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.038461538461538464,
+      "first_rank": 26,
+      "latency_ms": 0.9683580001365044
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.9937400002163486
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 1.247281999894767
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.7146260006484226
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 1.6647440006636316
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03225806451612903,
+      "first_rank": 31,
+      "latency_ms": 1.260904999980994
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 1.5184660005616024
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 1.9421980005063233
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0625,
+      "first_rank": 16,
+      "latency_ms": 2.2386709997590515
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0058823529411764705,
+      "first_rank": 170,
+      "latency_ms": 1.0732580003605108
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.045454545454545456,
+      "first_rank": 22,
+      "latency_ms": 2.069680999738921
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.034482758620689655,
+      "first_rank": 29,
+      "latency_ms": 1.2531989996205084
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 2.597642999717209
+    },
+    {
+      "config": "bm25-suffix",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.027777777777777776,
+      "first_rank": 36,
+      "latency_ms": 1.8407759998808615
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 1.929674999701092
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.034482758620689655,
+      "first_rank": 29,
+      "latency_ms": 2.442908999910287
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.010526315789473684,
+      "first_rank": 95,
+      "latency_ms": 1.1548920001587248
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02631578947368421,
+      "first_rank": 38,
+      "latency_ms": 1.2115800000174204
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 1.8091359997924883
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05,
+      "first_rank": 20,
+      "latency_ms": 0.9906039995257743
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 1.6327670000464423
+    },
+    {
+      "config": "bm25-plain",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.047619047619047616,
+      "first_rank": 21,
+      "latency_ms": 1.8594449993543094
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.9829630000458565
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.262515000438725
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 1.4869680007905117
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 3.3839539992186474
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.7890809997188626
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.04,
+      "first_rank": 25,
+      "latency_ms": 3.935249000278418
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.08720800037554
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.7284049999943818
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 3.1984939996618778
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.0938549996571965
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.038461538461538464,
+      "first_rank": 26,
+      "latency_ms": 0.8997360000648769
+    },
+    {
+      "config": "bm25-plain",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.9086209995293757
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 1.254178000635875
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.6569500003242865
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 1.6285470001093927
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03225806451612903,
+      "first_rank": 31,
+      "latency_ms": 1.2662059998547193
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 1.5127659999052412
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 1.8685740005821572
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0625,
+      "first_rank": 16,
+      "latency_ms": 2.2799930002292967
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.006060606060606061,
+      "first_rank": 165,
+      "latency_ms": 1.059048999195511
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.043478260869565216,
+      "first_rank": 23,
+      "latency_ms": 2.0768770000358927
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.034482758620689655,
+      "first_rank": 29,
+      "latency_ms": 1.25253900023381
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 2.5612099998397753
+    },
+    {
+      "config": "bm25-plain",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03571428571428571,
+      "first_rank": 28,
+      "latency_ms": 1.8344110003454261
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 2.885865000280319
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 2.7423510000517126
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03571428571428571,
+      "first_rank": 28,
+      "latency_ms": 1.4629059996877913
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.016129032258064516,
+      "first_rank": 62,
+      "latency_ms": 1.5106520004337654
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 1.9585840000218013
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.017857142857142856,
+      "first_rank": 56,
+      "latency_ms": 1.1927880004805047
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.045454545454545456,
+      "first_rank": 22,
+      "latency_ms": 2.278461000059906
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 2.4111829998219036
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.6706179996836
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.712066000640334
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 1.667821999944863
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05263157894736842,
+      "first_rank": 19,
+      "latency_ms": 4.078382999978203
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 3.292159000011452
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.037037037037037035,
+      "first_rank": 27,
+      "latency_ms": 4.311755999879097
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 2.4547229995732778
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 2.421642000626889
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 3.607411000302818
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.56837400047516
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.037037037037037035,
+      "first_rank": 27,
+      "latency_ms": 0.9657179998612264
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.1905599996898673
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.4662690000477596
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 2.2758559998692363
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 1.9155589998263167
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.8753090007521678
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.7370289997415966
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 2.502383999853919
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.047619047619047616,
+      "first_rank": 21,
+      "latency_ms": 2.5122669994743774
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.012987012987012988,
+      "first_rank": 77,
+      "latency_ms": 1.2760890003846725
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 2.3521510001955903
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.027777777777777776,
+      "first_rank": 36,
+      "latency_ms": 1.3714890001210733
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 3.264935000515834
+    },
+    {
+      "config": "bm25-snowball",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.045454545454545456,
+      "first_rank": 22,
+      "latency_ms": 2.000188999772945
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 1.9318080003358773
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03571428571428571,
+      "first_rank": 28,
+      "latency_ms": 2.7514240000527934
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.010526315789473684,
+      "first_rank": 95,
+      "latency_ms": 1.1766859997806023
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02631578947368421,
+      "first_rank": 38,
+      "latency_ms": 1.1939079995499924
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 1.8337849996896693
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05,
+      "first_rank": 20,
+      "latency_ms": 1.0179250002693152
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 1.7426120002710377
+    },
+    {
+      "config": "bm25-folded",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.06666666666666667,
+      "first_rank": 15,
+      "latency_ms": 1.9187689995305846
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.0351039993329323
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.2735880002073827
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 1.4686329996038694
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 3.443845999754558
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.7759100003095227
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.04,
+      "first_rank": 25,
+      "latency_ms": 3.9409099999829778
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 2.1909300003244425
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.0248970004104194
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 3.305072999864933
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 2.190755999436078
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02631578947368421,
+      "first_rank": 38,
+      "latency_ms": 1.2955069996678503
+    },
+    {
+      "config": "bm25-folded",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.9166970005244366
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 1.2926679992233403
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.701400999991165
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 1.625378999960958
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.041666666666666664,
+      "first_rank": 24,
+      "latency_ms": 1.2569710006573587
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 1.4774049996049143
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 1.9196109997210442
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0625,
+      "first_rank": 16,
+      "latency_ms": 2.2611750000578468
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.006060606060606061,
+      "first_rank": 165,
+      "latency_ms": 1.056587999300973
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.043478260869565216,
+      "first_rank": 23,
+      "latency_ms": 2.0569909993355395
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.034482758620689655,
+      "first_rank": 29,
+      "latency_ms": 1.2648940000872244
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 3.0151540004226263
+    },
+    {
+      "config": "bm25-folded",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03571428571428571,
+      "first_rank": 28,
+      "latency_ms": 1.787763000720588
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02702702702702703,
+      "first_rank": 37,
+      "latency_ms": 1.3674129995706608
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 1.2420749999364489
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.038461538461538464,
+      "first_rank": 26,
+      "latency_ms": 1.3398030005191686
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02702702702702703,
+      "first_rank": 37,
+      "latency_ms": 0.9166059999188292
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 1.3822350001646555
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.017543859649122806,
+      "first_rank": 57,
+      "latency_ms": 0.6205750005392474
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.037037037037037035,
+      "first_rank": 27,
+      "latency_ms": 0.6339869996736525
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 0.8789860003162175
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 1.308333999986644
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.9717490002003615
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 1.144992999797978
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.06666666666666667,
+      "first_rank": 15,
+      "latency_ms": 1.1546719997568289
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 1.4186630005497136
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.01818181818181818,
+      "first_rank": 55,
+      "latency_ms": 1.935124000738142
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 1.2411110001266934
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 1.0350659995310707
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.9658740000304533
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 1.456346000850317
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.023809523809523808,
+      "first_rank": 42,
+      "latency_ms": 0.6089859998610336
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.1220589994991315
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.1254279997956473
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 0.681276999785041
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 1.1945589994866168
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.5374270003812853
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.9506579999651876
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 0.898340000276221
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03125,
+      "first_rank": 32,
+      "latency_ms": 1.168640999821946
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0196078431372549,
+      "first_rank": 51,
+      "latency_ms": 0.9539160000713309
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 1.0544250008024392
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05555555555555555,
+      "first_rank": 18,
+      "latency_ms": 0.7370649991571554
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.9225229996445705
+    },
+    {
+      "config": "bm25-snowball-stop",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 0.8348900000783033
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.018867924528301886,
+      "first_rank": 53,
+      "latency_ms": 0.8493590003126883
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02564102564102564,
+      "first_rank": 39,
+      "latency_ms": 0.7778540002618684
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0125,
+      "first_rank": 80,
+      "latency_ms": 0.5657370002154494
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05555555555555555,
+      "first_rank": 18,
+      "latency_ms": 0.569412999539054
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0625,
+      "first_rank": 16,
+      "latency_ms": 0.7164270000430406
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.047619047619047616,
+      "first_rank": 21,
+      "latency_ms": 0.44733999948221026
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 0.43035099952248856
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 0.6303939999270369
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.0051669996755663
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 0.5850650004504132
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 0.8299179999085027
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 0.7367039997916436
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.0198039999522734
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.018518518518518517,
+      "first_rank": 54,
+      "latency_ms": 1.254384999811009
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 0.7430939995174413
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.7929529992907192
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.742664999961562
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.0250109999105916
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02564102564102564,
+      "first_rank": 39,
+      "latency_ms": 0.5165089996808092
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.7991049997144728
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 0.9299140001530759
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 0.4724239997813129
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 0.9022619997267611
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 0.4623160002665827
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 0.6914710002092761
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 0.717012999302824
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03333333333333333,
+      "first_rank": 30,
+      "latency_ms": 0.9760920002008788
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.006896551724137931,
+      "first_rank": 145,
+      "latency_ms": 0.7309809998332639
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.030303030303030304,
+      "first_rank": 33,
+      "latency_ms": 0.7871770003475831
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.024390243902439025,
+      "first_rank": 41,
+      "latency_ms": 0.4553910002869088
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 0.5162359993846621
+    },
+    {
+      "config": "bm25-folded-stop",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.04,
+      "first_rank": 25,
+      "latency_ms": 0.6147330004750984
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 0.9471800003666431
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.045454545454545456,
+      "first_rank": 22,
+      "latency_ms": 1.1517369994180626
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.014925373134328358,
+      "first_rank": 67,
+      "latency_ms": 0.502552000398282
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.021739130434782608,
+      "first_rank": 46,
+      "latency_ms": 0.5466659995363443
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0625,
+      "first_rank": 16,
+      "latency_ms": 0.8680450000611017
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03333333333333333,
+      "first_rank": 30,
+      "latency_ms": 0.45891700028732885
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 0.6450030004998553
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 0.8559170000808081
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 0.9355009997307207
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 0.9618659996704082
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 0.6676329994661501
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.038461538461538464,
+      "first_rank": 26,
+      "latency_ms": 1.5461010007129516
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 1.3389509995249682
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.027777777777777776,
+      "first_rank": 36,
+      "latency_ms": 1.865804999397369
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.9265709995815996
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.7655119998162263
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 1.4158120002321084
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.9986539998863009
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.047619047619047616,
+      "first_rank": 21,
+      "latency_ms": 0.4218639996906859
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.9460849996685283
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 0.682038999912038
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 0.7450240000252961
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 0.8189299996956834
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 0.5027550005252124
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 0.6945710001673433
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 0.8849499999996624
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.030303030303030304,
+      "first_rank": 33,
+      "latency_ms": 1.0739489998741192
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.007042253521126761,
+      "first_rank": 142,
+      "latency_ms": 0.557771999410761
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03225806451612903,
+      "first_rank": 31,
+      "latency_ms": 0.9594929997547297
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 0.5618140003207373
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 1.0237429996777792
+    },
+    {
+      "config": "bm25-suffix-page",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.022222222222222223,
+      "first_rank": 45,
+      "latency_ms": 0.8331130002261489
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.019230769230769232,
+      "first_rank": 52,
+      "latency_ms": 155.7405209996432
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 144.01708700006566
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03333333333333333,
+      "first_rank": 30,
+      "latency_ms": 139.94904599985603
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.034482758620689655,
+      "first_rank": 29,
+      "latency_ms": 132.0182150002438
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 143.94339499995112
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0041841004184100415,
+      "first_rank": 239,
+      "latency_ms": 139.98878100028378
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 119.99271199965733
+    },
+    {
+      "config": "dense-e5",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05555555555555555,
+      "first_rank": 18,
+      "latency_ms": 123.9406050008256
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 143.93748299971776
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 143.96238199969957
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 119.98319599933893
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 139.99108000007254
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 135.9204079999472
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 135.9759299994039
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 135.98734300012438
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 135.99437900029443
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 143.9251969995894
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 119.96939799973916
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 119.9936990005881
+    },
+    {
+      "config": "dense-e5",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 151.79138900020916
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 112.13693399986369
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 128.0550420005966
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 131.87168199965527
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 111.8440059999557
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 120.11134600015794
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 143.99790700008452
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 123.94070400023338
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07142857142857142,
+      "first_rank": 14,
+      "latency_ms": 123.84436800039111
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.027777777777777776,
+      "first_rank": 36,
+      "latency_ms": 135.94811399980244
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 128.00654700004088
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 120.0303529994926
+    },
+    {
+      "config": "dense-e5",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 147.86478499991063
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 22.82585500051937
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 15.936806999889086
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03571428571428571,
+      "first_rank": 28,
+      "latency_ms": 7.927599999675294
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0035842293906810036,
+      "first_rank": 279,
+      "latency_ms": 15.939255999910529
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 15.89786600015941
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.00546448087431694,
+      "first_rank": 183,
+      "latency_ms": 7.954546999826562
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 7.917992000329832
+    },
+    {
+      "config": "dense-minilm",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 7.970609000039985
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.025,
+      "first_rank": 40,
+      "latency_ms": 16.00942099958047
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05,
+      "first_rank": 20,
+      "latency_ms": 15.957375000652974
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.005208333333333333,
+      "first_rank": 192,
+      "latency_ms": 15.979093000169087
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 15.94501100043999
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05555555555555555,
+      "first_rank": 18,
+      "latency_ms": 15.95356800044101
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 15.987353000127769
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.021739130434782608,
+      "first_rank": 46,
+      "latency_ms": 7.9667520003567915
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05,
+      "first_rank": 20,
+      "latency_ms": 7.966741999553051
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 7.969194999532192
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.06666666666666667,
+      "first_rank": 15,
+      "latency_ms": 15.967964999617834
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 7.954947000143875
+    },
+    {
+      "config": "dense-minilm",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 8.013915999981691
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.025,
+      "first_rank": 40,
+      "latency_ms": 7.970979000674561
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03333333333333333,
+      "first_rank": 30,
+      "latency_ms": 7.970275999468868
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 7.984962000591622
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.018867924528301886,
+      "first_rank": 53,
+      "latency_ms": 7.971363000251586
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 7.961778999742819
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.006578947368421052,
+      "first_rank": 152,
+      "latency_ms": 7.985823000126402
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 7.9355919997396995
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.01098901098901099,
+      "first_rank": 91,
+      "latency_ms": 7.976711000083014
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.017857142857142856,
+      "first_rank": 56,
+      "latency_ms": 7.95296700016479
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 7.97383900044224
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.01282051282051282,
+      "first_rank": 78,
+      "latency_ms": 15.98372999978892
+    },
+    {
+      "config": "dense-minilm",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.023809523809523808,
+      "first_rank": 42,
+      "latency_ms": 15.964128000632627
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 147.9993659995671
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 135.96675600001618
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 123.99323399949935
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.004830917874396135,
+      "first_rank": 207,
+      "latency_ms": 136.95921300040936
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 102.86965699924622
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.006622516556291391,
+      "first_rank": 151,
+      "latency_ms": 131.9532950001303
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 147.9459769998357
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 135.99384099961753
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 151.93867099969793
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 128.014672000063
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 131.95487099983438
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 131.94884099993942
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 135.99934600006236
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 143.9162889992076
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 124.00791599975491
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 127.94501700045657
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 104.02391000025091
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 111.88793099972827
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 87.94787900023948
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 120.0447589999385
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 127.94095300068875
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.025,
+      "first_rank": 40,
+      "latency_ms": 99.92255399993155
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 103.97136100073112
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 95.97185299935518
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 131.97247800053447
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 144.06786000017746
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.058823529411764705,
+      "first_rank": 17,
+      "latency_ms": 131.9319379999797
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.045454545454545456,
+      "first_rank": 22,
+      "latency_ms": 127.92564800020045
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.013888888888888888,
+      "first_rank": 72,
+      "latency_ms": 123.99193400051445
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 119.92395200013561
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 151.96861000003992
+    },
+    {
+      "config": "dense-e5-page",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 115.97999100013112
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 16.08731699980126
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 16.626012999950035
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.010638297872340425,
+      "first_rank": 94,
+      "latency_ms": 7.426080999721307
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0027397260273972603,
+      "first_rank": 365,
+      "latency_ms": 8.595260999754828
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 7.4974340004700935
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.007575757575757576,
+      "first_rank": 132,
+      "latency_ms": 6.768190000002505
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 3.0731529996046447
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 6.610621000618266
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.034482758620689655,
+      "first_rank": 29,
+      "latency_ms": 3.884626999933971
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.013333333333333334,
+      "first_rank": 75,
+      "latency_ms": 3.934097999263031
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.005208333333333333,
+      "first_rank": 192,
+      "latency_ms": 3.6160199997539166
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.014925373134328358,
+      "first_rank": 67,
+      "latency_ms": 4.146057999605546
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03125,
+      "first_rank": 32,
+      "latency_ms": 4.841197999667202
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 4.25033900046401
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.027777777777777776,
+      "first_rank": 36,
+      "latency_ms": 2.7093219996459084
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0625,
+      "first_rank": 16,
+      "latency_ms": 2.6347949997216347
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 3.1170960000963532
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 3.6105859999224776
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 2.51552699955937
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 2.8705180002361885
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.047619047619047616,
+      "first_rank": 21,
+      "latency_ms": 2.9688419999729376
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.023255813953488372,
+      "first_rank": 43,
+      "latency_ms": 3.1511849992966745
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 3.0097829994701897
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.027777777777777776,
+      "first_rank": 36,
+      "latency_ms": 2.577166999799374
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 2.5200420004694024
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.01,
+      "first_rank": 100,
+      "latency_ms": 3.1471419997615158
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 2.858370000467403
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.01639344262295082,
+      "first_rank": 61,
+      "latency_ms": 2.798796999741171
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.025,
+      "first_rank": 40,
+      "latency_ms": 2.9797960005453206
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 2.504450999367691
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02040816326530612,
+      "first_rank": 49,
+      "latency_ms": 3.3259299998462666
+    },
+    {
+      "config": "dense-minilm-page",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.01694915254237288,
+      "first_rank": 59,
+      "latency_ms": 2.9406789999484317
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.047619047619047616,
+      "first_rank": 21,
+      "latency_ms": 144.04625699989992
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 139.99517899992497
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.017543859649122806,
+      "first_rank": 57,
+      "latency_ms": 111.89897300027951
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 107.94819300008385
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 103.9244180001333
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.018867924528301886,
+      "first_rank": 53,
+      "latency_ms": 132.08889500037913
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03225806451612903,
+      "first_rank": 31,
+      "latency_ms": 123.97990200042841
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 120.50920700039569
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 131.84844100032933
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 107.43162099970505
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 126.71203000081732
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 118.98778599970683
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 138.37099000011222
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 136.28781299939874
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 127.48718900002132
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 139.9701999998797
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 116.25328100035404
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 143.83416999953624
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.1,
+      "first_rank": 10,
+      "latency_ms": 124.50310999975045
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 111.41701199994714
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 139.81659899945953
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 108.06703500020376
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 128.0554500008293
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 119.92125500000839
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 125.56441000015184
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 134.37747499938268
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 91.87852499962901
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.037037037037037035,
+      "first_rank": 27,
+      "latency_ms": 95.96933699958754
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 143.96915100041952
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.125,
+      "first_rank": 8,
+      "latency_ms": 120.03389399978914
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 124.08441999923525
+    },
+    {
+      "config": "hybrid-baseline",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05555555555555555,
+      "first_rank": 18,
+      "latency_ms": 111.93920300047466
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.013513513513513514,
+      "first_rank": 74,
+      "latency_ms": 152.01549500034162
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 120.02510000002076
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.02,
+      "first_rank": 50,
+      "latency_ms": 124.03173300026538
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.14285714285714285,
+      "first_rank": 7,
+      "latency_ms": 127.69954000032158
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 108.16015899945342
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.0,
+      "first_rank": null,
+      "latency_ms": 95.83220500007883
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03125,
+      "first_rank": 32,
+      "latency_ms": 107.92772199965839
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 131.9570929999827
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 152.26034499937668
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 111.71580500013079
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 124.08666200008156
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 115.96048699993844
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 144.1803069992602
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 131.92142400021112
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 128.1439140002476
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 115.75188700044237
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 104.01776699927723
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 144.32738499999687
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 135.44391300001735
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 115.98540600061824
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 103.93805200055795
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 111.91084099937143
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 112.01755999991292
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 111.86030299995764
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 120.19976499959739
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 127.8484770000432
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 143.98287099993468
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.034482758620689655,
+      "first_rank": 29,
+      "latency_ms": 132.07931399938388
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.1111111111111111,
+      "first_rank": 9,
+      "latency_ms": 128.00095300008252
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.08333333333333333,
+      "first_rank": 12,
+      "latency_ms": 135.91458900009457
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 135.9664530000373
+    },
+    {
+      "config": "hybrid-snowball-stop-e5",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 124.0369870001814
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-01",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.05,
+      "first_rank": 20,
+      "latency_ms": 13742.877431000124
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-03",
+      "origin": "real",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 15003.452939999988
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-04",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.017543859649122806,
+      "first_rank": 57,
+      "latency_ms": 18437.78472700069
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-06",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.07692307692307693,
+      "first_rank": 13,
+      "latency_ms": 16411.640225000156
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-07",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 13959.976993000055
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-08",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.018867924528301886,
+      "first_rank": 53,
+      "latency_ms": 16610.995927999284
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-09",
+      "origin": "real",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.03225806451612903,
+      "first_rank": 31,
+      "latency_ms": 13697.828786999708
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "real-10",
+      "origin": "real",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 9156.155218000094
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-01",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 10927.32455100031
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-02",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 10889.996773999883
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-03",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 15743.71471700033
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-04",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 13231.78058600024
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-05",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 10090.684728999804
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-06",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 0.3333333333333333,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 11006.291546999819
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-07",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 9695.424222000838
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-08",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.25,
+      "first_rank": 4,
+      "latency_ms": 9079.301828999633
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-09",
+      "origin": "plan",
+      "recall_at_5": 0.3333333333333333,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 15470.999307999591
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-10",
+      "origin": "plan",
+      "recall_at_5": 0.6666666666666666,
+      "recall_at_10": 0.6666666666666666,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 9598.241601999689
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-11",
+      "origin": "plan",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 8572.054094999658
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "plan-12",
+      "origin": "plan",
+      "recall_at_5": 0.5,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 10673.861911999666
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-01",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 8701.814933000605
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-02",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 8120.279873999607
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-03",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 9662.900240000454
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-04",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.2,
+      "first_rank": 5,
+      "latency_ms": 11733.1137150004
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-05",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 9355.416428000353
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-06",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 8568.529004000084
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-07",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.0,
+      "reciprocal_rank": 0.09090909090909091,
+      "first_rank": 11,
+      "latency_ms": 8640.525861000242
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-08",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 9549.60560299969
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-09",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.5,
+      "first_rank": 2,
+      "latency_ms": 15390.062643999954
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-10",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "first_rank": 3,
+      "latency_ms": 8460.636859999795
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-11",
+      "origin": "synthetic",
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "reciprocal_rank": 1.0,
+      "first_rank": 1,
+      "latency_ms": 9667.520789999799
+    },
+    {
+      "config": "rerank-m3-top30",
+      "id": "syn-12",
+      "origin": "synthetic",
+      "recall_at_5": 0.0,
+      "recall_at_10": 0.5,
+      "reciprocal_rank": 0.16666666666666666,
+      "first_rank": 6,
+      "latency_ms": 15987.526380000418
+    }
+  ],
+  "hybrid_vs_bm25": {
+    "diff": 0.36979166666666663,
+    "ci95_low": 0.22916666666666663,
+    "ci95_high": 0.5208333333333333,
+    "significant": true,
+    "n_bootstrap": 10000,
+    "seed": 0,
+    "diff_recall_at_10": 0.36979166666666663,
+    "left": "hybrid-baseline",
+    "right": "bm25-suffix"
+  }
+}

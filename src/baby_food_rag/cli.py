@@ -14,6 +14,7 @@ from baby_food_rag.download import download_sources, select_for_download
 from baby_food_rag.evaluate import load_questions, render_results, run_eval, write_results
 from baby_food_rag.index import build_index, format_hits, format_stats, load_index, search
 from baby_food_rag.manifest import find_manifest, load_manifest, sources_for_index
+from baby_food_rag.sweep import run_sweep
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -47,7 +48,7 @@ def main(argv: list[str] | None = None) -> int:
     search_cmd = sub.add_parser("search", help="Return the top chunks for a query")
     search_cmd.add_argument("query")
     search_cmd.add_argument("-k", type=int, default=5)
-    search_cmd.add_argument("--retriever", default="bm25", choices=["bm25", "dense", "hybrid"])
+    search_cmd.add_argument("--retriever", default="hybrid", choices=["bm25", "dense", "hybrid"])
     search_cmd.add_argument("--index", type=Path, default=Path("data/index"))
 
     stats = sub.add_parser("stats", help="Pages and chunks in an index")
@@ -64,6 +65,14 @@ def main(argv: list[str] | None = None) -> int:
         help="A gold page hits when the PDF page is within this distance. Default 1.",
     )
 
+    sweep = sub.add_parser("sweep", help="Compare BM25, dense, hybrid, and rerank settings")
+    sweep.add_argument("--set", type=Path, default=Path("eval/set.yaml"), dest="question_set")
+    sweep.add_argument("--index", type=Path, default=Path("data/index"))
+    sweep.add_argument("--raw", type=Path, default=Path("data/raw"))
+    sweep.add_argument("--manifest", type=Path, default=None)
+    sweep.add_argument("--out", type=Path, default=Path("results/phase3-sweep"))
+    sweep.add_argument("--cache", type=Path, default=Path("data/index/sweep-cache"))
+
     args = parser.parse_args(argv)
     if args.command == "download":
         return _download(args)
@@ -75,6 +84,8 @@ def main(argv: list[str] | None = None) -> int:
         return _stats(args)
     if args.command == "eval":
         return _eval(args)
+    if args.command == "sweep":
+        return _sweep(args)
     parser.error(f"unknown command {args.command}")
     return 2
 
@@ -148,6 +159,30 @@ def _eval(args: argparse.Namespace) -> int:
     )
     write_results(report, args.out)
     print(render_results(report), end="")
+    print(f"wrote {args.out}")
+    return 0
+
+
+def _sweep(args: argparse.Namespace) -> int:
+    try:
+        report = run_sweep(
+            question_path=args.question_set,
+            index_dir=args.index,
+            raw_dir=args.raw,
+            manifest_path=args.manifest or find_manifest(),
+            out_dir=args.out,
+            cache_dir=args.cache,
+        )
+    except (FileNotFoundError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    comparison = report["comparison"]
+    print(
+        f"{comparison['best']} recall@10 {comparison['best_recall_at_10']:.4f} "
+        f"vs {comparison['baseline']} {comparison['baseline_recall_at_10']:.4f} "
+        f"diff {comparison['diff_recall_at_10']:.4f} "
+        f"ci95 [{comparison['ci95_low']:.4f}, {comparison['ci95_high']:.4f}]"
+    )
     print(f"wrote {args.out}")
     return 0
 
