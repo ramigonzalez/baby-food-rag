@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 from baby_food_rag.download import download_sources, select_for_download
+from baby_food_rag.evaluate import load_questions, render_results, run_eval, write_results
 from baby_food_rag.index import build_index, format_hits, format_stats, load_index, search
 from baby_food_rag.manifest import find_manifest, load_manifest, sources_for_index
 
@@ -52,6 +53,17 @@ def main(argv: list[str] | None = None) -> int:
     stats = sub.add_parser("stats", help="Pages and chunks in an index")
     stats.add_argument("--index", type=Path, default=Path("data/index"))
 
+    evaluate = sub.add_parser("eval", help="Score BM25, dense, and hybrid on the labeled set")
+    evaluate.add_argument("--set", type=Path, default=Path("eval/set.yaml"), dest="question_set")
+    evaluate.add_argument("--index", type=Path, default=Path("data/index"))
+    evaluate.add_argument("--out", type=Path, default=Path("results/phase2-baseline"))
+    evaluate.add_argument(
+        "--page-tolerance",
+        type=int,
+        default=1,
+        help="A gold page hits when the PDF page is within this distance. Default 1.",
+    )
+
     args = parser.parse_args(argv)
     if args.command == "download":
         return _download(args)
@@ -61,6 +73,8 @@ def main(argv: list[str] | None = None) -> int:
         return _search(args)
     if args.command == "stats":
         return _stats(args)
+    if args.command == "eval":
+        return _eval(args)
     parser.error(f"unknown command {args.command}")
     return 2
 
@@ -111,6 +125,30 @@ def _search(args: argparse.Namespace) -> int:
         return 1
     hits = search(index, args.query, k=args.k, retriever=args.retriever)
     print(format_hits(args.query, args.retriever, hits), end="")
+    return 0
+
+
+def _eval(args: argparse.Namespace) -> int:
+    try:
+        index = load_index(args.index)
+        questions = load_questions(args.question_set)
+    except (FileNotFoundError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    embedder = None
+    if index.embedder_name not in {"", "hash"}:
+        from baby_food_rag.embed import load_embedder
+
+        embedder = load_embedder(index.embedder_name)
+    report = run_eval(
+        index,
+        questions,
+        embedder=embedder,
+        tolerance=args.page_tolerance,
+    )
+    write_results(report, args.out)
+    print(render_results(report), end="")
+    print(f"wrote {args.out}")
     return 0
 
 

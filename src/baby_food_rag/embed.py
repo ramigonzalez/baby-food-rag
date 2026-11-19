@@ -56,18 +56,26 @@ class E5Embedder:
         self.dim = int(self.model.embedding_size)
 
     def embed_documents(self, texts: list[str]) -> np.ndarray:
-        prefixed = [E5_PASSAGE_PREFIX + text for text in texts]
-        return self._stack(self.model.embed(prefixed, batch_size=self.batch_size))
+        return self._stack(self.model.embed(prefix_passages(texts), batch_size=self.batch_size))
 
     def embed_queries(self, texts: list[str]) -> np.ndarray:
-        prefixed = [E5_QUERY_PREFIX + text for text in texts]
-        return self._stack(self.model.embed(prefixed, batch_size=self.batch_size))
+        return self._stack(self.model.embed(prefix_queries(texts), batch_size=self.batch_size))
 
     def _stack(self, vectors: object) -> np.ndarray:
         rows = [np.asarray(vector, dtype=np.float32) for vector in vectors]
         if not rows:
             return np.zeros((0, self.dim), dtype=np.float32)
         return np.vstack(rows)
+
+
+def prefix_passages(texts: list[str]) -> list[str]:
+    """Text sent to e5 for chunks. The model expects the ``passage: `` prefix."""
+    return [E5_PASSAGE_PREFIX + text for text in texts]
+
+
+def prefix_queries(texts: list[str]) -> list[str]:
+    """Text sent to e5 for searches. The model expects the ``query: `` prefix."""
+    return [E5_QUERY_PREFIX + text for text in texts]
 
 
 def load_embedder(name: str) -> HashEmbedder | E5Embedder:
