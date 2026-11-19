@@ -11,21 +11,21 @@
     {
       "retriever": "bm25",
       "n": 32,
-      "recall_at_5": 0.22916666666666666,
-      "recall_at_10": 0.3489583333333333,
+      "recall_at_5": 0.21875,
+      "recall_at_10": 0.3385416666666667,
       "mrr": 0.31608592256107315
     },
     {
       "retriever": "dense",
       "n": 32,
       "recall_at_5": 0.3958333333333333,
-      "recall_at_10": 0.4791666666666667,
+      "recall_at_10": 0.46875,
       "mrr": 0.3976116143787616
     },
     {
       "retriever": "hybrid",
       "n": 32,
-      "recall_at_5": 0.515625,
+      "recall_at_5": 0.5052083333333334,
       "recall_at_10": 0.7083333333333334,
       "mrr": 0.4076808203378111
     }
@@ -927,21 +927,21 @@
         {
           "retriever": "bm25",
           "n": 32,
-          "recall_at_5": 0.22916666666666666,
-          "recall_at_10": 0.3489583333333333,
+          "recall_at_5": 0.21875,
+          "recall_at_10": 0.3385416666666667,
           "mrr": 0.31608592256107315
         },
         {
           "retriever": "dense",
           "n": 32,
           "recall_at_5": 0.3958333333333333,
-          "recall_at_10": 0.4791666666666667,
+          "recall_at_10": 0.46875,
           "mrr": 0.3976116143787616
         },
         {
           "retriever": "hybrid",
           "n": 32,
-          "recall_at_5": 0.515625,
+          "recall_at_5": 0.5052083333333334,
           "recall_at_10": 0.7083333333333334,
           "mrr": 0.4076808203378111
         }
@@ -1088,8 +1088,8 @@
           "origin": "plan",
           "reciprocal_rank": 1.0,
           "first_rank": 1,
-          "recall_at_5": 1.0,
-          "recall_at_10": 1.0
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666
         },
         {
           "retriever": "bm25",
@@ -1377,7 +1377,7 @@
           "reciprocal_rank": 0.125,
           "first_rank": 8,
           "recall_at_5": 0.0,
-          "recall_at_10": 0.6666666666666666
+          "recall_at_10": 0.3333333333333333
         },
         {
           "retriever": "dense",
@@ -1664,7 +1664,7 @@
           "origin": "plan",
           "reciprocal_rank": 0.5,
           "first_rank": 2,
-          "recall_at_5": 1.0,
+          "recall_at_5": 0.6666666666666666,
           "recall_at_10": 1.0
         },
         {

@@ -5,7 +5,7 @@ import pytest
 import yaml
 
 from baby_food_rag.embed import HashEmbedder, l2_normalize, prefix_passages, prefix_queries
-from baby_food_rag.evaluate import load_questions, run_eval, write_results
+from baby_food_rag.evaluate import _recall, load_questions, run_eval, write_results
 from baby_food_rag.index import CorpusIndex
 from baby_food_rag.types import Chunk
 
@@ -35,6 +35,16 @@ def _index(chunks: list[Chunk]) -> CorpusIndex:
         embedder_name="hash",
         meta={"embedder": "hash"},
     )
+
+
+def test_one_retrieved_page_credits_only_one_adjacent_gold():
+    pages = [("MS-2019", 102)]
+    gold = [
+        {"source_id": "MS-2019", "pdf_page": 102, "quote": "a"},
+        {"source_id": "MS-2019", "pdf_page": 103, "quote": "b"},
+    ]
+    assert _recall(pages, gold, tolerance=1) == 0.5
+    assert _recall([("MS-2019", 102), ("MS-2019", 104)], gold, tolerance=1) == 1.0
 
 
 def test_e5_prefix_helpers_add_query_and_passage():

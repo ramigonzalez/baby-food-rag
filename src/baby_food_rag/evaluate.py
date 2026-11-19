@@ -2,9 +2,11 @@
 
 A retrieved page hits a gold page when the source id matches and the PDF
 page is within ``page_tolerance`` of the gold page. Tolerance 1, the
-default, counts the exact page or one page either side. Chunks collapse
-to pages: the rank of a page is the first time that source and PDF page
-appear.
+default, counts the exact page or one page either side. Each retrieved
+page credits at most one gold page, the closest unmatched one, so two
+adjacent gold pages are not both counted from a single hit. Chunks
+collapse to pages: the rank of a page is the first time that source and
+PDF page appear.
 
 Recall@k is the mean, over answerable questions, of how many of that
 question's gold pages are hit in the top k pages, divided by how many
@@ -106,7 +108,9 @@ def render_results(report: dict) -> str:
         "A hit is a retrieved page with the same `source_id` whose PDF page is",
         f"within {tolerance} of a gold PDF page (exact page or ±{tolerance}).",
         "Chunks from the same source and PDF page count once, at the first time",
-        "that page appears. Recall@k is the mean, over answerable questions, of",
+        "that page appears. One retrieved page credits one gold page, the closest",
+        "one still unmatched, so neighboring gold pages are not both scored from",
+        "a single hit. Recall@k is the mean, over answerable questions, of",
         "the share of that question's gold pages hit in the top k pages.",
         "MRR is the mean of 1/rank of the first hit, or 0 when there is no hit.",
         "",
@@ -299,8 +303,26 @@ def _one(question: dict, pages: list[tuple[str, int]], tolerance: int) -> dict:
 def _recall(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> float:
     if not gold:
         return 0.0
-    hit = sum(1 for entry in gold if any(_hits(page, entry, tolerance) for page in pages))
-    return hit / len(gold)
+    return _matched_gold_count(pages, gold, tolerance) / len(gold)
+
+
+def _matched_gold_count(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> int:
+    """Each retrieved page credits at most one gold page."""
+    unmatched = set(range(len(gold)))
+    for page in pages:
+        choice = None
+        choice_key = None
+        for index in unmatched:
+            if not _hits(page, gold[index], tolerance):
+                continue
+            distance = abs(page[1] - gold[index]["pdf_page"])
+            key = (distance, gold[index]["pdf_page"], index)
+            if choice_key is None or key < choice_key:
+                choice = index
+                choice_key = key
+        if choice is not None:
+            unmatched.remove(choice)
+    return len(gold) - len(unmatched)
 
 
 def _hits_any(page: tuple[str, int], gold: list[dict], tolerance: int) -> bool:

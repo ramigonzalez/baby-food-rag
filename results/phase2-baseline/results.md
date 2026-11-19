@@ -8,7 +8,9 @@ Unanswerable questions are excluded from the means: 5.
 A hit is a retrieved page with the same `source_id` whose PDF page is
 within 1 of a gold PDF page (exact page or ±1).
 Chunks from the same source and PDF page count once, at the first time
-that page appears. Recall@k is the mean, over answerable questions, of
+that page appears. One retrieved page credits one gold page, the closest
+one still unmatched, so neighboring gold pages are not both scored from
+a single hit. Recall@k is the mean, over answerable questions, of
 the share of that question's gold pages hit in the top k pages.
 MRR is the mean of 1/rank of the first hit, or 0 when there is no hit.
 
@@ -18,9 +20,9 @@ Hybrid fuses the top 50 BM25 chunks with the top 50 dense chunks by reciprocal r
 
 | Retriever | Recall@5 | Recall@10 | MRR | n |
 | --- | ---: | ---: | ---: | ---: |
-| bm25 | 0.2292 | 0.3490 | 0.3161 | 32 |
-| dense | 0.3958 | 0.4792 | 0.3976 | 32 |
-| hybrid | 0.5156 | 0.7083 | 0.4077 | 32 |
+| bm25 | 0.2188 | 0.3385 | 0.3161 | 32 |
+| dense | 0.3958 | 0.4688 | 0.3976 | 32 |
+| hybrid | 0.5052 | 0.7083 | 0.4077 | 32 |
 
 ## Exact page (tolerance 0)
 
