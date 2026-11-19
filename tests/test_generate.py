@@ -3,9 +3,11 @@ from baby_food_rag.generate import (
     ABSTAIN,
     DISCLAIMER,
     Usage,
+    append_successful_turn,
     ask,
     is_abstention,
     link_citations,
+    question_to_send,
 )
 from baby_food_rag.generate_eval import (
     not_run_report,
@@ -141,3 +143,108 @@ def test_generation_eval_with_a_fake_model_writes_no_live_cost():
     missing = render_generation_report(not_run_report("OPENROUTER_API_KEY is not set"))
     assert "Not run" in missing
     assert "0.99" not in missing
+
+
+class _Boom(FakeLLM):
+    def complete(self, prompt: str) -> str:
+        raise RuntimeError("boom")
+
+
+def test_failed_ask_does_not_keep_the_question():
+    messages: list[dict] = []
+    try:
+        append_successful_turn(
+            messages,
+            "pode dar mel",
+            _index(),
+            _Boom([]),
+            k=1,
+            embedder=HashEmbedder(dim=32),
+        )
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("the failing model should raise")
+    assert messages == []
+
+
+def test_successful_turn_appends_question_and_answer_together():
+    llm = FakeLLM(["Não ofereça mel [MS-2019 p.104]."])
+    messages = append_successful_turn(
+        [],
+        "pode dar mel",
+        _index(),
+        llm,
+        k=1,
+        embedder=HashEmbedder(dim=32),
+    )
+    assert [item["role"] for item in messages] == ["user", "assistant"]
+    assert messages[0]["content"] == "pode dar mel"
+    assert "pediatra" in messages[1]["content"]
+    assert "p.104" in messages[1]["passages"]
+
+
+def test_retry_resends_the_failed_question_unchanged():
+    failed = "Pode dar mel ao bebê de 8 meses?"
+    assert question_to_send(None, failed, retry=True) == failed
+    assert question_to_send("  outra pergunta  ", failed, retry=True) == "outra pergunta"
+    assert question_to_send(None, failed, retry=False) is None
+
+
+def test_generation_eval_reuses_the_embedder():
+    class Counting(HashEmbedder):
+        def __init__(self) -> None:
+            super().__init__(dim=32)
+            self.calls = 0
+
+        def embed_queries(self, texts: list[str]):
+            self.calls += 1
+            return super().embed_queries(texts)
+
+    questions = [
+        {
+            "id": "a",
+            "origin": "real",
+            "question": "pode dar mel",
+            "answerable": False,
+            "gold_status": "verified",
+            "gold": [],
+            "notes": "",
+        },
+        {
+            "id": "b",
+            "origin": "plan",
+            "question": "uva",
+            "answerable": False,
+            "gold_status": "verified",
+            "gold": [],
+            "notes": "",
+        },
+    ]
+    embedder = Counting()
+    run_generation_eval(_index(), questions, FakeLLM([ABSTAIN, ABSTAIN]), k=1, embedder=embedder)
+    assert embedder.calls == 2
+
+
+def test_ask_eval_loads_the_embedder_once(monkeypatch, tmp_path):
+    from baby_food_rag.cli import main
+
+    index = _index()
+    index.embedder_name = "intfloat/multilingual-e5-large"
+    sentinel = object()
+    monkeypatch.setattr("baby_food_rag.cli.load_index", lambda path: index)
+    monkeypatch.setattr("baby_food_rag.cli.load_eval_questions", lambda path: [])
+    monkeypatch.setattr("baby_food_rag.cli.OpenRouterLLM", lambda model: FakeLLM([]))
+    monkeypatch.setattr("baby_food_rag.index.load_embedder", lambda name: sentinel)
+    seen = {}
+
+    def fake_run(index, questions, llm, embedder=None, k=8):
+        seen["embedder"] = embedder
+        return not_run_report("stopped")
+
+    monkeypatch.setattr("baby_food_rag.cli.run_generation_eval", fake_run)
+    code = main(
+        ["ask-eval", "--index", str(tmp_path), "--set", str(tmp_path), "--out", str(tmp_path)]
+    )
+    assert code == 0
+    assert seen["embedder"] is sentinel

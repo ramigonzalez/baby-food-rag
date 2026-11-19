@@ -26,7 +26,14 @@ from baby_food_rag.generate_eval import (
     run_generation_eval,
     write_generation_report,
 )
-from baby_food_rag.index import build_index, format_hits, format_stats, load_index, search
+from baby_food_rag.index import (
+    build_index,
+    format_hits,
+    format_stats,
+    load_index,
+    query_embedder,
+    search,
+)
 from baby_food_rag.manifest import find_manifest, load_manifest, sources_for_index
 from baby_food_rag.sweep import run_sweep
 
@@ -177,11 +184,7 @@ def _eval(args: argparse.Namespace) -> int:
     except (FileNotFoundError, ValueError) as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    embedder = None
-    if index.embedder_name not in {"", "hash"}:
-        from baby_food_rag.embed import load_embedder
-
-        embedder = load_embedder(index.embedder_name)
+    embedder = query_embedder(index)
     report = run_eval(
         index,
         questions,
@@ -231,7 +234,7 @@ def _ask(args: argparse.Namespace) -> int:
     except FileNotFoundError as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    answer = ask(index, args.question, llm, k=args.k)
+    answer = ask(index, args.question, llm, k=args.k, embedder=query_embedder(index))
     print(format_answer_markdown(answer))
     print(f"\nlatency_s={answer.latency_s:.2f} model={answer.model}")
     return 0
@@ -253,7 +256,13 @@ def _ask_eval(args: argparse.Namespace) -> int:
     except (FileNotFoundError, ValueError) as exc:
         print(str(exc), file=sys.stderr)
         return 1
-    report = run_generation_eval(index, questions, llm, k=args.k)
+    report = run_generation_eval(
+        index,
+        questions,
+        llm,
+        k=args.k,
+        embedder=query_embedder(index),
+    )
     write_generation_report(report, out_dir)
     print(render_generation_report(report), end="")
     print(f"wrote {out_dir}")

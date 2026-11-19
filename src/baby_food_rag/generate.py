@@ -181,6 +181,47 @@ def ask(
     )
 
 
+def turn_messages(
+    index: CorpusIndex,
+    question: str,
+    llm: LLM,
+    *,
+    k: int = DEFAULT_K,
+    embedder: object | None = None,
+) -> tuple[dict, dict]:
+    """Build the user and assistant messages. Raises before either exists."""
+    answer = ask(index, question, llm, k=k, embedder=embedder)
+    assistant = {
+        "role": "assistant",
+        "content": format_answer_markdown(answer),
+        "passages": passages_markdown(answer.hits),
+    }
+    return {"role": "user", "content": question}, assistant
+
+
+def append_successful_turn(
+    messages: list[dict],
+    question: str,
+    index: CorpusIndex,
+    llm: LLM,
+    *,
+    k: int = DEFAULT_K,
+    embedder: object | None = None,
+) -> list[dict]:
+    """Add the question only after the answer exists."""
+    user, assistant = turn_messages(index, question, llm, k=k, embedder=embedder)
+    return [*messages, user, assistant]
+
+
+def question_to_send(typed: str | None, failed: str | None, retry: bool) -> str | None:
+    """A new question wins. Retry resends the failed text unchanged."""
+    if typed and typed.strip():
+        return typed.strip()
+    if retry and failed and failed.strip():
+        return failed.strip()
+    return None
+
+
 def is_abstention(text: str) -> bool:
     body = text.replace(DISCLAIMER, "")
     body = " ".join(body.split())

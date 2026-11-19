@@ -123,6 +123,17 @@ def load_index(out_dir: Path) -> CorpusIndex:
     )
 
 
+def query_embedder(index: CorpusIndex):
+    """Load the query embedder once. Callers reuse it across questions.
+
+    A hash index does not need a shared model. ``search`` builds a cheap
+    hash embedder itself when this returns None.
+    """
+    if index.embedder_name in {"", "hash"}:
+        return None
+    return load_embedder(index.embedder_name)
+
+
 def search(
     index: CorpusIndex,
     query: str,

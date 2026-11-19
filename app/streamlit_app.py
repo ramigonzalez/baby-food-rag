@@ -14,21 +14,37 @@ from pathlib import Path
 
 import streamlit as st
 
+from baby_food_rag.embed import load_embedder
 from baby_food_rag.generate import (
     DEFAULT_MODEL,
     DISCLAIMER,
     MissingAPIKey,
     OpenRouterLLM,
-    ask,
-    format_answer_markdown,
+    append_successful_turn,
     indexed_guides,
-    passages_markdown,
+    question_to_send,
 )
 from baby_food_rag.index import load_index
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_DIR = ROOT / "data" / "index"
 MANIFEST = ROOT / "sources" / "manifest.yaml"
+_KEY_ERROR = "Defina OPENROUTER_API_KEY no ambiente. A chave não é gravada aqui."
+_ASK_ERROR = "Não foi possível consultar os guias. A pergunta não entrou no chat."
+
+
+@st.cache_resource
+def cached_embedder(name: str):
+    """One e5 model for the whole chat. A hash index needs none."""
+    if name in {"", "hash"}:
+        return None
+    return load_embedder(name)
+
+
+def _keep_failed_question(question: str, reason: str) -> None:
+    st.session_state.failed_question = question
+    st.session_state.failed_reason = reason
+    st.rerun()
 
 
 def main() -> None:
@@ -56,23 +72,35 @@ def main() -> None:
             if message.get("passages"):
                 with st.expander("Trechos recuperados"):
                     st.markdown(message["passages"])
-    question = st.chat_input("Pergunte sobre a alimentação do bebê")
+    failed = st.session_state.get("failed_question")
+    retry = False
+    if failed:
+        st.error(st.session_state.get("failed_reason") or _ASK_ERROR)
+        st.caption(failed)
+        retry = st.button("Tentar de novo")
+    typed = st.chat_input("Pergunte sobre a alimentação do bebê")
+    question = question_to_send(typed, failed, retry)
     if not question:
         return
-    st.session_state.messages.append({"role": "user", "content": question})
+    embedder = cached_embedder(index.embedder_name)
     try:
         llm = OpenRouterLLM(model=DEFAULT_MODEL)
+        with st.spinner("Consultando os guias..."):
+            st.session_state.messages = append_successful_turn(
+                st.session_state.messages,
+                question,
+                index,
+                llm,
+                embedder=embedder,
+            )
     except MissingAPIKey:
-        st.error("Defina OPENROUTER_API_KEY no ambiente. A chave não é gravada aqui.")
-        return
-    with st.spinner("Consultando os guias..."):
-        answer = ask(index, question, llm)
-    content = format_answer_markdown(answer)
-    passages = passages_markdown(answer.hits)
-    st.session_state.messages.append(
-        {"role": "assistant", "content": content, "passages": passages}
-    )
-    st.rerun()
+        _keep_failed_question(question, _KEY_ERROR)
+    except Exception:
+        _keep_failed_question(question, _ASK_ERROR)
+    else:
+        st.session_state.failed_question = None
+        st.session_state.failed_reason = None
+        st.rerun()
 
 
 if __name__ == "__main__":
