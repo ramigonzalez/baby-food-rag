@@ -1,7 +1,6 @@
-"""Command line: download, index, search, stats.
+"""Command line: download, index, search, and Portuguese answers.
 
-Generation is not in this phase. Search returns chunks with the source
-and the page.
+Answers cite the retrieved page. They are not medical advice.
 """
 
 from __future__ import annotations
@@ -12,6 +11,21 @@ from pathlib import Path
 
 from baby_food_rag.download import download_sources, select_for_download
 from baby_food_rag.evaluate import load_questions, render_results, run_eval, write_results
+from baby_food_rag.generate import (
+    DEFAULT_K,
+    DEFAULT_MODEL,
+    MissingAPIKey,
+    OpenRouterLLM,
+    ask,
+    format_answer_markdown,
+)
+from baby_food_rag.generate_eval import (
+    load_eval_questions,
+    not_run_report,
+    render_generation_report,
+    run_generation_eval,
+    write_generation_report,
+)
 from baby_food_rag.index import build_index, format_hits, format_stats, load_index, search
 from baby_food_rag.manifest import find_manifest, load_manifest, sources_for_index
 from baby_food_rag.sweep import run_sweep
@@ -73,6 +87,19 @@ def main(argv: list[str] | None = None) -> int:
     sweep.add_argument("--out", type=Path, default=Path("results/phase3-sweep"))
     sweep.add_argument("--cache", type=Path, default=Path("data/index/sweep-cache"))
 
+    ask_cmd = sub.add_parser("ask", help="Answer in Portuguese from the hybrid index")
+    ask_cmd.add_argument("question")
+    ask_cmd.add_argument("-k", type=int, default=DEFAULT_K)
+    ask_cmd.add_argument("--model", default=DEFAULT_MODEL)
+    ask_cmd.add_argument("--index", type=Path, default=Path("data/index"))
+
+    ask_eval = sub.add_parser("ask-eval", help="Generate and judge the labeled set")
+    ask_eval.add_argument("--set", type=Path, default=Path("eval/set.yaml"), dest="question_set")
+    ask_eval.add_argument("--index", type=Path, default=Path("data/index"))
+    ask_eval.add_argument("--out", type=Path, default=Path("results/phase4-generation"))
+    ask_eval.add_argument("--model", default=DEFAULT_MODEL)
+    ask_eval.add_argument("-k", type=int, default=DEFAULT_K)
+
     args = parser.parse_args(argv)
     if args.command == "download":
         return _download(args)
@@ -86,6 +113,10 @@ def main(argv: list[str] | None = None) -> int:
         return _eval(args)
     if args.command == "sweep":
         return _sweep(args)
+    if args.command == "ask":
+        return _ask(args)
+    if args.command == "ask-eval":
+        return _ask_eval(args)
     parser.error(f"unknown command {args.command}")
     return 2
 
@@ -187,6 +218,45 @@ def _sweep(args: argparse.Namespace) -> int:
         f"ci95 [{comparison['ci95_low']:.4f}, {comparison['ci95_high']:.4f}]"
     )
     print(f"wrote {args.out}")
+    return 0
+
+
+def _ask(args: argparse.Namespace) -> int:
+    try:
+        index = load_index(args.index)
+        llm = OpenRouterLLM(model=args.model)
+    except MissingAPIKey as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    answer = ask(index, args.question, llm, k=args.k)
+    print(format_answer_markdown(answer))
+    print(f"\nlatency_s={answer.latency_s:.2f} model={answer.model}")
+    return 0
+
+
+def _ask_eval(args: argparse.Namespace) -> int:
+    out_dir = args.out
+    try:
+        llm = OpenRouterLLM(model=args.model)
+    except MissingAPIKey as exc:
+        report = not_run_report(str(exc))
+        write_generation_report(report, out_dir)
+        print(render_generation_report(report), end="")
+        print(f"wrote {out_dir}", file=sys.stderr)
+        return 1
+    try:
+        index = load_index(args.index)
+        questions = load_eval_questions(args.question_set)
+    except (FileNotFoundError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    report = run_generation_eval(index, questions, llm, k=args.k)
+    write_generation_report(report, out_dir)
+    print(render_generation_report(report), end="")
+    print(f"wrote {out_dir}")
     return 0
 
 

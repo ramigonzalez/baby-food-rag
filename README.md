@@ -187,16 +187,32 @@ Answerable real questions only (n = 8). These are the parent questions that have
 
 Whole-page e5 cuts text at 512 tokens. The gold labels are an agent's, on this same set of 32. A gap of a few points is noise, which is why the interval is in the table above.
 
+## Answers and chat
+
+`baby-food ask` and the Streamlit screen answer in Portuguese from the hybrid index (top 8 chunks). Each factual sentence should carry `[source_id p.N]`, where N is the printed page. The link is `url#page=` plus the PDF page, so MS 2019 printed page 84 opens `#page=83`. If the chunks do not support an answer, the text is exactly `Os guias oficiais indexados não respondem isso.` A fixed line is always added: this cites the indexed official guides and does not replace a pediatrician.
+
+```bash
+export OPENROUTER_API_KEY=...   # never commit this
+baby-food ask "Pode dar mel?"
+streamlit run app/streamlit_app.py
+```
+
+Download the PDFs and build the index first (`python scripts/download.py` then `baby-food index`). The PDFs stay out of git. The default model is `openai/gpt-4o-mini` (`--model` changes it). The chat shows the answer, clickable citations, an expander with the retrieved passages, the disclaimer, and the indexed guides in the sidebar.
+
+`baby-food ask-eval` runs the 37 labeled questions and a judge in the style of rag-eval-harness judge v2: claim extraction, then supported / contradicted / not_found. It also scores citation page match, answer relevance, and abstention on the 5 unanswerable questions. On this machine `OPENROUTER_API_KEY` was not set, so that command wrote `results/phase4-generation/summary.md` with status not run. No scores were estimated.
+
+The weekly menu is not in this version. That is phase 4b.
+
 ## Harness
 
-[rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness) is a reference, not a dependency. Its chunk is `(chunk_id, doc_id, text, index)` over a whole document, and its tokenizer drops accents, so a page citation cannot be produced by calling it. Three pieces are adapted, with the MIT notice in the modules: the recursive word splitter, Okapi BM25, and reciprocal rank fusion. Judge v2 is `raglab.generation.judge_claims(..., version="v2")`. Nothing in this phase calls it.
+[rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness) is a reference, not a dependency. Its chunk is `(chunk_id, doc_id, text, index)` over a whole document, and its tokenizer drops accents, so a page citation cannot be produced by calling it. Three pieces are adapted, with the MIT notice in the modules: the recursive word splitter, Okapi BM25, and reciprocal rank fusion. The generation judge follows that repo's judge v2 (extract claims, then verify each one) and lives in `src/baby_food_rag/judge.py`.
 
 ## Roadmap
 
 1. **Corpus and search.** Done. Download, page text, chunk metadata, BM25 and dense search, tests, CI. No generated answers.
 2. **Evaluation questions and a retrieval baseline.** The labeled set and the BM25, dense, and hybrid numbers are in `eval/set.yaml` and `results/phase2-baseline/`. No generated answers and no judge.
 3. **Compared configurations.** The sweep that fits on this CPU is in `results/phase3-sweep/`. Judge v2, abstention, and mixing countries are not in it. Dense BGE-M3 did not run.
-4. **Chat UI.** Not started. A short answer, a clickable page, a fixed warning, and a weekly menu where each item cites the rule it follows.
+4. **Chat UI.** The Portuguese answer command and Streamlit screen are in this repo. The weekly menu is phase 4b and is not built yet.
 5. **Public write-up.** Not started. A results table only after those measurements exist.
 
 ## Tests
