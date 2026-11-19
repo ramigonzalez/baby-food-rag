@@ -124,7 +124,29 @@ hits: 3
    Figura 16 – Leite materno oferecido na colher. Se você tiver dificuldade para retirar, conservar ou ofertar o leite materno à criança, procure apoio na Unidade Básica de Saúde, na maternidade, no Banco de Leite Humano mais próximo de você ou no local onde a criança está sendo ou vai ser acompanhada. Se você quiser doar leite materno para outros bebês, pro...
 ```
 
-Dense search for `como cortar uva` did not put printed page 84 in the top 5. That page was rank 18, score 0.7942, against a top score of 0.8088. The gaps are small. Comparing retrievers is phase 3.
+The e5 tokenizer receives the prefixes. A check on this index decoded `query: como cortar uva` as `▁que ry : ▁como ▁cortar ▁uva` and a passage as starting with `passage:`. The stored embeddings were already built that way, so the index was not rebuilt. Dense rank of MS 2019 printed page 84 for `como cortar uva` is 18 before that check and 18 after it (score 0.7942; the top hit scored 0.8088).
+
+## Evaluation
+
+`eval/set.yaml` is the labeled set. It has 37 questions: 10 real parent questions, 15 from the case plan, and 12 synthetic questions written in the same colloquial style. Five are `answerable: false` and are not scored: two of the real questions (whether strawberry is an allergen, and the daily protein intake) and the three plan questions about a drug dose, a commercial brand, and fever medicine. Six answerable questions are `needs_review` because the wording is broader than the page or the guides do not say the same thing. The other answerable questions are `verified`: the quote was found on that PDF page.
+
+A hit is the same `source_id` and a PDF page within 1 of a gold page (the exact page or ±1). `--page-tolerance 0` scores the exact page only. Recall@k is the mean share of a question's gold pages found in the top k pages. MRR is the mean of 1/rank of the first hit. These numbers are from `baby-food eval` and are also in `results/phase2-baseline/`.
+
+| Retriever | Recall@5 | Recall@10 | MRR | n |
+| --- | ---: | ---: | ---: | ---: |
+| bm25 | 0.2292 | 0.3490 | 0.3161 | 32 |
+| dense | 0.3958 | 0.4792 | 0.3976 | 32 |
+| hybrid | 0.5156 | 0.7083 | 0.4077 | 32 |
+
+Exact page, same run:
+
+| Retriever | Recall@5 | Recall@10 | MRR | n |
+| --- | ---: | ---: | ---: | ---: |
+| bm25 | 0.1927 | 0.3125 | 0.2748 | 32 |
+| dense | 0.3490 | 0.4219 | 0.3168 | 32 |
+| hybrid | 0.4792 | 0.6406 | 0.3586 | 32 |
+
+The gold pages were chosen by an agent reading the extracted text, not by a health professional. The synthetic questions were written by that agent. `needs_review` rows are included in the means. This is not a measure of answer quality, because nothing generates an answer.
 
 ## Harness
 
@@ -133,8 +155,8 @@ Dense search for `como cortar uva` did not put printed page 84 in the top 5. Tha
 ## Roadmap
 
 1. **Corpus and search.** Done. Download, page text, chunk metadata, BM25 and dense search, tests, CI. No generated answers.
-2. **Evaluation questions.** Not run. `eval/questions.yaml` has the 15 plan questions and the printed pages from the case notes. `eval/perguntas_reais.yaml` has the 10 parent questions. They are not a labeled set, and nothing scores them yet.
-3. **Compared configurations.** Not started. Multilingual embeddings, BM25, hybrid, a multilingual reranker, recall of the right page, judge v2, abstention, and mixing countries or sources.
+2. **Evaluation questions and a retrieval baseline.** The labeled set and the BM25, dense, and hybrid numbers are in `eval/set.yaml` and `results/phase2-baseline/`. No generated answers and no judge.
+3. **Compared configurations.** Not started. Other embeddings, a multilingual reranker, judge v2, abstention on the unanswerable questions, and mixing countries or sources.
 4. **Chat UI.** Not started. A short answer, a clickable page, a fixed warning, and a weekly menu where each item cites the rule it follows.
 5. **Public write-up.** Not started. A results table only after those measurements exist.
 
