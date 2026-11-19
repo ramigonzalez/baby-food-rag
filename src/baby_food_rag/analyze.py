@@ -105,18 +105,20 @@ class Analyzer:
         tokens = tokenize(text)
         if self.fold:
             tokens = [fold_accents(token) for token in tokens]
-        if self.stem == "suffix":
-            tokens = stem_tokens(tokens)
-        elif self.stem == "snowball":
-            tokens = [_SNOWBALL.stemWord(token) for token in tokens]
-        elif self.stem != "none":
-            raise ValueError(f"Unknown stem {self.stem!r}")
+        # Drop function words before stemming. Snowball maps "comer" to "com",
+        # so filtering after the stem would delete the verb.
         if self.stop:
             tokens = [
                 token
                 for token in tokens
                 if token not in STOPWORDS and fold_accents(token) not in STOPWORDS
             ]
+        if self.stem == "suffix":
+            tokens = stem_tokens(tokens)
+        elif self.stem == "snowball":
+            tokens = [_SNOWBALL.stemWord(token) for token in tokens]
+        elif self.stem != "none":
+            raise ValueError(f"Unknown stem {self.stem!r}")
         return tokens
 
 

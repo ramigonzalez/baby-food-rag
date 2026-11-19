@@ -158,27 +158,27 @@ Hardware for the latencies below: Intel Xeon, 4 CPUs, no GPU. The time is the me
 
 | Config | Recall@5 | Recall@10 | MRR | Latency ms |
 | --- | ---: | ---: | ---: | ---: |
-| hybrid-baseline | 0.5052 | 0.7083 | 0.4077 | 123.5 |
-| rerank-m3-top30 | 0.6302 | 0.6875 | 0.5686 | 11744.9 |
-| hybrid-snowball-stop-e5 | 0.4844 | 0.6406 | 0.4170 | 124.4 |
-| dense-e5-page | 0.4323 | 0.5729 | 0.4191 | 126.2 |
-| bm25-snowball-stop | 0.3021 | 0.4688 | 0.3302 | 1.1 |
-| dense-e5 | 0.3958 | 0.4688 | 0.3976 | 133.0 |
+| hybrid-baseline | 0.5052 | 0.7083 | 0.4077 | 121.6 |
+| rerank-m3-top30 | 0.6302 | 0.6875 | 0.5686 | 11874.1 |
+| hybrid-snowball-stop-e5 | 0.4688 | 0.5781 | 0.3732 | 117.7 |
+| dense-e5-page | 0.4323 | 0.5729 | 0.4191 | 120.4 |
+| bm25-snowball-stop | 0.3490 | 0.4948 | 0.3669 | 1.0 |
+| dense-e5 | 0.3958 | 0.4688 | 0.3976 | 120.0 |
 | bm25-suffix | 0.2188 | 0.3385 | 0.3161 | 1.9 |
-| dense-minilm | 0.0781 | 0.1979 | 0.1792 | 11.4 |
+| dense-minilm | 0.0781 | 0.1979 | 0.1792 | 13.2 |
 
 The highest recall@10 is the phase 2 hybrid (suffix BM25 + e5-large, fusion pool 50). The next config, the reranker, is 0.0208 lower. The 95% bootstrap interval of that difference is [-0.1302, 0.0885] (10,000 paired resamples, seed 0), so it includes 0. The reranker is not a significant gain, and it costs about 12 seconds per query.
 
-Hybrid minus the phase 2 BM25 is +0.3698 recall@10, interval [0.2292, 0.5208], which stays above 0. `baby-food search` therefore defaults to that hybrid. Snowball with stopwords beats the suffix BM25 on its own (difference +0.1302, interval [0.0155, 0.2604]), but the hybrid that uses it is lower than the baseline hybrid (0.6406 vs 0.7083), so the default BM25 side stays the suffix list.
+Hybrid minus the phase 2 BM25 is +0.3698 recall@10, interval [0.2292, 0.5208], which stays above 0. `baby-food search` therefore defaults to that hybrid. Snowball with stopwords, applied before stemming, beats the suffix BM25 on its own (difference +0.1563, interval [0.0417, 0.2813]), but the hybrid that uses it is lower than the baseline hybrid (0.5781 vs 0.7083), so the default BM25 side stays the suffix list.
 
 Answerable real questions only (n = 8). These are the parent questions that have a page in the corpus:
 
 | Config | Recall@10 | MRR |
 | --- | ---: | ---: |
 | hybrid-baseline | 0.3542 | 0.1645 |
-| hybrid-snowball-stop-e5 | 0.3542 | 0.1968 |
 | dense-e5-page | 0.2917 | 0.2018 |
-| bm25-snowball-stop | 0.2292 | 0.0935 |
+| bm25-snowball-stop | 0.2917 | 0.1321 |
+| hybrid-snowball-stop-e5 | 0.2292 | 0.1371 |
 | rerank-m3-top30 | 0.1875 | 0.2233 |
 | dense-e5 | 0.1250 | 0.1621 |
 | bm25-suffix | 0.0417 | 0.0477 |

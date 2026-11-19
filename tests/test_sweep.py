@@ -14,6 +14,9 @@ def test_snowball_joins_cortar_and_folded_accents_match():
     stopped = Analyzer("stop", stem="none", fold=False, stop=True)
     assert "para" not in stopped.tokens("mel para a criança")
     assert "mel" in stopped.tokens("mel para a criança")
+    snow_stop = Analyzer("snowball-stop", stem="snowball", fold=False, stop=True)
+    assert "com" in snow_stop.tokens("comer fruta")
+    assert "par" not in snow_stop.tokens("mel para a criança")
 
 
 def test_suffix_analyzer_matches_phase2_tokens():

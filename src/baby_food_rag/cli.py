@@ -177,10 +177,13 @@ def _sweep(args: argparse.Namespace) -> int:
         print(str(exc), file=sys.stderr)
         return 1
     comparison = report["comparison"]
+    compared = comparison.get("challenger", comparison["best"])
+    compared_score = comparison.get("challenger_recall_at_10", comparison["best_recall_at_10"])
     print(
-        f"{comparison['best']} recall@10 {comparison['best_recall_at_10']:.4f} "
-        f"vs {comparison['baseline']} {comparison['baseline_recall_at_10']:.4f} "
-        f"diff {comparison['diff_recall_at_10']:.4f} "
+        f"{compared} minus {comparison['baseline']} "
+        f"recall@10 {comparison['diff_recall_at_10']:.4f} "
+        f"({compared} {compared_score:.4f}, "
+        f"{comparison['baseline']} {comparison['baseline_recall_at_10']:.4f}) "
         f"ci95 [{comparison['ci95_low']:.4f}, {comparison['ci95_high']:.4f}]"
     )
     print(f"wrote {args.out}")

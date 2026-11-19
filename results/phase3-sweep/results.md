@@ -16,31 +16,31 @@ The reranker, when it ran, reorders the top 30 hybrid chunks.
 
 | Config | Family | Recall@5 | Recall@10 | MRR | Latency ms |
 | --- | --- | ---: | ---: | ---: | ---: |
-| hybrid-baseline | hybrid | 0.5052 | 0.7083 | 0.4077 | 123.5 |
-| rerank-m3-top30 | rerank | 0.6302 | 0.6875 | 0.5686 | 11744.9 |
-| hybrid-snowball-stop-e5 | hybrid | 0.4844 | 0.6406 | 0.4170 | 124.4 |
-| dense-e5-page | dense | 0.4323 | 0.5729 | 0.4191 | 126.2 |
-| bm25-snowball-stop | bm25 | 0.3021 | 0.4688 | 0.3302 | 1.1 |
-| dense-e5 | dense | 0.3958 | 0.4688 | 0.3976 | 133.0 |
-| bm25-snowball | bm25 | 0.2760 | 0.4635 | 0.3466 | 2.3 |
+| hybrid-baseline | hybrid | 0.5052 | 0.7083 | 0.4077 | 121.6 |
+| rerank-m3-top30 | rerank | 0.6302 | 0.6875 | 0.5686 | 11874.1 |
+| hybrid-snowball-stop-e5 | hybrid | 0.4688 | 0.5781 | 0.3732 | 117.7 |
+| dense-e5-page | dense | 0.4323 | 0.5729 | 0.4191 | 120.4 |
+| bm25-snowball-stop | bm25 | 0.3490 | 0.4948 | 0.3669 | 1.0 |
+| dense-e5 | dense | 0.3958 | 0.4688 | 0.3976 | 120.0 |
+| bm25-snowball | bm25 | 0.2760 | 0.4635 | 0.3466 | 2.5 |
 | bm25-folded-stop | bm25 | 0.3281 | 0.4062 | 0.3145 | 0.7 |
 | bm25-suffix-page | bm25 | 0.2812 | 0.3750 | 0.2781 | 0.9 |
-| bm25-plain | bm25 | 0.2500 | 0.3385 | 0.2883 | 1.9 |
 | bm25-suffix | bm25 | 0.2188 | 0.3385 | 0.3161 | 1.9 |
+| bm25-plain | bm25 | 0.2500 | 0.3385 | 0.2883 | 2.0 |
 | bm25-folded | bm25 | 0.3125 | 0.3385 | 0.2925 | 2.0 |
-| dense-minilm-page | dense | 0.1406 | 0.2292 | 0.1232 | 4.7 |
-| dense-minilm | dense | 0.0781 | 0.1979 | 0.1792 | 11.4 |
+| dense-minilm-page | dense | 0.1406 | 0.2292 | 0.1232 | 5.4 |
+| dense-minilm | dense | 0.0781 | 0.1979 | 0.1792 | 13.2 |
 
 ## Answerable real questions only
 
 | Config | n | Recall@5 | Recall@10 | MRR |
 | --- | ---: | ---: | ---: | ---: |
 | hybrid-baseline | 8 | 0.2917 | 0.3542 | 0.1645 |
-| hybrid-snowball-stop-e5 | 8 | 0.1667 | 0.3542 | 0.1968 |
+| bm25-snowball-stop | 8 | 0.1667 | 0.2917 | 0.1321 |
 | dense-e5-page | 8 | 0.1667 | 0.2917 | 0.2018 |
 | dense-minilm | 8 | 0.1667 | 0.2708 | 0.2062 |
 | dense-minilm-page | 8 | 0.1667 | 0.2708 | 0.1310 |
-| bm25-snowball-stop | 8 | 0.0417 | 0.2292 | 0.0935 |
+| hybrid-snowball-stop-e5 | 8 | 0.1042 | 0.2292 | 0.1371 |
 | bm25-snowball | 8 | 0.0000 | 0.2083 | 0.0752 |
 | rerank-m3-top30 | 8 | 0.1875 | 0.1875 | 0.2233 |
 | dense-e5 | 8 | 0.1250 | 0.1250 | 0.1621 |
