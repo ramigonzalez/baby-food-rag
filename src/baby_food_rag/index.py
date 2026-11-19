@@ -24,7 +24,7 @@ from baby_food_rag.tokenize import stem_tokens, tokenize
 from baby_food_rag.types import Chunk, Hit, Source
 
 RETRIEVERS = ("bm25", "dense", "hybrid")
-_FUSION_POOL = 20
+_FUSION_POOL = 50
 _RRF_K = 60
 
 

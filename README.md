@@ -148,6 +148,45 @@ Exact page, same run:
 
 The gold pages were chosen by an agent reading the extracted text, not by a health professional. The synthetic questions were written by that agent. `needs_review` rows are included in the means. This is not a measure of answer quality, because nothing generates an answer.
 
+## Retrieval sweep
+
+`baby-food sweep` compares BM25 token options, two dense models, whole-page chunks, hybrid fusion, and a multilingual reranker. The chart and tables are written from `results/phase3-sweep/metrics.json`. The winner was chosen on all 32 answerable questions. There is no held-out split.
+
+`BAAI/bge-m3` did not run. fastembed 0.9.1, the latest release, has no dense BGE-M3 model, and this machine has no GPU and no torch. The smaller dense model that did run is `paraphrase-multilingual-MiniLM-L12-v2`. The reranker is `BAAI/bge-reranker-v2-m3` on the top 30 hybrid chunks.
+
+Hardware for the latencies below: Intel Xeon, 4 CPUs, no GPU. The time is the mean online query after one warmup. It does not include loading the model.
+
+| Config | Recall@5 | Recall@10 | MRR | Latency ms |
+| --- | ---: | ---: | ---: | ---: |
+| hybrid-baseline | 0.5052 | 0.7083 | 0.4077 | 121.6 |
+| rerank-m3-top30 | 0.6302 | 0.6875 | 0.5686 | 11874.1 |
+| hybrid-snowball-stop-e5 | 0.4688 | 0.5781 | 0.3732 | 117.7 |
+| dense-e5-page | 0.4323 | 0.5729 | 0.4191 | 120.4 |
+| bm25-snowball-stop | 0.3490 | 0.4948 | 0.3669 | 1.0 |
+| dense-e5 | 0.3958 | 0.4688 | 0.3976 | 120.0 |
+| bm25-suffix | 0.2188 | 0.3385 | 0.3161 | 1.9 |
+| dense-minilm | 0.0781 | 0.1979 | 0.1792 | 13.2 |
+
+The highest recall@10 is the phase 2 hybrid (suffix BM25 + e5-large, fusion pool 50). The next config, the reranker, is 0.0208 lower. The 95% bootstrap interval of that difference is [-0.1302, 0.0885] (10,000 paired resamples, seed 0), so it includes 0. The reranker is not a significant gain, and it costs about 12 seconds per query.
+
+Hybrid minus the phase 2 BM25 is +0.3698 recall@10, interval [0.2292, 0.5208], which stays above 0. `baby-food search` therefore defaults to that hybrid. Snowball with stopwords, applied before stemming, beats the suffix BM25 on its own (difference +0.1563, interval [0.0417, 0.2813]), but the hybrid that uses it is lower than the baseline hybrid (0.5781 vs 0.7083), so the default BM25 side stays the suffix list.
+
+Answerable real questions only (n = 8). These are the parent questions that have a page in the corpus:
+
+| Config | Recall@10 | MRR |
+| --- | ---: | ---: |
+| hybrid-baseline | 0.3542 | 0.1645 |
+| dense-e5-page | 0.2917 | 0.2018 |
+| bm25-snowball-stop | 0.2917 | 0.1321 |
+| hybrid-snowball-stop-e5 | 0.2292 | 0.1371 |
+| rerank-m3-top30 | 0.1875 | 0.2233 |
+| dense-e5 | 0.1250 | 0.1621 |
+| bm25-suffix | 0.0417 | 0.0477 |
+
+![Recall@10 against mean query latency](results/phase3-sweep/recall_at_10_vs_latency.png)
+
+Whole-page e5 cuts text at 512 tokens. The gold labels are an agent's, on this same set of 32. A gap of a few points is noise, which is why the interval is in the table above.
+
 ## Harness
 
 [rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness) is a reference, not a dependency. Its chunk is `(chunk_id, doc_id, text, index)` over a whole document, and its tokenizer drops accents, so a page citation cannot be produced by calling it. Three pieces are adapted, with the MIT notice in the modules: the recursive word splitter, Okapi BM25, and reciprocal rank fusion. Judge v2 is `raglab.generation.judge_claims(..., version="v2")`. Nothing in this phase calls it.
@@ -156,7 +195,7 @@ The gold pages were chosen by an agent reading the extracted text, not by a heal
 
 1. **Corpus and search.** Done. Download, page text, chunk metadata, BM25 and dense search, tests, CI. No generated answers.
 2. **Evaluation questions and a retrieval baseline.** The labeled set and the BM25, dense, and hybrid numbers are in `eval/set.yaml` and `results/phase2-baseline/`. No generated answers and no judge.
-3. **Compared configurations.** Not started. Other embeddings, a multilingual reranker, judge v2, abstention on the unanswerable questions, and mixing countries or sources.
+3. **Compared configurations.** The sweep that fits on this CPU is in `results/phase3-sweep/`. Judge v2, abstention, and mixing countries are not in it. Dense BGE-M3 did not run.
 4. **Chat UI.** Not started. A short answer, a clickable page, a fixed warning, and a weekly menu where each item cites the rule it follows.
 5. **Public write-up.** Not started. A results table only after those measurements exist.
 
