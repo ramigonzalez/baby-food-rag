@@ -1,0 +1,124 @@
+"""Command line: download, index, search, stats.
+
+Generation is not in this phase. Search returns chunks with the source
+and the page.
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+from baby_food_rag.download import download_sources, select_for_download
+from baby_food_rag.index import build_index, format_hits, format_stats, load_index, search
+from baby_food_rag.manifest import find_manifest, load_manifest, sources_for_index
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        prog="baby-food",
+        description="Search official infant-feeding guides. Not medical advice.",
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    download = sub.add_parser("download", help="Download PDFs listed as download: true")
+    download.add_argument("--dest", type=Path, default=Path("data/raw"))
+    download.add_argument("--id", action="append", default=None, help="Download one source id")
+    download.add_argument(
+        "--force", action="store_true", help="Fetch again even if the file exists"
+    )
+    download.add_argument("--manifest", type=Path, default=None)
+
+    index = sub.add_parser("index", help="Extract, chunk, and embed the default core")
+    index.add_argument(
+        "--include",
+        action="append",
+        default=[],
+        choices=["optional", "contrast", "reference"],
+        help="Also index this group. Default is the Brazilian core only.",
+    )
+    index.add_argument("--embedder", default="e5", choices=["e5", "hash"])
+    index.add_argument("--raw", type=Path, default=Path("data/raw"))
+    index.add_argument("--out", type=Path, default=Path("data/index"))
+    index.add_argument("--manifest", type=Path, default=None)
+
+    search_cmd = sub.add_parser("search", help="Return the top chunks for a query")
+    search_cmd.add_argument("query")
+    search_cmd.add_argument("-k", type=int, default=5)
+    search_cmd.add_argument("--retriever", default="bm25", choices=["bm25", "dense", "hybrid"])
+    search_cmd.add_argument("--index", type=Path, default=Path("data/index"))
+
+    stats = sub.add_parser("stats", help="Pages and chunks in an index")
+    stats.add_argument("--index", type=Path, default=Path("data/index"))
+
+    args = parser.parse_args(argv)
+    if args.command == "download":
+        return _download(args)
+    if args.command == "index":
+        return _index(args)
+    if args.command == "search":
+        return _search(args)
+    if args.command == "stats":
+        return _stats(args)
+    parser.error(f"unknown command {args.command}")
+    return 2
+
+
+def _download(args: argparse.Namespace) -> int:
+    manifest = args.manifest or find_manifest()
+    try:
+        chosen = select_for_download(load_manifest(manifest), args.id)
+    except KeyError as exc:
+        print(f"Unknown source id {exc.args[0]}", file=sys.stderr)
+        return 2
+    results = download_sources(chosen, args.dest, force=args.force)
+    failed = 0
+    for result in results:
+        line = f"{result.status.upper():7} {result.source_id}  {result.message}"
+        if result.sha256:
+            line += f"  sha256={result.sha256}"
+        print(line)
+        if result.status == "failed":
+            failed += 1
+    if failed:
+        print(f"{failed} download(s) failed. The others were kept.", file=sys.stderr)
+        return 1
+    return 0
+
+
+def _index(args: argparse.Namespace) -> int:
+    manifest = args.manifest or find_manifest()
+    sources = sources_for_index(load_manifest(manifest), set(args.include))
+    if not sources:
+        print("No sources selected.", file=sys.stderr)
+        return 2
+    try:
+        index = build_index(sources, args.raw, args.out, embedder_name=args.embedder)
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(format_stats(index.meta), end="")
+    print(f"wrote {args.out}")
+    return 0
+
+
+def _search(args: argparse.Namespace) -> int:
+    try:
+        index = load_index(args.index)
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    hits = search(index, args.query, k=args.k, retriever=args.retriever)
+    print(format_hits(args.query, args.retriever, hits), end="")
+    return 0
+
+
+def _stats(args: argparse.Namespace) -> int:
+    try:
+        index = load_index(args.index)
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(format_stats(index.meta), end="")
+    return 0
