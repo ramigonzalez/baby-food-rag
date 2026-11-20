@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 from pathlib import Path
 
 from baby_food_rag.download import download_sources, select_for_download
@@ -28,6 +29,7 @@ from baby_food_rag.generate_eval import (
 )
 from baby_food_rag.index import (
     build_index,
+    format_elapsed,
     format_hits,
     format_stats,
     load_index,
@@ -156,6 +158,7 @@ def _index(args: argparse.Namespace) -> int:
     if not sources:
         print("No sources selected.", file=sys.stderr)
         return 2
+    started = time.perf_counter()
     try:
         index = build_index(sources, args.raw, args.out, embedder_name=args.embedder)
     except FileNotFoundError as exc:
@@ -163,6 +166,7 @@ def _index(args: argparse.Namespace) -> int:
         return 1
     print(format_stats(index.meta), end="")
     print(f"wrote {args.out}")
+    print(f"elapsed {format_elapsed(time.perf_counter() - started)}", file=sys.stderr)
     return 0
 
 

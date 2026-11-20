@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -17,11 +18,11 @@ import numpy as np
 
 from baby_food_rag.bm25 import BM25Index
 from baby_food_rag.chunking import CHUNK_OVERLAP, CHUNK_WORDS, chunk_pages
-from baby_food_rag.embed import l2_normalize, load_embedder
+from baby_food_rag.embed import embed_passages, embedder_display_name, l2_normalize, load_embedder
 from baby_food_rag.extract import extract_pdf
 from baby_food_rag.fusion import reciprocal_rank_fusion
 from baby_food_rag.tokenize import stem_tokens, tokenize
-from baby_food_rag.types import Chunk, Hit, Source
+from baby_food_rag.types import Chunk, Hit, Page, Source
 
 RETRIEVERS = ("bm25", "dense", "hybrid")
 _FUSION_POOL = 50
@@ -59,10 +60,15 @@ def build_index(
             + ", ".join(missing)
             + f". Run the download command first (looked in {raw_dir})."
         )
+    _stage("Extracting pages...")
+    extracted: list[tuple[Source, list[Page]]] = []
+    for source in sources:
+        _stage(f"  {source.id}")
+        extracted.append((source, extract_pdf(raw_dir / source.filename)))
+    _stage("Chunking...")
     chunks: list[Chunk] = []
     stats: list[dict] = []
-    for source in sources:
-        pages = extract_pdf(raw_dir / source.filename)
+    for source, pages in extracted:
         page_chunks = chunk_pages(source, pages)
         chunks.extend(page_chunks)
         with_text = sum(1 for page in pages if page.text.strip())
@@ -77,8 +83,10 @@ def build_index(
                 "chunks": len(page_chunks),
             }
         )
+    label = embedder_display_name(embedder_name)
+    _stage(f"Embedding {len(chunks)} chunks with {label}...")
     embedder = load_embedder(embedder_name)
-    matrix = embedder.embed_documents([chunk.text for chunk in chunks])
+    matrix = embed_passages(embedder, [chunk.text for chunk in chunks], progress=True)
     matrix = l2_normalize(np.asarray(matrix, dtype=np.float32))
     meta = {
         "embedder": embedder.name,
@@ -86,8 +94,21 @@ def build_index(
         "chunk_overlap": CHUNK_OVERLAP,
         "sources": stats,
     }
+    _stage("Writing index...")
     save_index(out_dir, chunks, matrix, meta)
     return CorpusIndex(chunks=chunks, embeddings=matrix, embedder_name=embedder.name, meta=meta)
+
+
+def format_elapsed(seconds: float) -> str:
+    """Short duration for the end of ``baby-food index``."""
+    if seconds < 60:
+        return f"{seconds:.1f} s"
+    minutes, rest = divmod(int(seconds), 60)
+    return f"{minutes}m {rest:02d}s"
+
+
+def _stage(message: str) -> None:
+    print(message, file=sys.stderr, flush=True)
 
 
 def save_index(out_dir: Path, chunks: list[Chunk], embeddings: np.ndarray, meta: dict) -> None:

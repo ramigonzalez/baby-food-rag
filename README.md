@@ -34,7 +34,7 @@ baby-food stats
 
 `scripts/download.py` is the catalog `download.sh` rewritten in Python: same official URLs, same user agent, sha256 checked when the manifest has one, and a failed URL does not stop the others. On 2026-11-19, `MS-RES-2021` and `MS-EVID-2025` (`bvsms.saude.gov.br`) returned HTTP 403. They are reference texts, not part of the default index. NIAID is not fetched by default. AAP is never fetched.
 
-`baby-food index` writes `data/index/`, which is gitignored. Chunks are a recursive split of 180 words with 40 words of overlap, taken from [rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness). A chunk does not cross a page. In the 2019 MS guide the printed page is the PDF page plus 1, so the grape note is printed page 84 and the link uses `#page=83`.
+`baby-food index` prints each stage on stderr (extract, chunk, embed, write), a chunk progress bar while embedding, and the elapsed time at the end. It writes `data/index/`, which is gitignored. Chunks are a recursive split of 180 words with 40 words of overlap, taken from [rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness). A chunk does not cross a page. In the 2019 MS guide the printed page is the PDF page plus 1, so the grape note is printed page 84 and the link uses `#page=83`.
 
 Default index built here:
 
