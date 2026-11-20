@@ -19,7 +19,7 @@ from pathlib import Path
 
 from baby_food_rag.index import CorpusIndex, search
 from baby_food_rag.manifest import find_manifest, load_manifest
-from baby_food_rag.types import Hit
+from baby_food_rag.types import Chunk, Hit
 
 DEFAULT_MODEL = "openai/gpt-4o-mini"
 DEFAULT_K = 8
@@ -34,15 +34,25 @@ DISCLAIMER = (
     "Isto cita os guias oficiais indexados. Não é orientação médica e não substitui o pediatra."
 )
 ABSTAIN = "Os guias oficiais indexados não respondem isso."
+CALL_TIMEOUT_S = 60
+_RETRY_HTTP = {408, 429, 500, 502, 503, 504}
 
-_CITE = re.compile(r"\[([A-Za-z0-9-]+) p\.(\d+)\](?!\()")
+# Final citation, after positional marks are rewritten. Source ids start with a letter.
+_SOURCE_CITE = re.compile(r"\[([A-Za-z][A-Za-z0-9-]*) p\.(\d+)\]")
+_SOURCE_LINK = re.compile(r"\[([A-Za-z][A-Za-z0-9-]*) p\.(\d+)\](?!\()")
+# The model sometimes copies the chunk slot: [3 p.21] instead of [MS-2019 p.84].
+_POSITIONAL = re.compile(r"\[(\d+) p\.(\d+)\]")
 
 _PROMPT = """Você responde em português, para pais, sobre alimentação infantil.
 Use somente os trechos abaixo. Não use conhecimento de fora deles.
-Cada afirmação factual leva uma citação no formato [SOURCE p.N], usando exatamente
-o rótulo de página impressa mostrado no trecho.
-Se os trechos não bastam para responder, escreva somente esta frase, sem mais nada:
+Cada afirmação factual cita o rótulo do trecho, copiado exatamente, no formato [MS-2019 p.104].
+O rótulo está na primeira linha de cada trecho. Não cite a posição na lista.
+Não escreva [1 p.N], [3 p.N] nem outro número de ordem.
+Abstenha-se somente quando nenhum trecho falar do assunto da pergunta.
+Nesse caso escreva somente esta frase, sem mais nada:
 {abstain}
+Se os trechos respondem só parte da pergunta, responda essa parte com citação
+e diga o que os guias não cobrem. Não use a frase de abstenção se houver informação útil.
 Se dois guias divergirem, diga a divergência e cite os dois.
 Não diagnostique, não indique marca e não dê dose de remédio.
 
@@ -85,6 +95,7 @@ class Answer:
     model: str
     latency_s: float
     usage: Usage = field(default_factory=Usage)
+    dropped_citations: list[str] = field(default_factory=list)
 
     @property
     def body(self) -> str:
@@ -108,13 +119,22 @@ class LLM:
 
 
 class OpenRouterLLM(LLM):
-    def __init__(self, model: str = DEFAULT_MODEL, api_key: str | None = None) -> None:
+    def __init__(
+        self,
+        model: str = DEFAULT_MODEL,
+        api_key: str | None = None,
+        *,
+        timeout_s: float = CALL_TIMEOUT_S,
+        opener: object | None = None,
+    ) -> None:
         self._model = model
         key = api_key if api_key is not None else os.environ.get("OPENROUTER_API_KEY")
         if not key:
             raise MissingAPIKey("OPENROUTER_API_KEY is not set")
         self._key = key
         self._usage = Usage()
+        self._timeout_s = timeout_s
+        self._opener = opener or urllib.request.urlopen
 
     @property
     def model(self) -> str:
@@ -125,6 +145,21 @@ class OpenRouterLLM(LLM):
         return self._usage
 
     def complete(self, prompt: str) -> str:
+        last: Exception | None = None
+        for attempt in range(2):
+            try:
+                return self._complete_once(prompt)
+            except urllib.error.HTTPError as exc:
+                last = exc
+                if exc.code not in _RETRY_HTTP or attempt == 1:
+                    raise RuntimeError(f"OpenRouter HTTP {exc.code}") from exc
+            except (TimeoutError, urllib.error.URLError) as exc:
+                last = exc
+                if attempt == 1:
+                    raise RuntimeError("OpenRouter timed out") from exc
+        raise RuntimeError("OpenRouter timed out") from last
+
+    def _complete_once(self, prompt: str) -> str:
         payload = {
             "model": self._model,
             "temperature": 0,
@@ -139,11 +174,8 @@ class OpenRouterLLM(LLM):
             },
             method="POST",
         )
-        try:
-            with urllib.request.urlopen(request, timeout=120) as response:
-                body = json.loads(response.read().decode("utf-8"))
-        except urllib.error.HTTPError as exc:
-            raise RuntimeError(f"OpenRouter HTTP {exc.code}") from exc
+        with self._opener(request, timeout=self._timeout_s) as response:
+            body = json.loads(response.read().decode("utf-8"))
         choice = body["choices"][0]["message"]["content"]
         usage = body.get("usage") or {}
         prompt_tokens = int(usage.get("prompt_tokens") or 0)
@@ -169,7 +201,8 @@ def ask(
     started = time.perf_counter()
     raw = llm.complete(prompt).strip()
     latency = time.perf_counter() - started
-    text = link_citations(raw, hits)
+    text, dropped = normalize_citations(raw, hits)
+    text = link_citations(text, hits)
     return Answer(
         question=question,
         text=text,
@@ -178,6 +211,7 @@ def ask(
         model=llm.model,
         latency_s=latency,
         usage=llm.usage,
+        dropped_citations=dropped,
     )
 
 
@@ -230,13 +264,14 @@ def is_abstention(text: str) -> bool:
 
 
 def format_context(hits: list[Hit]) -> str:
+    """Each chunk starts with the exact citation token. No list index."""
     if not hits:
         return "(nenhum trecho recuperado)"
     blocks = []
-    for index, hit in enumerate(hits, start=1):
+    for hit in hits:
         chunk = hit.chunk
         label = cite_label(chunk.source_id, chunk.printed_page, chunk.page)
-        blocks.append(f"[{index}] {label}\nlink: {chunk.citation_url}\n{chunk.text}")
+        blocks.append(f"{label}\n{chunk.citation_url}\n{chunk.text}")
     return "\n\n".join(blocks)
 
 
@@ -245,11 +280,65 @@ def cite_label(source_id: str, printed_page: str | None, pdf_page: int) -> str:
     return f"[{source_id} p.{shown}]"
 
 
+def shown_page(chunk: Chunk) -> str:
+    return chunk.printed_page if chunk.printed_page else str(chunk.page)
+
+
+def page_matches(chunk: Chunk, page: str) -> bool:
+    if chunk.printed_page and chunk.printed_page == page:
+        return True
+    return str(chunk.page) == page
+
+
+def citation_marks(text: str) -> list[tuple[str, str]]:
+    """[source_id p.N] marks in the final answer, including markdown links."""
+    return _SOURCE_CITE.findall(text)
+
+
+def normalize_citations(text: str, hits: list[Hit]) -> tuple[str, list[str]]:
+    """Map [3 p.21] to that chunk's label, and drop cites outside the hits.
+
+    The page on a positional mark is ignored. The slot picks the chunk, and
+    the label uses that chunk's printed page. A source cite may use either
+    the printed page or the PDF page; the kept label uses the printed page.
+    """
+    dropped: list[str] = []
+
+    def from_slot(match: re.Match[str]) -> str:
+        slot = int(match.group(1))
+        if slot < 1 or slot > len(hits):
+            dropped.append(match.group(0))
+            return ""
+        chunk = hits[slot - 1].chunk
+        return cite_label(chunk.source_id, chunk.printed_page, chunk.page)
+
+    rewritten = _POSITIONAL.sub(from_slot, text)
+
+    def keep_known(match: re.Match[str]) -> str:
+        source_id, page = match.group(1), match.group(2)
+        for hit in hits:
+            chunk = hit.chunk
+            if chunk.source_id == source_id and page_matches(chunk, page):
+                return cite_label(chunk.source_id, chunk.printed_page, chunk.page)
+        dropped.append(match.group(0))
+        return ""
+
+    rewritten = _SOURCE_CITE.sub(keep_known, rewritten)
+    return _tidy(rewritten), dropped
+
+
+def _tidy(text: str) -> str:
+    text = re.sub(r"[ \t]{2,}", " ", text)
+    text = re.sub(r" +([.,;:])", r"\1", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
 def link_citations(text: str, hits: list[Hit]) -> str:
-    """Turn [SOURCE p.N] into a markdown link when that page was retrieved."""
+    """Turn a validated [SOURCE p.N] into a markdown link."""
     lookup: dict[tuple[str, str], str] = {}
     for hit in hits:
-        shown = hit.chunk.printed_page if hit.chunk.printed_page else str(hit.chunk.page)
+        shown = shown_page(hit.chunk)
         lookup[(hit.chunk.source_id, shown)] = hit.chunk.citation_url
 
     def replace(match: re.Match[str]) -> str:
@@ -258,7 +347,7 @@ def link_citations(text: str, hits: list[Hit]) -> str:
             return match.group(0)
         return f"[{match.group(1)} p.{match.group(2)}]({url})"
 
-    return _CITE.sub(replace, text)
+    return _SOURCE_LINK.sub(replace, text)
 
 
 def format_answer_markdown(answer: Answer) -> str:

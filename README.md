@@ -189,7 +189,7 @@ Whole-page e5 cuts text at 512 tokens. The gold labels are an agent's, on this s
 
 ## Answers and chat
 
-`baby-food ask` and the Streamlit screen answer in Portuguese from the hybrid index (top 8 chunks). Each factual sentence should carry `[source_id p.N]`, where N is the printed page. The link is `url#page=` plus the PDF page, so MS 2019 printed page 84 opens `#page=83`. If the chunks do not support an answer, the text is exactly `Os guias oficiais indexados não respondem isso.` A fixed line is always added: this cites the indexed official guides and does not replace a pediatrician.
+`baby-food ask` and the Streamlit screen answer in Portuguese from the hybrid index (top 8 chunks). Each chunk is shown to the model as `[source_id p.N]`, where N is the printed page. A mark like `[3 p.21]` is rewritten from that slot in the retrieved list. A citation that is not in the retrieved set is dropped. The link is `url#page=` plus the PDF page, so MS 2019 printed page 84 opens `#page=83`. The model abstains only when no passage is about the question, with the sentence `Os guias oficiais indexados não respondem isso.` When the passages cover only part of the question, the answer covers that part, cites it, and says what the guides do not cover. A fixed line is always added: this cites the indexed official guides and does not replace a pediatrician. Each OpenRouter call times out after 60 seconds and retries once.
 
 ```bash
 export OPENROUTER_API_KEY=...   # never commit this

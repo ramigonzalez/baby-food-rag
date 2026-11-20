@@ -11,12 +11,9 @@ or 1 judgment of whether the answer addresses the question.
 from __future__ import annotations
 
 import json
-import re
 
-from baby_food_rag.generate import DISCLAIMER, LLM, Answer, cite_label
+from baby_food_rag.generate import DISCLAIMER, LLM, Answer, citation_marks, cite_label
 from baby_food_rag.types import Hit
-
-_CITE = re.compile(r"\[([A-Za-z0-9-]+) p\.(\d+)\]")
 
 _CLAIMS = """Task: extract claims.
 
@@ -94,10 +91,6 @@ def judge_answer(llm: LLM, answer: Answer, *, expect_abstention: bool) -> dict:
         "n_citations": len(cites),
         "n_citations_correct": correct,
     }
-
-
-def citation_marks(text: str) -> list[tuple[str, str]]:
-    return _CITE.findall(text)
 
 
 def _page_retrieved(source_id: str, page: str, hits: list[Hit]) -> bool:
