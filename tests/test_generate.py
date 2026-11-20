@@ -15,6 +15,7 @@ from baby_food_rag.generate import (
     link_citations,
     normalize_citations,
     question_to_send,
+    run_question,
 )
 from baby_food_rag.generate_eval import (
     not_run_report,
@@ -263,7 +264,7 @@ def test_positional_marks_become_source_pages_and_unknown_marks_drop():
         Hit(score=0.5, chunk=_chunk(83, "84", "Uva em pedaços.")),
     ]
     text, dropped = normalize_citations(
-        "Mel [1 p.21]. Uva [MS-2019 p.83]. Fora [9 p.1] e [FOO p.3].",
+        "Mel [1 p.21]. Uva [MS-2019 p.84]. Fora [9 p.1] e [FOO p.3].",
         hits,
     )
     assert text == "Mel [MS-2019 p.104]. Uva [MS-2019 p.84]. Fora e."
@@ -272,6 +273,46 @@ def test_positional_marks_become_source_pages_and_unknown_marks_drop():
     assert "[MS-2019 p.104](https://example.test/guia.pdf#page=103)" in linked
     assert "[MS-2019 p.84](https://example.test/guia.pdf#page=83)" in linked
     assert citation_marks(linked) == [("MS-2019", "104"), ("MS-2019", "84")]
+
+
+def test_printed_page_does_not_bind_to_the_neighbor_pdf_page():
+    """Printed 84 is PDF 83. A higher-ranked PDF 84 must not steal the cite."""
+    neighbor = Chunk(
+        chunk_id="MS-2019::p84::c0",
+        source_id="MS-2019",
+        year=2019,
+        country="BR",
+        page=84,
+        printed_page="85",
+        text="página seguinte",
+        url="https://example.test/guia.pdf",
+        title="Guia",
+    )
+    grapes = _chunk(83, "84", "Uva em pedaços.")
+    hits = [Hit(score=1.0, chunk=neighbor), Hit(score=0.5, chunk=grapes)]
+    text, dropped = normalize_citations("Corte a uva [MS-2019 p.84].", hits)
+    assert dropped == []
+    assert text == "Corte a uva [MS-2019 p.84]."
+    linked = link_citations(text, hits)
+    assert linked == "Corte a uva [MS-2019 p.84](https://example.test/guia.pdf#page=83)."
+    pdf_only, pdf_dropped = normalize_citations("Corte a uva [MS-2019 p.83].", hits)
+    assert pdf_only == "Corte a uva."
+    assert pdf_dropped == ["[MS-2019 p.83]"]
+
+
+def test_embedder_failure_leaves_the_question_unsent():
+    messages: list[dict] = []
+
+    def boom(name: str) -> None:
+        raise RuntimeError("weights missing")
+
+    try:
+        run_question(messages, "pode dar mel", _index(), boom, lambda: FakeLLM([]))
+    except RuntimeError as exc:
+        assert "weights missing" in str(exc)
+    else:
+        raise AssertionError("the embedder failure should raise")
+    assert messages == []
 
 
 def test_ask_maps_a_slot_citation_and_keeps_a_partial_answer():

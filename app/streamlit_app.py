@@ -20,9 +20,9 @@ from baby_food_rag.generate import (
     DISCLAIMER,
     MissingAPIKey,
     OpenRouterLLM,
-    append_successful_turn,
     indexed_guides,
     question_to_send,
+    run_question,
 )
 from baby_food_rag.index import load_index
 
@@ -82,16 +82,14 @@ def main() -> None:
     question = question_to_send(typed, failed, retry)
     if not question:
         return
-    embedder = cached_embedder(index.embedder_name)
     try:
-        llm = OpenRouterLLM(model=DEFAULT_MODEL)
         with st.spinner("Consultando os guias..."):
-            st.session_state.messages = append_successful_turn(
+            st.session_state.messages = run_question(
                 st.session_state.messages,
                 question,
                 index,
-                llm,
-                embedder=embedder,
+                cached_embedder,
+                lambda: OpenRouterLLM(model=DEFAULT_MODEL),
             )
     except MissingAPIKey:
         _keep_failed_question(question, _KEY_ERROR)

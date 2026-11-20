@@ -215,6 +215,21 @@ def ask(
     )
 
 
+def run_question(
+    messages: list[dict],
+    question: str,
+    index: CorpusIndex,
+    load_embedder: object,
+    make_llm: object,
+    *,
+    k: int = DEFAULT_K,
+) -> list[dict]:
+    """Load the embedder, then answer. A load failure raises with history intact."""
+    embedder = load_embedder(index.embedder_name)
+    llm = make_llm()
+    return append_successful_turn(messages, question, index, llm, k=k, embedder=embedder)
+
+
 def turn_messages(
     index: CorpusIndex,
     question: str,
@@ -285,9 +300,12 @@ def shown_page(chunk: Chunk) -> str:
 
 
 def page_matches(chunk: Chunk, page: str) -> bool:
-    if chunk.printed_page and chunk.printed_page == page:
-        return True
-    return str(chunk.page) == page
+    """True only for the page number shown to the model.
+
+    MS 2019 printed page N sits on PDF page N-1, so a PDF-page match would
+    bind a correct printed citation to the neighboring sheet.
+    """
+    return shown_page(chunk) == page
 
 
 def citation_marks(text: str) -> list[tuple[str, str]]:
@@ -299,8 +317,8 @@ def normalize_citations(text: str, hits: list[Hit]) -> tuple[str, list[str]]:
     """Map [3 p.21] to that chunk's label, and drop cites outside the hits.
 
     The page on a positional mark is ignored. The slot picks the chunk, and
-    the label uses that chunk's printed page. A source cite may use either
-    the printed page or the PDF page; the kept label uses the printed page.
+    the label uses that chunk's printed page. A source cite must use that
+    same shown page. The PDF page is only the link target.
     """
     dropped: list[str] = []
 
