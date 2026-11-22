@@ -6,6 +6,11 @@ not_found from the retrieved context only. Faithfulness is the share
 marked supported. Citation correctness is the share of [SOURCE p.N]
 marks that point at a retrieved page. Relevance is a separate 0, 0.5,
 or 1 judgment of whether the answer addresses the question.
+
+A partial answer is not an abstention. The metric names stay the same.
+Faithfulness, citation correctness, and relevance are computed for it.
+Abstention accuracy still uses only the exact abstention sentence on
+questions marked answerable: false.
 """
 
 from __future__ import annotations
@@ -33,8 +38,11 @@ _VERIFY = """Task: verify claims.
 For each numbered claim, decide whether the context supports it. Use only
 the context.
 - supported: the context states the claim with the same polarity.
+  A claim that the guides do not cover a topic is supported when the
+  context does not state that topic, and contradicted when it does.
 - contradicted: the context states the opposite.
 - not_found: the context does not settle it.
+Do not treat a partial answer as an abstention. Score only the claims.
 Return JSON only, one entry per claim, same order:
 {{"verdicts": [{{"claim": 1, "verdict": "supported"}}]}}
 
@@ -48,8 +56,9 @@ Claims:
 _RELEVANCE = """Task: answer relevance.
 
 Does the answer address the question, without judging medical correctness?
-Score 1 if it answers the question, 0.5 if it answers only part of it,
-0 if it does not address the question. An explicit abstention scores 0
+Score 1 if it answers the question, 0.5 if it covers only the part the
+guides support and says what they do not cover, 0 if it does not address
+the question. An explicit abstention scores 0
 when the question could be answered from ordinary feeding guidance, and
 1 when the answer correctly says the guides do not cover it. Here, just
 score whether the answer is about the question.

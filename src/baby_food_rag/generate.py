@@ -34,6 +34,15 @@ DISCLAIMER = (
     "Isto cita os guias oficiais indexados. Não é orientação médica e não substitui o pediatra."
 )
 ABSTAIN = "Os guias oficiais indexados não respondem isso."
+# Questions the indexed guides can answer. The chat offers these as buttons.
+EXAMPLE_QUESTIONS = (
+    "Como reduzir o risco de engasgo no BLW?",
+    "Pode dar mel? A partir de quando?",
+    "Como oferecer uva?",
+    "Pode pôr sal e açúcar na comida do bebê?",
+    "Aos 7 meses, a comida vai amassada ou o bebê pode pegar com a mão?",
+    "Aos 7 meses, já posso dar água no copo?",
+)
 CALL_TIMEOUT_S = 60
 _RETRY_HTTP = {408, 429, 500, 502, 503, 504}
 
@@ -48,11 +57,12 @@ Use somente os trechos abaixo. Não use conhecimento de fora deles.
 Cada afirmação factual cita o rótulo do trecho, copiado exatamente, no formato [MS-2019 p.104].
 O rótulo está na primeira linha de cada trecho. Não cite a posição na lista.
 Não escreva [1 p.N], [3 p.N] nem outro número de ordem.
-Abstenha-se somente quando nenhum trecho falar do assunto da pergunta.
+Abstenha-se somente quando nenhum trecho for relevante para a pergunta.
 Nesse caso escreva somente esta frase, sem mais nada:
 {abstain}
-Se os trechos respondem só parte da pergunta, responda essa parte com citação
-e diga o que os guias não cobrem. Não use a frase de abstenção se houver informação útil.
+Se os trechos cobrem só parte da pergunta, não use essa frase.
+Responda a parte coberta, com citação em cada afirmação, e diga com clareza
+o que os guias oficiais indexados não cobrem.
 Se dois guias divergirem, diga a divergência e cite os dois.
 Não diagnostique, não indique marca e não dê dose de remédio.
 
@@ -202,6 +212,7 @@ def ask(
     raw = llm.complete(prompt).strip()
     latency = time.perf_counter() - started
     text, dropped = normalize_citations(raw, hits)
+    text = drop_abstain_if_cited(text)
     text = link_citations(text, hits)
     return Answer(
         question=question,
@@ -243,7 +254,11 @@ def turn_messages(
     assistant = {
         "role": "assistant",
         "content": format_answer_markdown(answer),
-        "passages": passages_markdown(answer.hits),
+        "abstained": answer.abstained,
+        "segments": answer_segments(answer.text, answer.hits),
+        "passages": (
+            passages_markdown(answer.hits) if include_retrieved_passages(answer.abstained) else None
+        ),
     }
     return {"role": "user", "content": question}, assistant
 
@@ -269,6 +284,18 @@ def question_to_send(typed: str | None, failed: str | None, retry: bool) -> str 
     if retry and failed and failed.strip():
         return failed.strip()
     return None
+
+
+def drop_abstain_if_cited(text: str) -> str:
+    """A cited partial answer is not the full abstention sentence."""
+    if ABSTAIN in text and citation_marks(text):
+        return _tidy(text.replace(ABSTAIN, " "))
+    return text
+
+
+def include_retrieved_passages(abstained: bool) -> bool:
+    """The full retrieved list stays hidden when the answer abstains."""
+    return not abstained
 
 
 def is_abstention(text: str) -> bool:
@@ -311,6 +338,56 @@ def page_matches(chunk: Chunk, page: str) -> bool:
 def citation_marks(text: str) -> list[tuple[str, str]]:
     """[source_id p.N] marks in the final answer, including markdown links."""
     return _SOURCE_CITE.findall(text)
+
+
+def citation_cards(hits: list[Hit]) -> dict[tuple[str, str], dict]:
+    """One card per shown page, with the chunk text and the PDF link."""
+    cards: dict[tuple[str, str], dict] = {}
+    for hit in hits:
+        chunk = hit.chunk
+        key = (chunk.source_id, shown_page(chunk))
+        card = cards.get(key)
+        if card is None:
+            card = {
+                "type": "citation",
+                "label": cite_label(chunk.source_id, chunk.printed_page, chunk.page),
+                "source_id": chunk.source_id,
+                "page": shown_page(chunk),
+                "title": chunk.title,
+                "url": chunk.citation_url,
+                "excerpts": [],
+            }
+            cards[key] = card
+        if chunk.text not in card["excerpts"]:
+            card["excerpts"].append(chunk.text)
+    return cards
+
+
+def answer_segments(text: str, hits: list[Hit]) -> list[dict]:
+    """Split an answer into prose and the citation card for each mark."""
+    body = text.replace(DISCLAIMER, "")
+    plain = re.sub(
+        r"\[([A-Za-z][A-Za-z0-9-]*) p\.(\d+)\]\([^)]*\)",
+        lambda match: f"[{match.group(1)} p.{match.group(2)}]",
+        body,
+    )
+    cards = citation_cards(hits)
+    segments: list[dict] = []
+    cursor = 0
+    for match in _SOURCE_CITE.finditer(plain):
+        if match.start() > cursor:
+            segments.append({"type": "text", "text": plain[cursor : match.start()]})
+        card = cards.get((match.group(1), match.group(2)))
+        if card is None:
+            segments.append({"type": "text", "text": match.group(0)})
+        else:
+            segments.append(dict(card))
+        cursor = match.end()
+    if cursor < len(plain):
+        tail = plain[cursor:]
+        if tail.strip():
+            segments.append({"type": "text", "text": tail})
+    return segments
 
 
 def normalize_citations(text: str, hits: list[Hit]) -> tuple[str, list[str]]:

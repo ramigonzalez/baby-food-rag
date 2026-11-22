@@ -6,11 +6,15 @@ from baby_food_rag.generate import (
     ABSTAIN,
     CALL_TIMEOUT_S,
     DISCLAIMER,
+    EXAMPLE_QUESTIONS,
     OPENROUTER_URL,
     OpenRouterLLM,
     Usage,
+    answer_segments,
     append_successful_turn,
     ask,
+    drop_abstain_if_cited,
+    include_retrieved_passages,
     is_abstention,
     link_citations,
     normalize_citations,
@@ -413,3 +417,103 @@ def test_openrouter_does_not_retry_a_client_error():
     else:
         raise AssertionError("expected a client error")
     assert calls["n"] == 1
+
+
+def test_cited_partial_answer_drops_the_abstention_sentence():
+    partial = f"Corte a uva [MS-2019 p.84]. {ABSTAIN}"
+    kept = drop_abstain_if_cited(partial)
+    assert ABSTAIN not in kept
+    assert "[MS-2019 p.84]" in kept
+    assert not is_abstention(kept)
+    assert drop_abstain_if_cited(ABSTAIN) == ABSTAIN
+    assert is_abstention(ABSTAIN)
+
+
+def test_full_abstention_hides_retrieved_passages():
+    assert include_retrieved_passages(True) is False
+    messages = append_successful_turn(
+        [],
+        "qual a dose de dipirona",
+        _index(),
+        FakeLLM([ABSTAIN]),
+        k=1,
+        embedder=HashEmbedder(dim=32),
+    )
+    assistant = messages[1]
+    assert assistant["abstained"] is True
+    assert assistant["passages"] is None
+    assert all(part["type"] == "text" for part in assistant["segments"])
+
+
+def test_citation_segment_opens_the_printed_page_not_the_neighbor():
+    neighbor = Chunk(
+        chunk_id="MS-2019::p84::c0",
+        source_id="MS-2019",
+        year=2019,
+        country="BR",
+        page=84,
+        printed_page="85",
+        text="página seguinte",
+        url="https://example.test/guia.pdf",
+        title="Guia seguinte",
+    )
+    grapes = _chunk(83, "84", "Uva: cortar em pedaços.")
+    hits = [Hit(score=1.0, chunk=neighbor), Hit(score=0.5, chunk=grapes)]
+    text = (
+        "Corte a uva [MS-2019 p.84](https://example.test/guia.pdf#page=83). "
+        "Os guias não falam do reflexo de gag."
+    )
+    segments = answer_segments(text, hits)
+    cites = [part for part in segments if part["type"] == "citation"]
+    assert len(cites) == 1
+    assert cites[0]["page"] == "84"
+    assert cites[0]["title"] == "Guia"
+    assert cites[0]["url"].endswith("#page=83")
+    assert cites[0]["excerpts"] == ["Uva: cortar em pedaços."]
+    prose = " ".join(part["text"] for part in segments if part["type"] == "text")
+    assert "gag" in prose
+    assert "página seguinte" not in prose
+
+
+def test_example_questions_are_short_and_in_range():
+    assert 4 <= len(EXAMPLE_QUESTIONS) <= 6
+    assert all(question.strip() for question in EXAMPLE_QUESTIONS)
+    assert any("engasgo" in question for question in EXAMPLE_QUESTIONS)
+
+
+def test_judge_scores_a_partial_answer_and_names_the_gap_rule():
+    from baby_food_rag.judge import _VERIFY
+
+    assert "do not cover" in _VERIFY
+    hits = [Hit(score=1.0, chunk=_chunk(83, "84", "Uva: cortar em pedaços."))]
+    answer_text = "Corte a uva [MS-2019 p.84]. Os guias não falam do reflexo de gag."
+    from baby_food_rag.generate import Answer
+
+    answer = Answer(
+        question="engasgo e reflexo de gag",
+        text=answer_text,
+        hits=hits,
+        abstained=False,
+        model="fake",
+        latency_s=0.1,
+    )
+    seen = {}
+
+    class Capture(FakeLLM):
+        def complete(self, prompt: str) -> str:
+            seen.setdefault("prompts", []).append(prompt)
+            self._usage.add(1, 1)
+            replies = [
+                '{"claims": ["Corte a uva", "Os guias não falam do reflexo de gag"]}',
+                '{"verdicts": [{"claim": 1, "verdict": "supported"}, '
+                '{"claim": 2, "verdict": "supported"}]}',
+                '{"relevance": 0.5}',
+            ]
+            return replies[len(seen["prompts"]) - 1]
+
+    judged = judge_answer(Capture([]), answer, expect_abstention=False)
+    assert judged["abstained"] is False
+    assert judged["faithfulness"] == 1.0
+    assert judged["citation_correctness"] == 1.0
+    assert judged["relevance"] == 0.5
+    assert "do not cover" in seen["prompts"][1]

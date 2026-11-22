@@ -67,7 +67,10 @@ def render_generation_report(report: dict) -> str:
     lines.append(
         "Faithfulness is the share of extracted claims the retrieved context supports. "
         "Citation correctness is the share of [source p.N] marks that match a retrieved page. "
-        "Abstention accuracy is the share of the unanswerable questions that abstained."
+        "Abstention accuracy is the share of the unanswerable questions that abstained. "
+        "A partial answer is not an abstention: those three scores still apply, and a claim "
+        "that the guides do not cover a point is supported when the retrieved text never "
+        "states that point. Relevance is 0.5 when only part of the question is covered."
     )
     lines.append("")
     return "\n".join(lines)
