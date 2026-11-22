@@ -43,6 +43,20 @@ EXAMPLE_QUESTIONS = (
     "Aos 7 meses, a comida vai amassada ou o bebê pode pegar com a mão?",
     "Aos 7 meses, já posso dar água no copo?",
 )
+
+
+def button_width_kwargs(parameter_names: set[str]) -> dict:
+    """Full-width button args for the installed Streamlit.
+
+    ``width`` arrived in 1.52. Releases from 1.40 use ``use_container_width``.
+    """
+    if "width" in parameter_names:
+        return {"width": "stretch"}
+    if "use_container_width" in parameter_names:
+        return {"use_container_width": True}
+    return {}
+
+
 CALL_TIMEOUT_S = 60
 _RETRY_HTTP = {408, 429, 500, 502, 503, 504}
 

@@ -10,6 +10,7 @@ Each turn searches on its own. The weekly menu is phase 4b.
 
 from __future__ import annotations
 
+from inspect import signature
 from pathlib import Path
 
 import streamlit as st
@@ -21,6 +22,7 @@ from baby_food_rag.generate import (
     EXAMPLE_QUESTIONS,
     MissingAPIKey,
     OpenRouterLLM,
+    button_width_kwargs,
     indexed_guides,
     question_to_send,
     run_question,
@@ -114,8 +116,9 @@ def main() -> None:
     picked = None
     if not st.session_state.messages:
         st.caption("Perguntas de exemplo")
+        width_kwargs = button_width_kwargs(set(signature(st.button).parameters))
         for index_q, question in enumerate(EXAMPLE_QUESTIONS):
-            if st.button(question, key=f"example-{index_q}", width="stretch"):
+            if st.button(question, key=f"example-{index_q}", **width_kwargs):
                 picked = question
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):

@@ -13,6 +13,7 @@ from baby_food_rag.generate import (
     answer_segments,
     append_successful_turn,
     ask,
+    button_width_kwargs,
     drop_abstain_if_cited,
     include_retrieved_passages,
     is_abstention,
@@ -479,6 +480,14 @@ def test_example_questions_are_short_and_in_range():
     assert 4 <= len(EXAMPLE_QUESTIONS) <= 6
     assert all(question.strip() for question in EXAMPLE_QUESTIONS)
     assert any("engasgo" in question for question in EXAMPLE_QUESTIONS)
+
+
+def test_example_buttons_skip_width_on_streamlit_before_1_52():
+    old = button_width_kwargs({"label", "key", "use_container_width"})
+    assert old == {"use_container_width": True}
+    assert "width" not in old
+    current = button_width_kwargs({"label", "key", "width", "use_container_width"})
+    assert current == {"width": "stretch"}
 
 
 def test_judge_scores_a_partial_answer_and_names_the_gap_rule():
