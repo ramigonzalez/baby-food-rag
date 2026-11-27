@@ -44,7 +44,7 @@ def main(path: Path) -> None:
     _counts("Unanswerable by cohort and split", unanswerable, lambda q: (cohort(q), q["split"]))
     print("| Cohort | n | mean | median | p75 | max |")
     print("| --- | ---: | ---: | ---: | ---: | ---: |")
-    for name in COHORTS.values():
+    for name in dict.fromkeys(COHORTS.values()):
         values = sorted(
             quote_overlap(q["question"], [gold["quote"] for gold in q["gold"]])
             for q in answerable
