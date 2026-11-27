@@ -144,6 +144,70 @@ def test_labeled_set_shape():
             assert gold["quote"]
 
 
+def test_loader_checks_split_and_human_verified():
+    base = {
+        "id": "x",
+        "origin": "synthetic",
+        "question": "pode dar mel",
+        "answerable": True,
+        "gold_status": "verified",
+        "gold": [{"source_id": "MS-2019", "pdf_page": 2, "quote": "mel"}],
+    }
+    loaded = load_questions_from([{**base, "split": "test", "human_verified": True}])
+    assert loaded[0]["split"] == "test"
+    assert loaded[0]["human_verified"] is True
+    assert load_questions_from([base])[0]["split"] is None
+    with pytest.raises(ValueError, match="split"):
+        load_questions_from([{**base, "split": "train"}])
+    with pytest.raises(ValueError, match="human_verified"):
+        load_questions_from([{**base, "human_verified": "no"}])
+
+
+def test_split_filter_and_breakdown(tmp_path):
+    chunks = [
+        _chunk("MS-2019", 10, "Pode dar mel antes dos dois anos por causa do botulismo."),
+        _chunk("MS-2019", 40, "Pipoca não entra antes dos dois anos."),
+    ]
+
+    def item(qid, origin, split, text, page):
+        return {
+            "id": qid,
+            "origin": origin,
+            "question": text,
+            "answerable": True,
+            "gold_status": "verified",
+            "split": split,
+            "gold": [{"source_id": "MS-2019", "pdf_page": page, "quote": "x"}],
+        }
+
+    questions = load_questions_from(
+        [
+            item("a", "real", "dev", "pode dar mel", 10),
+            item("b", "synthetic", "test", "pipoca no lanche", 40),
+            item("c", "synthetic", "dev", "pipoca no lanche", 10),
+        ]
+    )
+    common = {"embedder": HashEmbedder(dim=64), "tolerance": 0, "retrievers": ("bm25",)}
+    dev = run_eval(_index(chunks), questions, split="dev", **common)
+    assert dev["split"] == "dev"
+    assert dev["n_answerable"] == 2
+    with pytest.raises(ValueError, match="split"):
+        run_eval(_index(chunks), questions, split="train", **common)
+    report = run_eval(_index(chunks), questions, **common)
+    groups = {(g["split"], g["origin"]): g for g in report["retrievers"][0]["groups"]}
+    assert groups[("all", "all")]["n"] == 3
+    assert groups[("dev", "all")]["n"] == 2
+    assert groups[("test", "synthetic")]["recall_at_5"] == 1.0
+    assert groups[("dev", "synthetic")]["recall_at_5"] == 0.0
+    assert ("test", "real") not in groups
+    write_results(report, tmp_path)
+    text = (tmp_path / "results.md").read_text(encoding="utf-8")
+    assert "### By split" in text
+    assert "| bm25 | dev | real |" in text
+    header = (tmp_path / "per_question.csv").read_text(encoding="utf-8").splitlines()[0]
+    assert header.startswith("id,origin,split,")
+
+
 def load_questions_from(items: list[dict]) -> list:
     import tempfile
 

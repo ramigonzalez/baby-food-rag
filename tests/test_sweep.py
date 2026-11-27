@@ -95,3 +95,52 @@ def test_results_markdown_uses_the_metrics_numbers():
     assert "not significant" in text
     assert "BAAI/bge-m3" in text
     assert "test-cpu" in text
+
+
+def test_results_markdown_shows_split_rows_only_when_questions_have_a_split():
+    group = {"n": 2, "recall_at_5": 0.5, "recall_at_10": 0.75, "mrr": 0.5}
+    origin = {"n": 0, "recall_at_5": 0.0, "recall_at_10": 0.0, "mrr": 0.0}
+    config = {
+        "name": "hybrid-baseline",
+        "family": "hybrid",
+        "recall_at_5": 0.5,
+        "recall_at_10": 0.75,
+        "mrr": 0.5,
+        "latency_ms": 1.0,
+        "by_origin": {"real": origin, "plan": origin, "synthetic": group},
+        "groups": [
+            {"split": "all", "origin": "all", **group},
+            {"split": "dev", "origin": "all", **group},
+        ],
+    }
+    report = {
+        "hardware": {"cpu_model": "test-cpu", "cpus": 4, "device": "cpu"},
+        "selection": "Chosen on dev.",
+        "hit_rule": "within 1",
+        "fusion_pool": 50,
+        "rrf_k": 60,
+        "rerank_pool": 30,
+        "n_answerable": 2,
+        "not_run": [],
+        "comparison": {
+            "best": "hybrid-baseline",
+            "baseline": "hybrid-baseline",
+            "challenger": "hybrid-baseline",
+            "best_recall_at_10": 0.75,
+            "baseline_recall_at_10": 0.75,
+            "challenger_recall_at_10": 0.75,
+            "diff_recall_at_10": 0.0,
+            "ci95_low": 0.0,
+            "ci95_high": 0.0,
+            "significant": False,
+            "n_bootstrap": 10,
+            "seed": 0,
+        },
+        "configs": [config],
+    }
+    text = render_sweep(report)
+    assert "## By split" in text
+    assert "| hybrid-baseline | dev | 2 | 0.5000 | 0.7500 | 0.5000 |" in text
+    assert "n is 2." in text
+    config["groups"] = config["groups"][:1]
+    assert "## By split" not in render_sweep(report)

@@ -1,9 +1,10 @@
 """Compare retrieval settings on the labeled questions.
 
-The winner is chosen by recall@10 on all answerable questions. There is
-no held-out split: with 32 questions a split would be smaller than the
-noise. A paired bootstrap says whether that winner beats the phase 2
-hybrid baseline by more than chance.
+The winner is chosen by recall@10 on the answerable questions of the
+chosen split. ``split="all"``, the default, uses every question, which is
+how the phase 3 results were made. ``split="dev"`` keeps the test
+questions out of the choice. A paired bootstrap says whether that winner
+beats the phase 2 hybrid baseline by more than chance.
 
 BAAI/bge-m3 dense is not in this comparison. fastembed 0.9.1, the latest
 release, does not ship it, and this machine has no GPU and no torch.
@@ -28,9 +29,11 @@ from baby_food_rag.evaluate import (
     FUSION_POOL,
     RRF_K,
     collapse_pages,
+    group_means,
     load_questions,
     pages_from_scores,
     score_page_list,
+    select_split,
 )
 from baby_food_rag.extract import extract_pdf
 from baby_food_rag.fusion import reciprocal_rank_fusion
@@ -63,8 +66,13 @@ def run_sweep(
     manifest_path: Path,
     out_dir: Path,
     cache_dir: Path,
+    split: str = "all",
 ) -> dict:
-    questions = [item for item in load_questions(question_path) if item["answerable"]]
+    questions = [
+        item for item in select_split(load_questions(question_path), split) if item["answerable"]
+    ]
+    if not questions:
+        raise ValueError(f"no answerable questions in split {split!r}")
     index = load_index(index_dir)
     current_chunks = index.chunks
     page_chunks = _page_chunks(manifest_path, raw_dir)
@@ -177,7 +185,7 @@ def run_sweep(
             }
         )
 
-    report = _assemble(built, questions, not_run, best_bm25_name)
+    report = _assemble(built, questions, not_run, best_bm25_name, split)
     write_sweep(report, out_dir)
     return report
 
@@ -249,6 +257,7 @@ def render_sweep(report: dict) -> str:
         "",
         _origin_table(report["configs"], "real"),
         "",
+        *_split_section(report["configs"]),
         "## Best against the hybrid baseline",
         "",
         (
@@ -287,7 +296,10 @@ def render_sweep(report: dict) -> str:
         [
             "",
             "Whole-page dense embeddings are truncated at 512 tokens by the embedding model.",
-            "Labels were made by an agent, on this same question set. n is 32.",
+            (
+                "Labels were made by an agent, on this same question set. "
+                f"n is {report.get('n_answerable', '?')}."
+            ),
             "",
         ]
     )
@@ -326,7 +338,11 @@ def _rank_key(item: dict) -> tuple:
 
 
 def _assemble(
-    built: list[dict], questions: list[dict], not_run: list[dict], best_bm25: str
+    built: list[dict],
+    questions: list[dict],
+    not_run: list[dict],
+    best_bm25: str,
+    split: str = "all",
 ) -> dict:
     del best_bm25
     baseline = next(item for item in built if item["name"] == "hybrid-baseline")
@@ -372,11 +388,17 @@ def _assemble(
     return {
         "chart_title": "Recall@10 against mean query latency",
         "selection": (
-            "The best configuration is the highest recall@10 on all "
-            f"{len(questions)} answerable questions. There is no held-out split. "
-            "If a hybrid uses a BM25 analyzer other than the phase 2 suffix list, "
+            "The best configuration is the highest recall@10 on the "
+            f"{len(questions)} answerable questions of split `{split}`. "
+            + (
+                "There is no held-out split. "
+                if split == "all"
+                else "Questions outside that split were not used. "
+            )
+            + "If a hybrid uses a BM25 analyzer other than the phase 2 suffix list, "
             "that analyzer was chosen on these same questions."
         ),
+        "split": split,
         "hardware": _hardware(),
         "page_tolerance": 1,
         "hit_rule": (
@@ -426,6 +448,7 @@ def _time_config(
                 "config": name,
                 "id": question["id"],
                 "origin": question["origin"],
+                "split": question.get("split"),
                 "recall_at_5": scored["recall_at_5"],
                 "recall_at_10": scored["recall_at_10"],
                 "reciprocal_rank": scored["reciprocal_rank"],
@@ -453,6 +476,7 @@ def _time_config(
         "mrr": _mean(rr_values),
         "latency_ms": _mean(latencies),
         "by_origin": by_origin,
+        "groups": group_means(rows),
         "recall_at_10_by_question": recalls10,
         "rows": rows,
     }
@@ -643,6 +667,42 @@ def _origin_table(configs: list[dict], origin: str) -> str:
     return "\n".join(lines)
 
 
+def _split_section(configs: list[dict]) -> list[str]:
+    """Empty when no question carries a split, as in the phase 3 set."""
+    if not any(_split_groups(item) for item in configs):
+        return []
+    return ["## By split", "", _split_table(configs), ""]
+
+
+def _split_table(configs: list[dict]) -> str:
+    lines = [
+        "| Config | Split | n | Recall@5 | Recall@10 | MRR |",
+        "| --- | --- | ---: | ---: | ---: | ---: |",
+    ]
+    for item in sorted(configs, key=lambda entry: -entry["recall_at_10"]):
+        for group in _split_groups(item):
+            lines.append(
+                f"| {item['name']} | {group['split']} | {group['n']} | "
+                f"{group['recall_at_5']:.4f} | {group['recall_at_10']:.4f} | {group['mrr']:.4f} |"
+            )
+    return "\n".join(lines)
+
+
+def _split_groups(item: dict) -> list[dict]:
+    return [
+        group
+        for group in item.get("groups", [])
+        if group["split"] != "all" and group["origin"] == "all"
+    ]
+
+
+def _split_cell(item: dict, split: str, key: str) -> str:
+    for group in _split_groups(item):
+        if group["split"] == split:
+            return str(group["n"]) if key == "n" else f"{group[key]:.6f}"
+    return ""
+
+
 def _write_metrics_csv(report: dict, path: Path) -> None:
     fields = [
         "name",
@@ -658,6 +718,10 @@ def _write_metrics_csv(report: dict, path: Path) -> None:
         "real_mrr",
         "plan_recall_at_10",
         "synthetic_recall_at_10",
+        "dev_n",
+        "dev_recall_at_10",
+        "test_n",
+        "test_recall_at_10",
     ]
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -680,6 +744,10 @@ def _write_metrics_csv(report: dict, path: Path) -> None:
                     "synthetic_recall_at_10": (
                         f"{item['by_origin']['synthetic']['recall_at_10']:.6f}"
                     ),
+                    "dev_n": _split_cell(item, "dev", "n"),
+                    "dev_recall_at_10": _split_cell(item, "dev", "recall_at_10"),
+                    "test_n": _split_cell(item, "test", "n"),
+                    "test_recall_at_10": _split_cell(item, "test", "recall_at_10"),
                 }
             )
 
@@ -689,6 +757,7 @@ def _write_questions_csv(report: dict, path: Path) -> None:
         "config",
         "id",
         "origin",
+        "split",
         "recall_at_5",
         "recall_at_10",
         "reciprocal_rank",
@@ -704,6 +773,7 @@ def _write_questions_csv(report: dict, path: Path) -> None:
                     "config": row["config"],
                     "id": row["id"],
                     "origin": row["origin"],
+                    "split": row["split"] or "",
                     "recall_at_5": f"{row['recall_at_5']:.6f}",
                     "recall_at_10": f"{row['recall_at_10']:.6f}",
                     "reciprocal_rank": f"{row['reciprocal_rank']:.6f}",

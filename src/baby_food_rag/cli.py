@@ -11,7 +11,13 @@ import time
 from pathlib import Path
 
 from baby_food_rag.download import download_sources, select_for_download
-from baby_food_rag.evaluate import load_questions, render_results, run_eval, write_results
+from baby_food_rag.evaluate import (
+    SPLIT_CHOICES,
+    load_questions,
+    render_results,
+    run_eval,
+    write_results,
+)
 from baby_food_rag.generate import (
     DEFAULT_K,
     DEFAULT_MODEL,
@@ -87,6 +93,12 @@ def main(argv: list[str] | None = None) -> int:
         default=1,
         help="A gold page hits when the PDF page is within this distance. Default 1.",
     )
+    evaluate.add_argument(
+        "--split",
+        default="all",
+        choices=SPLIT_CHOICES,
+        help="Score only the dev or test questions. Default all.",
+    )
 
     sweep = sub.add_parser("sweep", help="Compare BM25, dense, hybrid, and rerank settings")
     sweep.add_argument("--set", type=Path, default=Path("eval/set.yaml"), dest="question_set")
@@ -95,6 +107,12 @@ def main(argv: list[str] | None = None) -> int:
     sweep.add_argument("--manifest", type=Path, default=None)
     sweep.add_argument("--out", type=Path, default=Path("results/phase3-sweep"))
     sweep.add_argument("--cache", type=Path, default=Path("data/index/sweep-cache"))
+    sweep.add_argument(
+        "--split",
+        default="all",
+        choices=SPLIT_CHOICES,
+        help="Choose the winner on the dev or test questions only. Default all.",
+    )
 
     ask_cmd = sub.add_parser("ask", help="Answer in Portuguese from the hybrid index")
     ask_cmd.add_argument("question")
@@ -194,6 +212,7 @@ def _eval(args: argparse.Namespace) -> int:
         questions,
         embedder=embedder,
         tolerance=args.page_tolerance,
+        split=args.split,
     )
     write_results(report, args.out)
     print(render_results(report), end="")
@@ -210,6 +229,7 @@ def _sweep(args: argparse.Namespace) -> int:
             manifest_path=args.manifest or find_manifest(),
             out_dir=args.out,
             cache_dir=args.cache,
+            split=args.split,
         )
     except (FileNotFoundError, ValueError) as exc:
         print(str(exc), file=sys.stderr)
