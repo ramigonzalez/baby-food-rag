@@ -11,6 +11,13 @@ import time
 from pathlib import Path
 
 from baby_food_rag.download import download_sources, select_for_download
+from baby_food_rag.embed import (
+    DEFAULT_MAX_USD,
+    EMBEDDER_CHOICES,
+    CostCapExceeded,
+    MissingAPIKey,
+)
+from baby_food_rag.env import load_env
 from baby_food_rag.evaluate import (
     SPLIT_CHOICES,
     load_questions,
@@ -21,7 +28,6 @@ from baby_food_rag.evaluate import (
 from baby_food_rag.generate import (
     DEFAULT_K,
     DEFAULT_MODEL,
-    MissingAPIKey,
     OpenRouterLLM,
     ask,
     format_answer_markdown,
@@ -47,6 +53,7 @@ from baby_food_rag.sweep import run_sweep
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_env()
     parser = argparse.ArgumentParser(
         prog="baby-food",
         description="Search official infant-feeding guides. Not medical advice.",
@@ -69,7 +76,13 @@ def main(argv: list[str] | None = None) -> int:
         choices=["optional", "contrast", "reference"],
         help="Also index this group. Default is the Brazilian core only.",
     )
-    index.add_argument("--embedder", default="e5", choices=["e5", "hash"])
+    index.add_argument("--embedder", default="e5", choices=list(EMBEDDER_CHOICES))
+    index.add_argument(
+        "--max-usd",
+        type=float,
+        default=DEFAULT_MAX_USD,
+        help="Refuse a paid embedder whose estimate is above this. Default 0.50.",
+    )
     index.add_argument("--raw", type=Path, default=Path("data/raw"))
     index.add_argument("--out", type=Path, default=Path("data/index"))
     index.add_argument("--manifest", type=Path, default=None)
@@ -178,8 +191,14 @@ def _index(args: argparse.Namespace) -> int:
         return 2
     started = time.perf_counter()
     try:
-        index = build_index(sources, args.raw, args.out, embedder_name=args.embedder)
-    except FileNotFoundError as exc:
+        index = build_index(
+            sources,
+            args.raw,
+            args.out,
+            embedder_name=args.embedder,
+            max_usd=args.max_usd,
+        )
+    except (FileNotFoundError, MissingAPIKey, CostCapExceeded) as exc:
         print(str(exc), file=sys.stderr)
         return 1
     print(format_stats(index.meta), end="")

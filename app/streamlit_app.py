@@ -16,6 +16,7 @@ from pathlib import Path
 import streamlit as st
 
 from baby_food_rag.embed import load_embedder
+from baby_food_rag.env import load_env
 from baby_food_rag.generate import (
     DEFAULT_MODEL,
     DISCLAIMER,
@@ -91,6 +92,7 @@ def _render_assistant(message: dict) -> None:
 
 
 def main() -> None:
+    load_env(ROOT)
     st.set_page_config(page_title="Alimentação do bebê", layout="centered")
     st.markdown(_CSS, unsafe_allow_html=True)
     st.title("Alimentação do bebê")
