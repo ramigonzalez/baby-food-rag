@@ -189,6 +189,17 @@ Answerable real questions only (n = 8). These are the parent questions that have
 
 Whole-page e5 cuts text at 512 tokens. The gold labels are an agent's, on this same set of 32. A gap of a few points is noise, which is why the interval is in the table above.
 
+## Embedder comparison
+
+`openai/text-embedding-3-large` through OpenRouter against the local e5, on golden set v2 with the same chunks, BM25, and fusion. The decision rule was committed before the comparison ran. Numbers, rule, latency, and cost are in [`results/phase1-embedders/results.md`](results/phase1-embedders/results.md). By that rule e5 stays the default embedder.
+
+```bash
+baby-food index --embedder openai/text-embedding-3-large --out data/index-te3-large
+baby-food compare-embedders --split dev
+```
+
+The index command prints a cost estimate first and refuses above `--max-usd` (default 0.50). Vectors are cached in `data/cache/`, so a rebuild over the same chunks makes no paid call. `OPENROUTER_API_KEY` can also sit in `.env` at the repo root (gitignored); the CLI and the chat read it without overriding a variable already set.
+
 ## Answers and chat
 
 `baby-food ask` and the Streamlit screen answer in Portuguese from the hybrid index (top 8 chunks). Each chunk is shown to the model as `[source_id p.N]`, where N is the printed page. A mark like `[3 p.21]` is rewritten from that slot in the retrieved list. A citation that is not that printed page is dropped, including a PDF page number that belongs to the neighboring sheet. The link is `url#page=` plus the PDF page, so MS 2019 printed page 84 opens `#page=83`. The model abstains only when no passage is about the question, with the sentence `Os guias oficiais indexados não respondem isso.` When the passages cover only part of the question, the answer covers that part, cites it, and says what the guides do not cover. If the model still appends the abstention sentence after a citation, that sentence is removed. A fixed line is always added: this cites the indexed official guides and does not replace a pediatrician. Each OpenRouter call times out after 60 seconds and retries once.
