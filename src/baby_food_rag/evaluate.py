@@ -408,14 +408,17 @@ def group_means(rows: list[dict]) -> list[dict]:
 
 
 def _summary(rows: list[dict]) -> dict:
-    return {
+    summary = {
         "n": len(rows),
         "recall_at_5": _mean([row["recall_at_5"] for row in rows]),
         "recall_at_10": _mean([row["recall_at_10"] for row in rows]),
         "mrr": _mean([row["reciprocal_rank"] for row in rows]),
-        "ndcg_at_10": _mean([row["ndcg_at_10"] for row in rows]),
-        "context_budget_recall": _mean([row["context_budget_recall"] for row in rows]),
     }
+    # The sweep's rows carry only recall and MRR, so these two are optional.
+    for key in ("ndcg_at_10", "context_budget_recall"):
+        if all(key in row for row in rows):
+            summary[key] = _mean([row[key] for row in rows])
+    return summary
 
 
 def _one(

@@ -10,6 +10,7 @@ from baby_food_rag.evaluate import (
     CONTEXT_BUDGET_K,
     _recall,
     collapse_pages,
+    group_means,
     load_questions,
     ndcg,
     run_eval,
@@ -354,3 +355,17 @@ def test_gold_quotes_are_on_the_cited_page():
         for gold in item["gold"]:
             text = pages.get((gold["source_id"], gold["pdf_page"]), "")
             assert gold["quote"] in text, f"{item['id']} {gold['source_id']} p{gold['pdf_page']}"
+
+
+def test_group_means_accepts_rows_without_the_newer_metrics():
+    # baby-food sweep builds rows with recall and MRR only.
+    rows = [
+        {"split": "dev", "origin": "real", "recall_at_5": 1.0, "recall_at_10": 1.0,
+         "reciprocal_rank": 0.5},
+        {"split": "test", "origin": "synthetic", "recall_at_5": 0.0, "recall_at_10": 0.5,
+         "reciprocal_rank": 0.25},
+    ]
+    groups = group_means(rows)
+    overall = next(g for g in groups if g["split"] == "all" and g["origin"] == "all")
+    assert overall["recall_at_10"] == 0.75
+    assert "ndcg_at_10" not in overall
