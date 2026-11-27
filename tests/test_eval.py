@@ -116,15 +116,23 @@ def test_recall_counts_neighbor_page_and_skips_unanswerable(tmp_path):
 def test_labeled_set_shape():
     root = ROOT
     questions = load_questions(root / "eval" / "set.yaml")
-    assert 30 <= len(questions) <= 50
+    assert 100 <= len(questions) <= 130
     origins = {}
     for item in questions:
         origins[item["origin"]] = origins.get(item["origin"], 0) + 1
     assert origins["real"] == 10
     assert origins["plan"] == 15
-    assert origins["synthetic"] >= 8
+    assert origins["synthetic"] >= 80
     unanswerable = [item for item in questions if not item["answerable"]]
-    assert 3 <= len(unanswerable) <= 5
+    assert 10 <= len(unanswerable) <= 20
+    answerable = [item for item in questions if item["answerable"]]
+    assert all(item["split"] in {"dev", "test"} for item in questions)
+    assert all(item["human_verified"] is False for item in questions)
+    dev_share = sum(item["split"] == "dev" for item in answerable) / len(answerable)
+    assert 0.55 <= dev_share <= 0.65
+    for origin in ("real", "plan", "synthetic"):
+        splits = {item["split"] for item in answerable if item["origin"] == origin}
+        assert splits == {"dev", "test"}, origin
     reais = yaml.safe_load((root / "eval" / "perguntas_reais.yaml").read_text(encoding="utf-8"))
     plan = yaml.safe_load((root / "eval" / "questions.yaml").read_text(encoding="utf-8"))
     texts = {item["question"] for item in questions}

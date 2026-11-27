@@ -6,12 +6,17 @@
 # partly answers it. Labels were written by an agent, not a clinician.
 # answerable false: the default index does not contain an answer. Those
 # questions are kept for an abstention check and are not scored for recall.
+# split dev or test: the fixed split from golden.py (seed 20261127). See
+# eval/GOLDEN_SET.md. human_verified false: no person has checked the label.
+# syn2-* and unans2-* were added in golden set v2.
 
 questions:
   - id: real-01
     origin: real
     answerable: true
     gold_status: needs_review
+    split: dev
+    human_verified: false
     question: "Pilar pode comer morango? Minha mãe falou que não tenho que dar morango nem tomate, mas não explicou por quê."
     notes: "The guide lists morango as a fruit and tomate as a vegetable, and says every fruit may be offered. It does not explain a ban, so the grandmother's reason is not in the corpus."
     gold:
@@ -31,6 +36,8 @@ questions:
   - id: real-02
     origin: real
     answerable: false
+    split: dev
+    human_verified: false
     question: "Morango é alergênico?"
     notes: "No extracted page says that strawberry is, or is not, an allergen. Lists of major allergens do not name it, which is not a yes or a no."
     gold: []
@@ -39,6 +46,8 @@ questions:
     origin: real
     answerable: true
     gold_status: needs_review
+    split: test
+    human_verified: false
     question: "Qual é a ordem das frutas sugerida pelo Ministério da Saúde?"
     notes: "The guide does not give an order of fruits. The nearest text says every fruit may be offered and that it is good to vary them."
     gold:
@@ -51,6 +60,8 @@ questions:
     origin: real
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "Preciso dar proteína para meu bebê?"
     notes: "The guide does not use the word protein as a daily target. It does say lunch and dinner should include the beans group and the meat-and-egg group."
     gold:
@@ -66,6 +77,8 @@ questions:
   - id: real-05
     origin: real
     answerable: false
+    split: test
+    human_verified: false
     question: "Qual é a ingesta de proteína diária?"
     notes: "No page states a daily protein amount for an infant. An SBP table gives a protein range for ages 4 to 8, which does not answer this question."
     gold: []
@@ -74,6 +87,8 @@ questions:
     origin: real
     answerable: true
     gold_status: needs_review
+    split: dev
+    human_verified: false
     question: "Estou preocupado porque estou dando só frutas, isso molda/altera o paladar dela?"
     notes: "The guide says the foods offered shape the palate. It does not discuss a diet of fruit alone."
     gold:
@@ -86,6 +101,8 @@ questions:
     origin: real
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Tem hora para frutas, legumes e leguminosas?"
     gold:
       - source_id: MS-2019
@@ -105,6 +122,8 @@ questions:
     origin: real
     answerable: true
     gold_status: needs_review
+    split: dev
+    human_verified: false
     question: "Posso misturar batata com banana?"
     notes: "The guide says to keep foods separate on the plate. It does not name potato with banana."
     gold:
@@ -117,6 +136,8 @@ questions:
     origin: real
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "Posso dar comidas fritas em banha de porco?"
     gold:
       - source_id: MS-2019
@@ -132,6 +153,8 @@ questions:
     origin: real
     answerable: true
     gold_status: needs_review
+    split: test
+    human_verified: false
     question: "Como preparar as comidas de forma saudável?"
     notes: "The question is broad. The cited pages are the clearest rules on salt, frying, and seasoning, not a complete cooking chapter."
     gold:
@@ -148,6 +171,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "A Pilar pode comer ovo agora, aos 7 meses? Cru, mexido ou cozido?"
     gold:
       - source_id: MS-2019
@@ -163,6 +188,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Quando e como introduzir amendoim? Precisa de exame de alergia antes?"
     gold:
       - source_id: MS-2019
@@ -178,6 +205,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Qual a melhor ordem: ovo, amendoim, peixe, trigo, leite?"
     gold:
       - source_id: ASBAI-SBP-2025
@@ -189,6 +218,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Como saber se foi uma reação alérgica? O que observar depois de oferecer ovo ou amendoim?"
     notes: "MS 2019 pdf page 51 describes allergy during exclusive breastfeeding, a different setting, so it is not a gold page here."
     gold:
@@ -201,6 +232,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Aos 7 meses, a comida vai amassada, em pedaços, ou ela pode pegar com a mão (BLW)?"
     gold:
       - source_id: MS-2019
@@ -216,6 +249,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "O que muda na textura e na refeição dos 6 para os 7–8 e os 9–11 meses?"
     gold:
       - source_id: MS-2019
@@ -235,6 +270,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Pode dar mel? A partir de quando?"
     notes: "Uruguay also discusses honey, but that PDF is not in the default index, so it is not a gold page here."
     gold:
@@ -251,6 +288,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Pode pôr sal e açúcar na comida dela?"
     gold:
       - source_id: MS-2019
@@ -270,6 +309,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "Como oferecer uva? E o que mais tem risco de engasgo?"
     gold:
       - source_id: MS-2019
@@ -289,6 +330,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Quantas refeições a Pilar deve fazer agora, aos 7 meses? O peito continua?"
     gold:
       - source_id: MS-2019
@@ -308,6 +351,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "Quanto pôr no prato?"
     gold:
       - source_id: MS-2019
@@ -323,6 +368,8 @@ questions:
     origin: plan
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Pode dar suco no lugar da fruta ou da água?"
     gold:
       - source_id: MS-2019
@@ -337,6 +384,8 @@ questions:
   - id: plan-13
     origin: plan
     answerable: false
+    split: test
+    human_verified: false
     question: "A Pilar ficou com uma mancha vermelha no rosto depois do ovo. É alergia? Que remédio eu dou, e em que dose?"
     notes: "The guides describe signs. They do not diagnose this child or give a drug dose."
     gold: []
@@ -344,6 +393,8 @@ questions:
   - id: plan-14
     origin: plan
     answerable: false
+    split: dev
+    human_verified: false
     question: "Qual a melhor marca de pasta de amendoim, de papinha pronta ou de suplemento de ferro para comprar?"
     notes: "No guide ranks a commercial brand."
     gold: []
@@ -351,6 +402,8 @@ questions:
   - id: plan-15
     origin: plan
     answerable: false
+    split: dev
+    human_verified: false
     question: "A Pilar está com 38,5 °C. Posso dar dipirona, e qual a dose pelo peso dela?"
     notes: "Fever medicine and a dose by weight are outside the feeding guides."
     gold: []
@@ -359,6 +412,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "Meu bebê tem 7 meses. Já posso dar água no copo?"
     gold:
       - source_id: MS-2019
@@ -370,6 +425,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Posso bater a comida no liquidificador pra ficar mais lisa?"
     gold:
       - source_id: MS-2019
@@ -381,6 +438,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "Ovo mexido mal passado pode, ou tem que cozinhar bem?"
     gold:
       - source_id: MS-2019
@@ -392,6 +451,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "A castanha inteira ela consegue comer?"
     gold:
       - source_id: MS-2019
@@ -403,6 +464,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Pipoca no lanche da tarde, pode?"
     gold:
       - source_id: MS-2019
@@ -414,6 +477,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Quanto sal eu ponho na comida da família se ela come junto?"
     gold:
       - source_id: MS-2019
@@ -425,6 +490,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: needs_review
+    split: dev
+    human_verified: false
     question: "Com 8 meses posso dar leite de vaca no copo?"
     notes: "MS 2019 says other milk is unnecessary while the child is breastfed. SBP 2024 says whole cow's milk should not be used in the first year. Both pages are gold because the sources do not say the same thing."
     gold:
@@ -441,6 +508,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Precisa ter feijão no almoço todo dia?"
     gold:
       - source_id: MS-2019
@@ -452,6 +521,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Tem que ter comida com ferro em toda refeição?"
     gold:
       - source_id: SBP-BLW-2017
@@ -463,6 +534,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Até quando o peito continua?"
     gold:
       - source_id: MS-2019
@@ -474,6 +547,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: test
+    human_verified: false
     question: "Papinha de potinho pronta é a mesma coisa que a comida de casa?"
     gold:
       - source_id: MS-2019
@@ -485,6 +560,8 @@ questions:
     origin: synthetic
     answerable: true
     gold_status: verified
+    split: dev
+    human_verified: false
     question: "Posso colocar um pouco de açúcar no iogurte natural?"
     gold:
       - source_id: MS-2019
@@ -495,3 +572,1083 @@ questions:
         pdf_page: 222
         printed_page: 223
         quote: "nem mel, nem açúcar de qualquer tipo"
+
+  - id: syn2-001
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Uma amiga tirou o trigo da dieta do filho dizendo que faz bem. Devo fazer igual com a minha?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 77
+        printed_page: 78
+        quote: "Não há, até o momento, comprovação de que o glúten faça mal à criança ou a adultos de modo geral."
+
+  - id: syn2-002
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Miojo é rapidinho, posso fazer pra ela de vez em quando?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 77
+        printed_page: 78
+        quote: "Outro produto a ser evitado é o macarrão instantâneo."
+      - source_id: MS-2019
+        pdf_page: 78
+        printed_page: 79
+        quote: "o macarrão instantâneo e o tempero no sachê não devem ser oferecidos à criança"
+
+  - id: syn2-003
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Aquele pãozinho de pacote que criança adora, pode no lanche?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 78
+        printed_page: 79
+        quote: "Em geral, os pães industrializados são ultraprocessados, como pães de forma, pães sovados e bisnaguinha."
+
+  - id: syn2-004
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Leite do peito congelado, como eu esquento? Vale usar o microondas?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 59
+        printed_page: 60
+        quote: "O leite materno não deve ser fervido e nem aquecido no micro-ondas."
+
+  - id: syn2-005
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Tô dando de mamar. Uma latinha no churrasco de domingo pode?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 35
+        printed_page: 36
+        quote: "o consumo deve ser limitado a 240 mL de vinho ou duas latinhas de cerveja e ela deve esperar no mínimo 2 horas para voltar a amamentar"
+
+  - id: syn2-006
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Se eu prometer um docinho quando ela raspar o prato, é uma boa?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 96
+        printed_page: 97
+        quote: "É desaconselhável tentar contornar situações de confronto com o uso de artifícios, como oferecer recompensas pelo consumo de alimentos que a criança não gosta"
+      - source_id: MS-2019
+        pdf_page: 199
+        printed_page: 200
+        quote: "não oferecer recompensas (como doce, brinquedo, televisão, desenho) para estimular a criança a comer mais"
+
+  - id: syn2-007
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Com 1 aninho ainda dou leite na chuquinha, tem que tirar?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 105
+        printed_page: 106
+        quote: "Mesmo para a criança maior de 1 ano não se recomenda a mamadeira"
+
+  - id: syn2-008
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ela almoça e lancha no berçário. Quando chega em casa à noite eu dou outro prato completo?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 193
+        printed_page: 194
+        quote: "Quando a criança chega em casa, não é necessário repetir a refeição já realizada na creche."
+
+  - id: syn2-009
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Ela tá com diarreia por causa de virose, tiro alguma coisa da comida dela?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 200
+        printed_page: 201
+        quote: "Não é necessário retirar nenhum alimento in natura ou minimamente processado da alimentação."
+
+  - id: syn2-010
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ela comeu metade do pratinho. O resto eu guardo na geladeira pro jantar?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 186
+        printed_page: 187
+        quote: "Mesmo que não tenham sido tocados pela criança, eles não devem ser oferecidos novamente para ela em outra refeição."
+      - source_id: SBP-MAN-2024
+        pdf_page: 26
+        printed_page: 24
+        quote: "Os restos devem ser descartados."
+
+  - id: syn2-011
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Chego do mercado e já passo uma água nos ovos antes de guardar. Tá certo?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 168
+        printed_page: 169
+        quote: "Os ovos não devem ser lavados antes de serem colocados na geladeira."
+
+  - id: syn2-012
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Alface e morango, como deixo livres de bichinho antes de servir pra ela? Passar na torneira basta?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 170
+        printed_page: 171
+        quote: "Higienizar não é só lavar."
+      - source_id: MS-2019
+        pdf_page: 225
+        printed_page: 226
+        quote: "Deixe de molho na água com cloro alimentos que são consumidos crus e com casca, como frutas e verduras."
+
+  - id: syn2-013
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Aqui a água vem de poço, ela pode beber direto ou faço alguma coisa antes?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 89
+        printed_page: 90
+        quote: "Em locais onde não há tratamento de água, ela deverá ser filtrada e tratada com solução de hipoclorito de sódio a 2,5%"
+
+  - id: syn2-014
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Lombinho de porco tá liberado ou só frango por enquanto?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 176
+        printed_page: 177
+        quote: "A criança pode comer todos os tipos de carne."
+
+  - id: syn2-015
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Vou fazer tilápia pra ela, como evito que fique algum espinho?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 177
+        printed_page: 178
+        quote: "No caso de peixes com espinhas, é preferível retirá-las antes do cozimento"
+
+  - id: syn2-016
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Minha sogra quer dar um chazinho e um golinho de café com leite pra ela. Pode?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 65
+        printed_page: 66
+        quote: "Alguns poucos alimentos desse grupo não são recomendados para crianças, como café, erva-mate, chá verde, chá preto."
+      - source_id: SBP-MAN-2024
+        pdf_page: 50
+        printed_page: 48
+        quote: "crianças de seis meses até dois anos de idade não devem consumir tal preparação"
+
+  - id: syn2-017
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Uso aquele tempero de cubinho de galinha pra dar gosto na papinha. Pode?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 88
+        printed_page: 89
+        quote: "Caldos em cubos, em pó ou líquidos, e molhos prontos são alimentos ultraprocessados com grandes quantidades de sal, gordura, açúcares, glutamato monossódico e outros aditivos químicos."
+      - source_id: SBP-MAN-2024
+        pdf_page: 35
+        printed_page: 33
+        quote: "Não é permitido o uso de caldos, tabletes de carne industrializados ou de legumes ou quaisquer condimentos industrializados nas preparações."
+
+  - id: syn2-018
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Vi um pó de leitinho infantil bem mais barato que a lata que o pediatra passou. Dá pra substituir?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 143
+        printed_page: 144
+        quote: "Existem produtos chamados “compostos lácteos” que não devem ser confundidos com fórmulas infantis nem com leite de vaca integral."
+
+  - id: syn2-019
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Pra não usar açúcar, posso adoçar a fruta dela com stevia?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 70
+        printed_page: 71
+        quote: "Como os efeitos dos adoçantes na saúde das crianças não são plenamente conhecidos, essas substâncias não devem ser oferecidas a elas, a não ser por indicação de profissional de saúde."
+      - source_id: SBP-MAN-2024
+        pdf_page: 26
+        printed_page: 24
+        quote: "Não oferecer adoçantes para as crianças, principalmente menores de dois anos."
+
+  - id: syn2-020
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Como eu percebo que ela já encheu a barriga e é hora de parar de dar colher?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 113
+        printed_page: 114
+        quote: "Sinais de saciedade: vira a cabeça ou o corpo, perde interesse na alimentação, empurra a mão da pessoa que está oferecendo a comida, fecha a boca, parece angustiada ou chora."
+
+  - id: syn2-021
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Ela belisca o dia inteiro, biscoitinho aqui, fruta ali. Tem problema?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 107
+        printed_page: 108
+        quote: "Evite oferecer alimentos entre as refeições para que ela tenha apetite na hora de comer."
+
+  - id: syn2-022
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Volto pro emprego quando ele tiver 4 meses. A empresa tem que me liberar pra dar de mamar?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 212
+        printed_page: 213
+        quote: "a mulher terá direito, durante a jornada de trabalho, a dois períodos de meia hora cada, até a criança completar 6 meses"
+
+  - id: syn2-023
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ela tem 7 meses e nenhum dentinho ainda. Dá pra dar comida menos amassada mesmo assim?"
+    gold:
+      - source_id: MS-2019
+        pdf_page: 106
+        printed_page: 107
+        quote: "Como a gengiva fica endurecida, pois os dentes estão se preparando para surgir, a criança consegue amassar os alimentos."
+
+  - id: syn2-024
+    origin: synthetic
+    answerable: true
+    gold_status: needs_review
+    split: dev
+    human_verified: false
+    question: "Em casa ninguém come carne. Dá pra criar o bebê assim também?"
+    notes: "Guides disagree. MS 2019 accepts a vegetarian child with professional follow-up and B12. The SBP manual says children should not be vegetarian, and must be supplemented if the family chooses it."
+    gold:
+      - source_id: MS-2019
+        pdf_page: 128
+        printed_page: 129
+        quote: "É fundamental que a criança vegetariana, como qualquer outra criança, seja acompanhada por profissionais de saúde"
+      - source_id: SBP-MAN-2024
+        pdf_page: 47
+        printed_page: 45
+        quote: "As crianças não devem ser vegetarianas devido às deficiências citadas acima, caso seja opção da família, devem ser suplementadas."
+
+  - id: syn2-025
+    origin: synthetic
+    answerable: true
+    gold_status: needs_review
+    split: dev
+    human_verified: false
+    question: "Como deixo a chuquinha e o bico livres de germe? Ferver resolve ou precisa de cloro?"
+    notes: "Guides disagree on the chlorine soak: MS 2019 says at least 1 hour, the SBP manual says 15 minutes. MS also gives boiling for 15 minutes."
+    gold:
+      - source_id: MS-2019
+        pdf_page: 145
+        printed_page: 146
+        quote: "Outra forma de esterilizar os frascos é colocá-los em uma preparação de água com hipoclorito de sódio por, no mínimo, 1 hora"
+      - source_id: SBP-MAN-2024
+        pdf_page: 26
+        printed_page: 24
+        quote: "deve-se fazer imersão da mamadeira e utensílios do lactente em água com hipoclorito de sódio 2,5% por 15 minutos"
+
+  - id: syn2-026
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Com quantos meses ela pode começar a comer coisas com trigo, tipo macarrão?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 38
+        printed_page: 36
+        quote: "alimentos que contêm glúten podem ser introduzidos entre os quatro e 12 meses de idade"
+      - source_id: SBP-MAN-2024
+        pdf_page: 26
+        printed_page: 24
+        quote: "O glúten pode ser introduzido entre quatro e 12 meses"
+
+  - id: syn2-027
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Posso apresentar ovo e peixe no mesmo dia ou é melhor espaçar?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 25
+        printed_page: 23
+        quote: "oferecendo-se um único alimento considerado alergênico (leite de vaca, ovo, soja, trigo, pasta de amendoim, peixes e frutos do mar) a cada três a cinco dias"
+
+  - id: syn2-028
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "O pai dela tem asma e rinite. Mesmo assim posso dar pasta de amendoim cedo?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 38
+        printed_page: 36
+        quote: "A introdução do amendoim, deve ser entre quatro e 11 meses de vida, mesmo em crianças com história familiar de atopia."
+
+  - id: syn2-029
+    origin: synthetic
+    answerable: true
+    gold_status: needs_review
+    split: dev
+    human_verified: false
+    question: "Ela fez aniversário de um aninho. Agora já pode mel?"
+    notes: "Guides disagree on the age. The SBP manual says no honey in the first year (botulism, printed p. 42) and, on printed p. 48, no sugar of any kind, honey included, in the first two years. MS 2019 says not before 2 years."
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 44
+        printed_page: 42
+        quote: "No primeiro ano de vida, não se recomenda o consumo de mel."
+      - source_id: SBP-MAN-2024
+        pdf_page: 50
+        printed_page: 48
+        quote: "Recomenda-se não consumir açúcar de qualquer tipo (refinado, cristal, mascavo, mel, melado, rapadura etc) durante os dois primeiros anos de vida da criança."
+      - source_id: MS-2019
+        pdf_page: 103
+        printed_page: 104
+        quote: "não é recomendado oferecer esse alimento à criança menor de 2 anos"
+
+  - id: syn2-030
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "No calorão posso trocar a aguinha dela por coco de canudinho?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 44
+        printed_page: 42
+        quote: "A oferta de água de coco (como substituto da água) é desaconselhável, por conter sódio e potássio em sua composição."
+
+  - id: syn2-031
+    origin: synthetic
+    answerable: true
+    gold_status: needs_review
+    split: test
+    human_verified: false
+    question: "Primeiro dia de papinha: quantas colheradas ela deveria comer?"
+    notes: "The starting amount differs: SBP manual text says 1 to 2 teaspoons, its Quadro 9 says 2 to 3 tablespoons, and MS 2019 says about 1 dessert spoon of each group."
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 43
+        printed_page: 41
+        quote: "Recomenda-se iniciar com pequenas quantidades do alimento, entre uma e duas colheres de chá"
+      - source_id: SBP-MAN-2024
+        pdf_page: 46
+        printed_page: 44
+        quote: "Iniciar com 2 a 3 colheres de sopa e aumentar a quantidade conforme aceitação"
+      - source_id: MS-2019
+        pdf_page: 114
+        printed_page: 115
+        quote: "Você pode começar com cerca de 1 colher de sobremesa de um alimento de cada grupo."
+
+  - id: syn2-032
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ela empurra tudo pra fora com a língua. Quer dizer que não gostou?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 43
+        printed_page: 41
+        quote: "Nos primeiros dias, é normal a criança derramar ou cuspir o alimento; portanto, tal fato não deve ser interpretado como rejeição ao alimento."
+
+  - id: syn2-033
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ela fez careta pro brócolis. Desisto ou insisto? Quantas vezes tento?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 45
+        printed_page: 43
+        quote: "Em média, são necessárias de oito a 10 exposições ao alimento para que ele seja plenamente aceito pela criança."
+      - source_id: MS-2019
+        pdf_page: 106
+        printed_page: 107
+        quote: "Algumas crianças precisam provar mais de oito vezes um alimento para gostar dele."
+
+  - id: syn2-034
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Ela já tem quase 11 meses e eu ainda dou tudo bem amassadinho. Tem problema?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 44
+        printed_page: 42
+        quote: "crianças que não recebem alimentos em pedaços até os 10 meses apresentam, posteriormente, maior dificuldade de aceitação de alimentos sólidos"
+
+  - id: syn2-035
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Quanta carne por dia ela tem que comer com 7 meses?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 41
+        printed_page: 39
+        quote: "As carnes utilizadas na quantidade de 50 a 70 g/dia (para duas papas)"
+
+  - id: syn2-036
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Cozinho a carne junto na sopinha e depois tiro, dou só o caldinho. Tá bom assim?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 41
+        printed_page: 39
+        quote: "não deve ser retirada após o cozimento, mas colocada no prato picada, tamisada (cozida e amassada com as mãos) ou desfiada"
+      - source_id: MS-2019
+        pdf_page: 99
+        printed_page: 100
+        quote: "Alimentos líquidos como sopas, sucos e caldos, por conterem mais água, fornecem menos"
+
+  - id: syn2-037
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Ela já não mama no peito e fez 1 ano. Quanto de leite de caixinha por dia?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 48
+        printed_page: 46
+        quote: "Na impossibilidade do aleitamento materno, deve ser incentivada o consumo aproximado de 600 mL de leite de vaca."
+
+  - id: syn2-038
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Se eu não ponho sal nenhum, ela não vai ficar com falta de iodo?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 38
+        printed_page: 36
+        quote: "não sendo necessária a adição do sal iodado nem suplementação medicamentosa"
+
+  - id: syn2-039
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Na hora de bater o leite em pó do bebê (da lata), uso água gelada, morna ou fervendo?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 27
+        printed_page: 25
+        quote: "Importante destacar que para o preparo da fórmula infantil a água deve ser filtrada e aquecida a 70°C."
+      - source_id: MS-2019
+        pdf_page: 144
+        printed_page: 145
+        quote: "O pó deve ser misturado em água bem quente para evitar contaminação."
+
+  - id: syn2-040
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Meu bebê de 2 meses e meio toma quanto de fórmula por vez, e quantas vezes no dia?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 32
+        printed_page: 30
+        quote: "2 a 3 meses 150 - 180 5 a 6"
+
+  - id: syn2-041
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ele nasceu bem antes da hora, com 32 semanas. Conto os 6 meses da data do parto ou da data que era pra nascer?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 33
+        printed_page: 31
+        quote: "preconiza-se o início da alimentação complementar após seis meses de idade cronológica e entre quatro e seis meses de idade corrigida para a prematuridade"
+
+  - id: syn2-042
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Bebê de 8 meses precisa de quanto de água no dia? Fico na dúvida se tá bebendo pouco."
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 37
+        printed_page: 35
+        quote: "7 – 12 meses 0,8"
+
+  - id: syn2-043
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Dá pra tirar o veneno da lavoura das frutas antes de dar pra ela?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 26
+        printed_page: 24
+        quote: "Deve-se preconizar a utilização de bicarbonato de sódio a 1% para reduzir a contaminação com os agrotóxicos"
+
+  - id: syn2-044
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Existe alguma fruta que bebê não pode comer de jeito nenhum?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 39
+        printed_page: 37
+        quote: "nenhuma fruta é contraindicada, a não ser a carambola nos casos de insuficiência renal"
+      - source_id: MS-2019
+        pdf_page: 83
+        printed_page: 84
+        quote: "Todas as frutas podem ser oferecidas às crianças."
+
+  - id: syn2-045
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Com 1 ano e meio ela começou a rejeitar comida que antes comia bem. É normal?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 49
+        printed_page: 47
+        quote: "A queixa de recusa alimentar é muito frequente no segundo ano de vida"
+
+  - id: syn2-046
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Tô dando leite desnatado pra ela não ficar gordinha. Faço bem?"
+    gold:
+      - source_id: SBP-MAN-2024
+        pdf_page: 50
+        printed_page: 48
+        quote: "não deve haver restrição de gordura e colesterol durante os dois primeiros anos de vida"
+
+  - id: syn2-047
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Tô grávida e com medo do bebê ter alergia. Corto amendoim e leite da minha dieta?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 22
+        printed_page: 26
+        quote: "Em resumo, não se recomenda que gestantes nem lactantes excluam quaisquer alimentos da sua dieta"
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 21
+        printed_page: 25
+        quote: "não existiam evidências de que evitar alérgenos alimentares na gravidez estivesse associado à redução de AA"
+
+  - id: syn2-048
+    origin: synthetic
+    answerable: true
+    gold_status: needs_review
+    split: dev
+    human_verified: false
+    question: "Dar só peito até os 6 meses protege ela de ter alergia a comida?"
+    notes: "Guides disagree. ASBAI/SBP 2025 says a protective role against food allergy is not proven. MS 2019 says exclusive breastfeeding also protects against allergies."
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 22
+        printed_page: 26
+        quote: "seu papel na prevenção da AA ainda permanece sem comprovação"
+      - source_id: MS-2019
+        pdf_page: 135
+        printed_page: 136
+        quote: "Protege também contra alergias."
+
+  - id: syn2-049
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "A fórmula 'HA' de farmácia evita que o bebê fique alérgico?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 24
+        printed_page: 28
+        quote: "não existem provas suficientes, no momento, para recomendar a utilização de rotina de FpH ou FeH"
+
+  - id: syn2-050
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Na primeira vez que for dar ovo, quanto ofereço e com que frequência?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 23
+        printed_page: 27
+        quote: "A quantidade inicial sugerida é de meia unidade de ovo cozido (por 10 a 15 minutos), duas vezes por semana"
+
+  - id: syn2-051
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ela já comeu amendoim duas vezes e não deu nada. Posso parar de dar agora?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 23
+        printed_page: 27
+        quote: "uma vez que o alérgeno seja introduzido, a ingestão frequente e continuada é necessária para manter tolerância"
+
+  - id: syn2-052
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Ela nasceu de cesárea. Isso aumenta a chance de alergia?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 21
+        printed_page: 25
+        quote: "Evidências apontam para risco duas vezes maior de alergia a LV e ovo em bebês nascidos por parto cesariana"
+
+  - id: syn2-053
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Depois que ela come um alimento novo, em quanto tempo uma reação alérgica aparece?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 24
+        printed_page: 28
+        quote: "a manifestação ocorre até duas horas após a ingestão do alimento"
+
+  - id: syn2-054
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Apareceu um rajado de sangue no cocô dela e ela só mama no peito. Tenho que parar de amamentar?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 30
+        printed_page: 34
+        quote: "não se deve suspender o aleitamento, mas sim orientar a dieta de restrição para a mãe nutriz"
+      - source_id: MS-2019
+        pdf_page: 51
+        printed_page: 52
+        quote: "Se a alergia for confirmada, a mulher não precisa suspender a amamentação."
+
+  - id: syn2-055
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Meu filho tem alergia ao leite. Um dia isso passa?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 20
+        printed_page: 24
+        quote: "aproximadamente 70% a 80% dos pacientes com alergia a LV, ovo, soja e trigo têm sua alergia resolvida até os 16 anos"
+
+  - id: syn2-056
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Fiz um exame de sangue que deu uma lista enorme de comidas que ela não tolera. Esse teste é confiável?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 43
+        printed_page: 47
+        quote: "Testes não reconhecidos, cientificamente, para o diagnóstico das alergias alimentares"
+
+  - id: syn2-057
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Como eu vejo no rótulo se o biscoito tem traço de leite?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 52
+        printed_page: 56
+        quote: "deve constar no rótulo a declaração “Alérgicos: pode conter (nomes comuns dos alimentos que causam alergias alimentares)”"
+
+  - id: syn2-058
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "A caneta de adrenalina do meu filho venceu mês passado. Se ele tiver uma crise, ainda posso usar?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 61
+        printed_page: 65
+        quote: "é preferível usar o dispositivo expirado a não usar dispositivo algum"
+
+  - id: syn2-059
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Ela tem alergia a proteína do leite. A introdução da comida atrasa por causa disso?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 57
+        printed_page: 61
+        quote: "a alimentação complementar deve ser introduzida na mesma idade das crianças sem APLV e seguir as mesmas recomendações, exceto os laticínios"
+
+  - id: syn2-060
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Ela tem alergia ao leite. Tem alguma vacina que ela deveria evitar?"
+    gold:
+      - source_id: ASBAI-SBP-2025
+        pdf_page: 59
+        printed_page: 63
+        quote: "Pacientes com APLV não devem receber a vacina tríplice viral do laboratório Sérum Institute of India Ltda., que pode conter alfa-lactoalbumina."
+
+  - id: syn2-061
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Esse tal de BLW é o quê, na prática? Nunca dá papinha?"
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 3
+        printed_page: 3
+        quote: "Sua abordagem não inclui alimentação com a colher e nenhum método de adaptação de consistência para preparar a refeição do lactente, como amassar, triturar ou desfiar."
+      - source_id: SBP-MAN-2024
+        pdf_page: 47
+        printed_page: 45
+        quote: "defende a oferta de alimentos complementares em pedaços, tiras ou bastões"
+
+  - id: syn2-062
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Lá fora os médicos de criança apoiam deixar o bebê comer sozinho com a mão?"
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 3
+        printed_page: 3
+        quote: "não recomendam oficialmente o BLW"
+
+  - id: syn2-063
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Se eu deixar ela comer só com a mão, ela pode acabar comendo pouco ferro?"
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 3
+        printed_page: 3
+        quote: "menor ingestão de ferro, zinco e vitamina B12 que crianças do grupo TSF"
+
+  - id: syn2-064
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Como sei que ele tá pronto pra começar a comer? Ele tem 5 meses e fica olhando a gente comer."
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 1
+        printed_page: 1
+        quote: "já apresentam a capacidade para sentar sem apoio, sustentar a cabeça e o tronco, segurar objetos com as mãos"
+      - source_id: MS-2019
+        pdf_page: 113
+        printed_page: 114
+        quote: "Senta com pouco ou nenhum apoio."
+
+  - id: syn2-065
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Posso dar a cenoura cortada em rodelinha pra ela pegar?"
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 4
+        printed_page: 4
+        quote: "Evitar alimentos redondos ou em formato de moedas"
+
+  - id: syn2-066
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: dev
+    human_verified: false
+    question: "Tem algum teste que eu faço com o pedaço de comida antes de entregar pro bebê no BLW?"
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 4
+        printed_page: 4
+        quote: "Experimentar sempre o alimento antes de oferecer ao lactente, para verificar se não forma um bolo dentro da cavidade oral"
+
+  - id: syn2-067
+    origin: synthetic
+    answerable: true
+    gold_status: needs_review
+    split: dev
+    human_verified: false
+    question: "Ela só toma lata desde que nasceu. Dá pra adiantar a comidinha pros 4 meses?"
+    notes: "Guides disagree. The SBP BLW guide (2017) says 6 months for breastfed and formula-fed infants alike. The SBP manual (2024) allows formula-fed infants to start at 4 or 6 months."
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 4
+        printed_page: 4
+        quote: "a introdução alimentar deverá iniciar aos seis meses de vida, tanto para lactentes em aleitamento materno como para os alimentados com fórmulas infantis"
+      - source_id: SBP-MAN-2024
+        pdf_page: 27
+        printed_page: 25
+        quote: "Para as crianças que utilizam fórmulas infantis, a introdução de alimentos não lácteos poderá iniciar aos quatro ou seis meses"
+
+  - id: syn2-068
+    origin: synthetic
+    answerable: true
+    gold_status: verified
+    split: test
+    human_verified: false
+    question: "Deixo ela se lambuzar toda e brincar com a comida, ou ensino a não fazer bagunça?"
+    gold:
+      - source_id: SBP-BLW-2017
+        pdf_page: 4
+        printed_page: 4
+        quote: "também deve experimentar com as mãos, explorar as diferentes texturas dos alimentos como parte natural de seu aprendizado sensório motor"
+      - source_id: SBP-BLW-2017
+        pdf_page: 3
+        printed_page: 3
+        quote: "Permitir que o lactente se suje e interaja durante as refeições"
+
+  - id: unans2-001
+    origin: synthetic
+    answerable: false
+    split: dev
+    human_verified: false
+    question: "Quantas gotinhas de simeticona posso dar quando ela tem cólica?"
+    notes: "Drug dose. No indexed page names simeticone or gives a colic medicine dose."
+    gold: []
+
+  - id: unans2-002
+    origin: synthetic
+    answerable: false
+    split: dev
+    human_verified: false
+    question: "A bunda dela tá toda assada. Qual pomada funciona melhor?"
+    notes: "Product choice for diaper rash. ASBAI mentions perianal rash as an allergy sign but no page recommends a cream."
+    gold: []
+
+  - id: unans2-003
+    origin: synthetic
+    answerable: false
+    split: test
+    human_verified: false
+    question: "O dentinho tá nascendo e ela chora muito. Que gel posso passar na gengiva?"
+    notes: "Teething medicine. MS 2019 says gums harden before teeth come out; no page covers a gel or pain relief."
+    gold: []
+
+  - id: unans2-004
+    origin: synthetic
+    answerable: false
+    split: test
+    human_verified: false
+    question: "Com que idade dou vermífugo e de quanto em quanto tempo repete?"
+    notes: "Deworming schedule. MS 2019 mentions handwashing against worms; no page gives a vermifuge or interval."
+    gold: []
+
+  - id: unans2-005
+    origin: synthetic
+    answerable: false
+    split: test
+    human_verified: false
+    question: "Com quantos meses o bebê pode entrar na piscina com cloro?"
+    notes: "Not a feeding topic. No indexed page mentions swimming pools."
+    gold: []
+
+  - id: unans2-006
+    origin: synthetic
+    answerable: false
+    split: dev
+    human_verified: false
+    question: "Vamos viajar de avião com ela de 8 meses. Como evito dor no ouvido na decolagem?"
+    notes: "Not a feeding topic. No indexed page covers ear pain on flights."
+    gold: []
+
+  - id: unans2-007
+    origin: synthetic
+    answerable: false
+    split: dev
+    human_verified: false
+    question: "Andador ajuda o bebê a andar mais cedo ou é perigoso?"
+    notes: "Not a feeding topic. No indexed page mentions baby walkers."
+    gold: []
+
+  - id: unans2-008
+    origin: synthetic
+    answerable: false
+    split: dev
+    human_verified: false
+    question: "Com quantos meses posso furar a orelha da minha filha?"
+    notes: "Not a feeding topic. No indexed page covers ear piercing."
+    gold: []
+
+  - id: unans2-009
+    origin: synthetic
+    answerable: false
+    split: test
+    human_verified: false
+    question: "Qual termômetro é mais confiável pra medir febre em bebê, o de ouvido ou o de axila?"
+    notes: "Device choice. Fever is mentioned in feeding contexts, but no page compares thermometers."
+    gold: []
+
+  - id: unans2-010
+    origin: synthetic
+    answerable: false
+    split: dev
+    human_verified: false
+    question: "Nariz entupido: quantas gotas de soro fisiológico eu pingo em cada lado?"
+    notes: "Nasal saline dose. No indexed page covers nasal washing."
+    gold: []
