@@ -11,6 +11,15 @@ A partial answer is not an abstention. The metric names stay the same.
 Faithfulness, citation correctness, and relevance are computed for it.
 Abstention accuracy still uses only the exact abstention sentence on
 questions marked answerable: false.
+
+Completeness needs the question's ``key_facts``. The judge reads the
+answer, not the context, and marks each fact covered or not. Completeness
+is covered facts divided by all facts. An abstention covers none of them,
+so it scores 0 without a call. A question with no key facts has no score.
+
+The judge should be a different model family from the generator, because
+a model rates its own text higher (Panickssery et al., NeurIPS 2024,
+arXiv 2404.13076). The default judge is ``DEFAULT_JUDGE_MODEL``.
 """
 
 from __future__ import annotations
@@ -19,6 +28,14 @@ import json
 
 from baby_food_rag.generate import DISCLAIMER, LLM, Answer, citation_marks, cite_label
 from baby_food_rag.types import Hit
+
+DEFAULT_JUDGE_MODEL = "anthropic/claude-haiku-5.5"
+
+
+def same_family(model: str, other: str) -> bool:
+    """Same vendor prefix in the OpenRouter id, such as ``openai/``."""
+    return model.split("/", 1)[0] == other.split("/", 1)[0]
+
 
 _CLAIMS = """Task: extract claims.
 
@@ -69,8 +86,31 @@ Question: {question}
 Answer: {answer}
 """
 
+_COVERAGE = """Task: key fact coverage.
 
-def judge_answer(llm: LLM, answer: Answer, *, expect_abstention: bool) -> dict:
+For each numbered key fact, decide whether the answer states it. Use only
+the answer. A fact is covered when the answer says the same thing, in any
+words, with the same polarity. It is not covered when the answer leaves it
+out, says only part of it, or says the opposite.
+Return JSON only, one entry per fact, same order:
+{{"facts": [{{"fact": 1, "covered": true}}]}}
+
+Question: {question}
+
+Answer: {answer}
+
+Key facts:
+{facts}
+"""
+
+
+def judge_answer(
+    llm: LLM,
+    answer: Answer,
+    *,
+    expect_abstention: bool,
+    key_facts: list[str] | tuple[str, ...] = (),
+) -> dict:
     """Score one answer. Abstentions have no claims and skip the claim calls."""
     if answer.abstained:
         return {
@@ -79,7 +119,9 @@ def judge_answer(llm: LLM, answer: Answer, *, expect_abstention: bool) -> dict:
             "faithfulness": None,
             "citation_correctness": None,
             "relevance": None,
+            "completeness": 0.0 if key_facts else None,
             "claims": [],
+            "facts": [{"fact": fact, "covered": False} for fact in key_facts],
             "n_citations": 0,
             "n_citations_correct": 0,
         }
@@ -90,16 +132,43 @@ def judge_answer(llm: LLM, answer: Answer, *, expect_abstention: bool) -> dict:
     cites = citation_marks(answer.text)
     correct = sum(1 for source_id, page in cites if _page_retrieved(source_id, page, answer.hits))
     relevance = _relevance(llm, answer.question, answer.text)
+    facts = _coverage(llm, answer.question, answer.text, list(key_facts)) if key_facts else []
+    covered = sum(1 for item in facts if item["covered"])
     return {
         "abstained": False,
         "abstention_correct": not expect_abstention,
         "faithfulness": faithfulness,
         "citation_correctness": (correct / len(cites)) if cites else 0.0,
         "relevance": relevance,
+        "completeness": (covered / len(facts)) if facts else None,
         "claims": verdicts,
+        "facts": facts,
         "n_citations": len(cites),
         "n_citations_correct": correct,
     }
+
+
+def claims_prompt(question: str, answer: str) -> str:
+    return _CLAIMS.format(question=question, answer=_visible(answer))
+
+
+def verify_prompt(claims: list[str], hits: list[Hit]) -> str:
+    numbered = "\n".join(f"{index}. {text}" for index, text in enumerate(claims, start=1))
+    blocks = []
+    for hit in hits:
+        label = cite_label(hit.chunk.source_id, hit.chunk.printed_page, hit.chunk.page)
+        blocks.append(f"{label}\n{hit.chunk.text}")
+    context = "\n\n".join(blocks)
+    return _VERIFY.format(context=context or "(none)", claims=numbered)
+
+
+def relevance_prompt(question: str, answer: str) -> str:
+    return _RELEVANCE.format(question=question, answer=_visible(answer))
+
+
+def coverage_prompt(question: str, answer: str, facts: list[str]) -> str:
+    numbered = "\n".join(f"{index}. {text}" for index, text in enumerate(facts, start=1))
+    return _COVERAGE.format(question=question, answer=_visible(answer), facts=numbered)
 
 
 def _page_retrieved(source_id: str, page: str, hits: list[Hit]) -> bool:
@@ -111,7 +180,7 @@ def _page_retrieved(source_id: str, page: str, hits: list[Hit]) -> bool:
 
 
 def _claims(llm: LLM, question: str, answer: str) -> list[str]:
-    payload = _json(llm.complete(_CLAIMS.format(question=question, answer=_visible(answer))))
+    payload = _json(llm.complete(claims_prompt(question, answer)))
     claims = payload.get("claims", [])
     if not isinstance(claims, list):
         raise ValueError("claims was not a list")
@@ -119,13 +188,7 @@ def _claims(llm: LLM, question: str, answer: str) -> list[str]:
 
 
 def _verify(llm: LLM, claims: list[str], hits: list[Hit]) -> list[dict]:
-    numbered = "\n".join(f"{index}. {text}" for index, text in enumerate(claims, start=1))
-    blocks = []
-    for hit in hits:
-        label = cite_label(hit.chunk.source_id, hit.chunk.printed_page, hit.chunk.page)
-        blocks.append(f"{label}\n{hit.chunk.text}")
-    context = "\n\n".join(blocks)
-    payload = _json(llm.complete(_VERIFY.format(context=context or "(none)", claims=numbered)))
+    payload = _json(llm.complete(verify_prompt(claims, hits)))
     verdicts = payload.get("verdicts", [])
     if not isinstance(verdicts, list) or len(verdicts) != len(claims):
         raise ValueError("verdict count does not match claims")
@@ -139,11 +202,25 @@ def _verify(llm: LLM, claims: list[str], hits: list[Hit]) -> list[dict]:
 
 
 def _relevance(llm: LLM, question: str, answer: str) -> float:
-    payload = _json(llm.complete(_RELEVANCE.format(question=question, answer=_visible(answer))))
+    payload = _json(llm.complete(relevance_prompt(question, answer)))
     value = payload.get("relevance")
     if value not in {0, 0.5, 1, 0.0, 1.0}:
         raise ValueError(f"bad relevance {value!r}")
     return float(value)
+
+
+def _coverage(llm: LLM, question: str, answer: str, facts: list[str]) -> list[dict]:
+    payload = _json(llm.complete(coverage_prompt(question, answer, facts)))
+    entries = payload.get("facts", [])
+    if not isinstance(entries, list) or len(entries) != len(facts):
+        raise ValueError("coverage count does not match key facts")
+    parsed = []
+    for fact, entry in zip(facts, entries, strict=True):
+        covered = entry.get("covered") if isinstance(entry, dict) else None
+        if not isinstance(covered, bool):
+            raise ValueError(f"bad coverage {covered!r}")
+        parsed.append({"fact": fact, "covered": covered})
+    return parsed
 
 
 def _visible(answer: str) -> str:

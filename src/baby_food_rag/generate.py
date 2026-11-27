@@ -25,10 +25,11 @@ from baby_food_rag.types import Chunk, Hit
 DEFAULT_MODEL = "openai/gpt-4o-mini"
 DEFAULT_K = 8
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-# Published OpenRouter rates for this model, USD per million tokens.
-# Used only to turn measured token counts into a dollar figure.
+# Published OpenRouter rates (input, output), USD per million tokens, checked
+# 2026-11-27. Used to estimate a run and to turn measured tokens into dollars.
 PRICE_PER_MILLION = {
     "openai/gpt-4o-mini": (0.15, 0.60),
+    "anthropic/claude-haiku-5.5": (0.10, 0.50),
 }
 
 DISCLAIMER = (
@@ -212,13 +213,12 @@ def ask(
     *,
     k: int = DEFAULT_K,
     embedder: object | None = None,
+    hits: list[Hit] | None = None,
 ) -> Answer:
-    hits = search(index, question, k=k, retriever="hybrid", embedder=embedder)
-    prompt = _PROMPT.format(
-        abstain=ABSTAIN,
-        question=question.strip(),
-        context=format_context(hits),
-    )
+    """``hits`` skips the search when the caller already retrieved them."""
+    if hits is None:
+        hits = search(index, question, k=k, retriever="hybrid", embedder=embedder)
+    prompt = generation_prompt(question, hits)
     started = time.perf_counter()
     raw = llm.complete(prompt).strip()
     latency = time.perf_counter() - started
@@ -234,6 +234,14 @@ def ask(
         latency_s=latency,
         usage=llm.usage,
         dropped_citations=dropped,
+    )
+
+
+def generation_prompt(question: str, hits: list[Hit]) -> str:
+    return _PROMPT.format(
+        abstain=ABSTAIN,
+        question=question.strip(),
+        context=format_context(hits),
     )
 
 
