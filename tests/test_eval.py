@@ -1,12 +1,24 @@
 import json
+import math
 from pathlib import Path
 
 import pytest
 import yaml
 
 from baby_food_rag.embed import HashEmbedder, l2_normalize, prefix_passages, prefix_queries
-from baby_food_rag.evaluate import _recall, load_questions, run_eval, write_results
-from baby_food_rag.index import CorpusIndex
+from baby_food_rag.evaluate import (
+    CONTEXT_BUDGET_K,
+    _recall,
+    collapse_pages,
+    group_means,
+    load_questions,
+    ndcg,
+    run_eval,
+    score_page_list,
+    write_results,
+)
+from baby_food_rag.generate import DEFAULT_K
+from baby_food_rag.index import CorpusIndex, search
 from baby_food_rag.types import Chunk
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,6 +57,71 @@ def test_one_retrieved_page_credits_only_one_adjacent_gold():
     ]
     assert _recall(pages, gold, tolerance=1) == 0.5
     assert _recall([("MS-2019", 102), ("MS-2019", 104)], gold, tolerance=1) == 1.0
+
+
+def test_ndcg_at_10_two_gold_pages_found_at_ranks_4_and_9():
+    gold = [
+        {"source_id": "MS-2019", "pdf_page": 84, "quote": "a"},
+        {"source_id": "MS-2019", "pdf_page": 120, "quote": "b"},
+    ]
+    filler = [("MS-2019", page) for page in (10, 20, 30, 40, 50, 60, 70, 140)]
+    pages = filler[:3] + [("MS-2019", 84)] + filler[3:7] + [("MS-2019", 120)] + filler[7:]
+    assert pages[3] == ("MS-2019", 84) and pages[8] == ("MS-2019", 120)
+    value = score_page_list(pages, gold, 1)["ndcg_at_10"]
+    # (1/log2 5 + 1/log2 10) / (1/log2 2 + 1/log2 3) = 0.448644. Rounding each term
+    # to 4 places first gives the 0.4487 in the plan.
+    assert value == pytest.approx((1 / math.log2(5) + 1 / math.log2(10)) / (1 + 1 / math.log2(3)))
+    assert value == pytest.approx(0.4487, abs=1e-4)
+
+
+def test_ndcg_uses_the_one_credit_rule_and_the_full_ideal():
+    one = [{"source_id": "MS-2019", "pdf_page": 84, "quote": "a"}]
+    # Pages 83 and 84 both sit within 1 of the gold page; only the first earns a gain.
+    assert ndcg([("MS-2019", 83), ("MS-2019", 84)], one, 1) == 1.0
+    adjacent = [
+        {"source_id": "MS-2019", "pdf_page": 102, "quote": "a"},
+        {"source_id": "MS-2019", "pdf_page": 103, "quote": "b"},
+    ]
+    # One retrieved page credits one of the two gold pages. The ideal still has two.
+    assert round(ndcg([("MS-2019", 102)], adjacent, 1), 4) == 0.6131
+    assert ndcg([("MS-2019", 102)], adjacent, 0) == ndcg([("MS-2019", 102)], adjacent, 1)
+    assert ndcg([("SBP-MAN-2024", 102)], adjacent, 1) == 0.0
+
+
+def test_context_budget_recall_counts_pages_of_the_top_8_chunks():
+    assert CONTEXT_BUDGET_K == DEFAULT_K == 8
+    # Eight chunks on page 1 outscore the chunk on page 50 for "mel". Page 50 is
+    # the second page in the page ranking, so recall@10 finds it, but it is the
+    # ninth chunk, so the 8-chunk context the model sees does not hold it.
+    chunks = [_chunk("MS-2019", 1, "mel mel mel na papinha", index) for index in range(8)]
+    chunks.append(_chunk("MS-2019", 50, "mel uma vez só aqui", 0))
+    chunks += [_chunk("MS-2019", 90 + i, "arroz feijão e legumes", 0) for i in range(3)]
+    questions = load_questions_from(
+        [
+            {
+                "id": "mel",
+                "origin": "synthetic",
+                "question": "mel",
+                "answerable": True,
+                "gold_status": "verified",
+                "gold": [{"source_id": "MS-2019", "pdf_page": 50, "quote": "mel"}],
+            }
+        ]
+    )
+    embedder = HashEmbedder(dim=64)
+    index = _index(chunks)
+    report = run_eval(index, questions, embedder=embedder, tolerance=0, retrievers=("bm25",))
+    row = report["by_tolerance"]["0"]["per_question"][0]
+    assert row["recall_at_10"] == 1.0
+    assert row["context_budget_recall"] == 0.0
+    assert report["retrievers"][0]["context_budget_recall"] == 0.0
+    assert report["context_budget_k"] == 8
+
+    hybrid = run_eval(index, questions, embedder=embedder, tolerance=0, retrievers=("hybrid",))
+    sent = search(index, "mel", k=DEFAULT_K, retriever="hybrid", embedder=embedder)
+    expected = _recall(collapse_pages([hit.chunk for hit in sent]), questions[0]["gold"], 0)
+    got = hybrid["by_tolerance"]["0"]["per_question"][0]["context_budget_recall"]
+    assert got == expected
 
 
 def test_e5_prefix_helpers_add_query_and_passage():
@@ -214,6 +291,11 @@ def test_split_filter_and_breakdown(tmp_path):
     assert "| bm25 | dev | real |" in text
     header = (tmp_path / "per_question.csv").read_text(encoding="utf-8").splitlines()[0]
     assert header.startswith("id,origin,split,")
+    assert header.endswith(",first_rank,ndcg_at_10,context_budget_recall")
+    metrics_header = (tmp_path / "metrics.csv").read_text(encoding="utf-8").splitlines()[0]
+    assert metrics_header.startswith(
+        "retriever,page_tolerance,split,origin,recall_at_5,recall_at_10,mrr,n,"
+    )
 
 
 def load_questions_from(items: list[dict]) -> list:
@@ -273,3 +355,27 @@ def test_gold_quotes_are_on_the_cited_page():
         for gold in item["gold"]:
             text = pages.get((gold["source_id"], gold["pdf_page"]), "")
             assert gold["quote"] in text, f"{item['id']} {gold['source_id']} p{gold['pdf_page']}"
+
+
+def test_group_means_accepts_rows_without_the_newer_metrics():
+    # baby-food sweep builds rows with recall and MRR only.
+    rows = [
+        {
+            "split": "dev",
+            "origin": "real",
+            "recall_at_5": 1.0,
+            "recall_at_10": 1.0,
+            "reciprocal_rank": 0.5,
+        },
+        {
+            "split": "test",
+            "origin": "synthetic",
+            "recall_at_5": 0.0,
+            "recall_at_10": 0.5,
+            "reciprocal_rank": 0.25,
+        },
+    ]
+    groups = group_means(rows)
+    overall = next(g for g in groups if g["split"] == "all" and g["origin"] == "all")
+    assert overall["recall_at_10"] == 0.75
+    assert "ndcg_at_10" not in overall

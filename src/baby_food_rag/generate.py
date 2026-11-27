@@ -17,6 +17,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from baby_food_rag.embed import MissingAPIKey
 from baby_food_rag.index import CorpusIndex, search
 from baby_food_rag.manifest import find_manifest, load_manifest
 from baby_food_rag.types import Chunk, Hit
@@ -85,10 +86,6 @@ Pergunta: {question}
 Trechos:
 {context}
 """
-
-
-class MissingAPIKey(RuntimeError):
-    pass
 
 
 @dataclass

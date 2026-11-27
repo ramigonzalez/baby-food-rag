@@ -16,6 +16,7 @@ dependencies = [
     "matplotlib>=3.8",
     "streamlit>=1.40",
     "tqdm>=4.66",
+    "python-dotenv>=1.0",
 ]
 
 [project.optional-dependencies]

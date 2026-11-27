@@ -2,6 +2,9 @@
 data/raw/
 data/pages/
 data/index/
+data/index-*/
+# Embedding vectors from paid APIs, keyed by model and text.
+data/cache/
 
 *.pdf
 *.npy

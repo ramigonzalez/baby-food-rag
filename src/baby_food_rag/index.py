@@ -18,7 +18,15 @@ import numpy as np
 
 from baby_food_rag.bm25 import BM25Index
 from baby_food_rag.chunking import CHUNK_OVERLAP, CHUNK_WORDS, chunk_pages
-from baby_food_rag.embed import embed_passages, embedder_display_name, l2_normalize, load_embedder
+from baby_food_rag.embed import (
+    DEFAULT_MAX_USD,
+    CostCapExceeded,
+    embed_passages,
+    embedder_display_name,
+    estimate_cost,
+    l2_normalize,
+    load_embedder,
+)
 from baby_food_rag.extract import extract_pdf
 from baby_food_rag.fusion import reciprocal_rank_fusion
 from baby_food_rag.tokenize import stem_tokens, tokenize
@@ -52,7 +60,9 @@ def build_index(
     out_dir: Path,
     *,
     embedder_name: str = "e5",
+    max_usd: float = DEFAULT_MAX_USD,
 ) -> CorpusIndex:
+    """A paid embedder prints a cost estimate first and stops above ``max_usd``."""
     missing = [source.id for source in sources if not (raw_dir / source.filename).is_file()]
     if missing:
         raise FileNotFoundError(
@@ -84,9 +94,23 @@ def build_index(
             }
         )
     label = embedder_display_name(embedder_name)
-    _stage(f"Embedding {len(chunks)} chunks with {label}...")
+    texts = [chunk.text for chunk in chunks]
     embedder = load_embedder(embedder_name)
-    matrix = embed_passages(embedder, [chunk.text for chunk in chunks], progress=True)
+    estimate = estimate_cost(embedder, texts)
+    if estimate is not None:
+        _stage(
+            f"Estimate: {estimate['uncached']} of {estimate['texts']} chunks not cached, "
+            f"~{estimate['estimated_tokens']} tokens (characters / 3), "
+            f"${estimate['estimated_usd']:.4f} at ${estimate['usd_per_million']:.2f} per 1M "
+            f"tokens. Cap ${max_usd:.2f}."
+        )
+        if estimate["estimated_usd"] > max_usd:
+            raise CostCapExceeded(
+                f"Estimated ${estimate['estimated_usd']:.4f} is above the ${max_usd:.2f} cap. "
+                "Nothing was sent. Raise --max-usd to run it."
+            )
+    _stage(f"Embedding {len(chunks)} chunks with {label}...")
+    matrix = embed_passages(embedder, texts, progress=True)
     matrix = l2_normalize(np.asarray(matrix, dtype=np.float32))
     meta = {
         "embedder": embedder.name,
@@ -94,6 +118,14 @@ def build_index(
         "chunk_overlap": CHUNK_OVERLAP,
         "sources": stats,
     }
+    usage = getattr(embedder, "usage", None)
+    if usage is not None:
+        meta["embedding_usage"] = usage.as_dict(embedder.usd_per_million)
+        _stage(
+            f"Billed: {usage.prompt_tokens} tokens in {usage.calls} calls "
+            f"({usage.cache_hits} chunks from the cache), "
+            f"${meta['embedding_usage']['usd']:.4f}."
+        )
     _stage("Writing index...")
     save_index(out_dir, chunks, matrix, meta)
     return CorpusIndex(chunks=chunks, embeddings=matrix, embedder_name=embedder.name, meta=meta)

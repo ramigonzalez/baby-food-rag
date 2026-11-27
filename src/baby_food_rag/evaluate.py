@@ -11,7 +11,16 @@ PDF page appear.
 Recall@k is the mean, over answerable questions, of how many of that
 question's gold pages are hit in the top k pages, divided by how many
 gold pages it has. MRR is the mean of 1/rank of the first hit, or 0 when
-there is no hit. Unanswerable questions are left out of both.
+there is no hit. nDCG@10 uses binary gains: a page that credits a gold
+page, under the same one-credit rule, gains 1/log2(rank + 1); the ideal
+puts every gold page first. Unanswerable questions are left out of all of
+them.
+
+Context-budget recall is the share of gold pages covered by the pages of
+the top 8 chunks, which is what ``generate.ask`` sends to the model. It
+calls ``index.search`` with ``k=DEFAULT_K``, the same call ``ask`` makes,
+so 8 chunks can cover fewer than 8 pages. ``ask`` uses the hybrid
+retriever; the dense and BM25 rows show what the same budget would hold.
 
 Hybrid is reciprocal rank fusion (k 60) of the top 50 BM25 chunks and the
 top 50 dense chunks, then collapsed to pages. That pool is wider than the
@@ -27,6 +36,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -34,8 +44,9 @@ import yaml
 
 from baby_food_rag.embed import l2_normalize
 from baby_food_rag.fusion import reciprocal_rank_fusion
+from baby_food_rag.generate import DEFAULT_K as CONTEXT_BUDGET_K
 from baby_food_rag.golden import SPLITS
-from baby_food_rag.index import RETRIEVERS, CorpusIndex, _bm25_tokens
+from baby_food_rag.index import RETRIEVERS, CorpusIndex, _bm25_tokens, query_embedder, search
 from baby_food_rag.types import Chunk
 
 DEFAULT_TOLERANCE = 1
@@ -81,19 +92,21 @@ def run_eval(
         raise ValueError("page tolerance must be >= 0")
     questions = select_split(questions, split)
     answerable = [item for item in questions if item["answerable"]]
-    rankings = {
-        name: _rank_all(index, [item["question"] for item in answerable], name, embedder)
-        for name in retrievers
-    }
+    if embedder is None and any(name != "bm25" for name in retrievers):
+        embedder = query_embedder(index)
+    queries = [item["question"] for item in answerable]
+    rankings = {name: _rank_all(index, queries, name, embedder) for name in retrievers}
+    contexts = {name: _context_pages(index, queries, name, embedder) for name in retrievers}
     by_tolerance = {}
     for tol in sorted({0, tolerance}):
-        by_tolerance[str(tol)] = _score(answerable, rankings, tol)
+        by_tolerance[str(tol)] = _score(answerable, rankings, contexts, tol)
     return {
         "page_tolerance": tolerance,
         "split": split,
         "hit_rule": (f"same source_id and abs(retrieved pdf_page - gold pdf_page) <= {tolerance}"),
         "fusion_pool": FUSION_POOL,
         "rrf_k": RRF_K,
+        "context_budget_k": CONTEXT_BUDGET_K,
         "n_questions": len(questions),
         "n_answerable": len(answerable),
         "n_unanswerable": len(questions) - len(answerable),
@@ -133,6 +146,13 @@ def render_results(report: dict) -> str:
         "a single hit. Recall@k is the mean, over answerable questions, of",
         "the share of that question's gold pages hit in the top k pages.",
         "MRR is the mean of 1/rank of the first hit, or 0 when there is no hit.",
+        "nDCG@10 uses binary gains on pages with the same one-credit rule.",
+        (
+            f"Ctx@{report.get('context_budget_k', CONTEXT_BUDGET_K)} is the share of gold "
+            "pages covered by the pages of the top "
+            f"{report.get('context_budget_k', CONTEXT_BUDGET_K)} chunks, the context "
+            "`baby-food ask` sends (hybrid)."
+        ),
         "",
         (
             f"Hybrid fuses the top {report['fusion_pool']} BM25 chunks with the top "
@@ -256,6 +276,26 @@ def _rank_all(
     raise ValueError(f"Unknown retriever {retriever!r}")
 
 
+def _context_pages(
+    index: CorpusIndex,
+    queries: list[str],
+    retriever: str,
+    embedder: object | None,
+) -> list[list[tuple[str, int]]]:
+    """Pages of the top chunks from the same ``search`` call ``generate.ask`` makes."""
+    return [
+        collapse_pages(
+            [
+                hit.chunk
+                for hit in search(
+                    index, query, k=CONTEXT_BUDGET_K, retriever=retriever, embedder=embedder
+                )
+            ]
+        )
+        for query in queries
+    ]
+
+
 def _dense_scores(index: CorpusIndex, queries: list[str], embedder: object | None) -> np.ndarray:
     if index.embeddings.ndim != 2 or index.embeddings.shape[0] != len(index.chunks):
         raise RuntimeError("dense eval needs embeddings aligned with the chunks")
@@ -302,7 +342,17 @@ def score_page_list(pages: list[tuple[str, int]], gold: list[dict], tolerance: i
         "recall_at_10": _recall(pages[:10], gold, tolerance),
         "reciprocal_rank": (1.0 / first) if first else 0.0,
         "first_rank": first,
+        "ndcg_at_10": ndcg(pages, gold, tolerance, k=10),
     }
+
+
+def ndcg(pages: list[tuple[str, int]], gold: list[dict], tolerance: int, k: int = 10) -> float:
+    """Binary gain at each top-k rank that credits a gold page. Ideal: gold pages first."""
+    if not gold:
+        return 0.0
+    dcg = sum(1.0 / math.log2(rank + 1) for rank in _credited_ranks(pages[:k], gold, tolerance))
+    ideal = sum(1.0 / math.log2(rank + 1) for rank in range(1, min(len(gold), k) + 1))
+    return dcg / ideal
 
 
 def _pages_from_scores(index: CorpusIndex, scores: np.ndarray) -> list[tuple[str, int]]:
@@ -320,14 +370,15 @@ def _top_chunk_ids(index: CorpusIndex, scores: np.ndarray) -> list[str]:
 def _score(
     questions: list[dict],
     rankings: dict[str, list[list[tuple[str, int]]]],
+    contexts: dict[str, list[list[tuple[str, int]]]],
     tolerance: int,
 ) -> dict:
     retrievers = []
     per_question = []
     for name, lists in rankings.items():
         rows = [
-            _one(question, pages, tolerance)
-            for question, pages in zip(questions, lists, strict=True)
+            _one(question, pages, context, tolerance)
+            for question, pages, context in zip(questions, lists, contexts[name], strict=True)
         ]
         per_question.extend({"retriever": name, **row} for row in rows)
         retrievers.append(
@@ -357,21 +408,32 @@ def group_means(rows: list[dict]) -> list[dict]:
 
 
 def _summary(rows: list[dict]) -> dict:
-    return {
+    summary = {
         "n": len(rows),
         "recall_at_5": _mean([row["recall_at_5"] for row in rows]),
         "recall_at_10": _mean([row["recall_at_10"] for row in rows]),
         "mrr": _mean([row["reciprocal_rank"] for row in rows]),
     }
+    # The sweep's rows carry only recall and MRR, so these two are optional.
+    for key in ("ndcg_at_10", "context_budget_recall"):
+        if all(key in row for row in rows):
+            summary[key] = _mean([row[key] for row in rows])
+    return summary
 
 
-def _one(question: dict, pages: list[tuple[str, int]], tolerance: int) -> dict:
+def _one(
+    question: dict,
+    pages: list[tuple[str, int]],
+    context: list[tuple[str, int]],
+    tolerance: int,
+) -> dict:
     scored = score_page_list(pages, question["gold"], tolerance)
     return {
         "id": question["id"],
         "origin": question["origin"],
         "split": question.get("split"),
         **scored,
+        "context_budget_recall": _recall(context, question["gold"], tolerance),
     }
 
 
@@ -382,9 +444,14 @@ def _recall(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> f
 
 
 def _matched_gold_count(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> int:
-    """Each retrieved page credits at most one gold page."""
+    return len(_credited_ranks(pages, gold, tolerance))
+
+
+def _credited_ranks(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> list[int]:
+    """Ranks (from 1) of the pages that credit a gold page. Each credits at most one."""
     unmatched = set(range(len(gold)))
-    for page in pages:
+    ranks: list[int] = []
+    for rank, page in enumerate(pages, start=1):
         choice = None
         choice_key = None
         for index in unmatched:
@@ -397,7 +464,8 @@ def _matched_gold_count(pages: list[tuple[str, int]], gold: list[dict], toleranc
                 choice_key = key
         if choice is not None:
             unmatched.remove(choice)
-    return len(gold) - len(unmatched)
+            ranks.append(rank)
+    return ranks
 
 
 def _hits_any(page: tuple[str, int], gold: list[dict], tolerance: int) -> bool:
@@ -416,13 +484,14 @@ def _mean(values: list[float]) -> float:
 
 def _table(rows: list[dict]) -> str:
     lines = [
-        "| Retriever | Recall@5 | Recall@10 | MRR | n |",
-        "| --- | ---: | ---: | ---: | ---: |",
+        "| Retriever | Recall@5 | Recall@10 | MRR | nDCG@10 | Ctx recall | n |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in rows:
         lines.append(
             f"| {row['retriever']} | {row['recall_at_5']:.4f} | "
-            f"{row['recall_at_10']:.4f} | {row['mrr']:.4f} | {row['n']} |"
+            f"{row['recall_at_10']:.4f} | {row['mrr']:.4f} | "
+            f"{row['ndcg_at_10']:.4f} | {row['context_budget_recall']:.4f} | {row['n']} |"
         )
     return "\n".join(lines)
 
@@ -430,8 +499,8 @@ def _table(rows: list[dict]) -> str:
 def _group_table(rows: list[dict], by: str) -> str:
     """``by`` is ``split``, ``origin``, or ``both``. The all/all row is the table above."""
     lines = [
-        "| Retriever | Split | Origin | Recall@5 | Recall@10 | MRR | n |",
-        "| --- | --- | --- | ---: | ---: | ---: | ---: |",
+        "| Retriever | Split | Origin | Recall@5 | Recall@10 | MRR | nDCG@10 | Ctx recall | n |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in rows:
         for group in row.get("groups", []):
@@ -447,7 +516,8 @@ def _group_table(rows: list[dict], by: str) -> str:
             lines.append(
                 f"| {row['retriever']} | {group['split']} | {group['origin']} | "
                 f"{group['recall_at_5']:.4f} | {group['recall_at_10']:.4f} | "
-                f"{group['mrr']:.4f} | {group['n']} |"
+                f"{group['mrr']:.4f} | {group['ndcg_at_10']:.4f} | "
+                f"{group['context_budget_recall']:.4f} | {group['n']} |"
             )
     return "\n".join(lines)
 
@@ -462,6 +532,8 @@ def _write_metrics_csv(report: dict, path: Path) -> None:
         "recall_at_10",
         "mrr",
         "n",
+        "ndcg_at_10",
+        "context_budget_recall",
     ]
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -479,6 +551,8 @@ def _write_metrics_csv(report: dict, path: Path) -> None:
                             "recall_at_10": f"{group['recall_at_10']:.6f}",
                             "mrr": f"{group['mrr']:.6f}",
                             "n": group["n"],
+                            "ndcg_at_10": f"{group['ndcg_at_10']:.6f}",
+                            "context_budget_recall": f"{group['context_budget_recall']:.6f}",
                         }
                     )
 
@@ -494,6 +568,8 @@ def _write_questions_csv(report: dict, path: Path) -> None:
         "recall_at_10",
         "reciprocal_rank",
         "first_rank",
+        "ndcg_at_10",
+        "context_budget_recall",
     ]
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -511,5 +587,7 @@ def _write_questions_csv(report: dict, path: Path) -> None:
                         "recall_at_10": f"{row['recall_at_10']:.6f}",
                         "reciprocal_rank": f"{row['reciprocal_rank']:.6f}",
                         "first_rank": "" if row["first_rank"] is None else row["first_rank"],
+                        "ndcg_at_10": f"{row['ndcg_at_10']:.6f}",
+                        "context_budget_recall": f"{row['context_budget_recall']:.6f}",
                     }
                 )
