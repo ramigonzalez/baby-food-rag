@@ -13,8 +13,10 @@ from __future__ import annotations
 
 import hashlib
 import os
+import sys
 
 import numpy as np
+from tqdm import tqdm
 
 from baby_food_rag.tokenize import tokenize
 
@@ -76,6 +78,42 @@ def prefix_passages(texts: list[str]) -> list[str]:
 def prefix_queries(texts: list[str]) -> list[str]:
     """Text sent to e5 for searches. The model expects the ``query: `` prefix."""
     return [E5_QUERY_PREFIX + text for text in texts]
+
+
+def embedder_display_name(name: str) -> str:
+    """Name to show while embedding. ``e5`` is the full model id."""
+    if name in {"e5", E5_MODEL}:
+        return E5_MODEL
+    return name
+
+
+def embed_passages(
+    embedder: HashEmbedder | E5Embedder,
+    texts: list[str],
+    *,
+    progress: bool = False,
+) -> np.ndarray:
+    """Embed documents in batches. The bar counts chunks, not batches."""
+    batch_size = int(getattr(embedder, "batch_size", 16) or 16)
+    if batch_size < 1:
+        raise ValueError("batch_size must be >= 1")
+    dim = int(embedder.dim)
+    if not texts:
+        return np.zeros((0, dim), dtype=np.float32)
+    rows: list[np.ndarray] = []
+    bar = None
+    if progress:
+        bar = tqdm(total=len(texts), desc="Embedding", unit="chunk", file=sys.stderr, leave=True)
+    try:
+        for start in range(0, len(texts), batch_size):
+            batch = texts[start : start + batch_size]
+            rows.append(np.asarray(embedder.embed_documents(batch), dtype=np.float32))
+            if bar is not None:
+                bar.update(len(batch))
+    finally:
+        if bar is not None:
+            bar.close()
+    return np.vstack(rows)
 
 
 def load_embedder(name: str) -> HashEmbedder | E5Embedder:

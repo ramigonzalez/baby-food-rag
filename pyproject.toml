@@ -14,6 +14,8 @@ dependencies = [
     "fastembed>=0.6.0",
     "snowballstemmer>=2.2",
     "matplotlib>=3.8",
+    "streamlit>=1.40",
+    "tqdm>=4.66",
 ]
 
 [project.optional-dependencies]
@@ -37,7 +39,7 @@ addopts = "-q"
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-src = ["src", "tests", "scripts"]
+src = ["src", "tests", "scripts", "app"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]

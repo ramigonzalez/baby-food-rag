@@ -34,7 +34,7 @@ baby-food stats
 
 `scripts/download.py` is the catalog `download.sh` rewritten in Python: same official URLs, same user agent, sha256 checked when the manifest has one, and a failed URL does not stop the others. On 2026-11-19, `MS-RES-2021` and `MS-EVID-2025` (`bvsms.saude.gov.br`) returned HTTP 403. They are reference texts, not part of the default index. NIAID is not fetched by default. AAP is never fetched.
 
-`baby-food index` writes `data/index/`, which is gitignored. Chunks are a recursive split of 180 words with 40 words of overlap, taken from [rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness). A chunk does not cross a page. In the 2019 MS guide the printed page is the PDF page plus 1, so the grape note is printed page 84 and the link uses `#page=83`.
+`baby-food index` prints each stage on stderr (extract, chunk, embed, write), a chunk progress bar while embedding, and the elapsed time at the end. It writes `data/index/`, which is gitignored. Chunks are a recursive split of 180 words with 40 words of overlap, taken from [rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness). A chunk does not cross a page. In the 2019 MS guide the printed page is the PDF page plus 1, so the grape note is printed page 84 and the link uses `#page=83`.
 
 Default index built here:
 
@@ -187,16 +187,32 @@ Answerable real questions only (n = 8). These are the parent questions that have
 
 Whole-page e5 cuts text at 512 tokens. The gold labels are an agent's, on this same set of 32. A gap of a few points is noise, which is why the interval is in the table above.
 
+## Answers and chat
+
+`baby-food ask` and the Streamlit screen answer in Portuguese from the hybrid index (top 8 chunks). Each chunk is shown to the model as `[source_id p.N]`, where N is the printed page. A mark like `[3 p.21]` is rewritten from that slot in the retrieved list. A citation that is not that printed page is dropped, including a PDF page number that belongs to the neighboring sheet. The link is `url#page=` plus the PDF page, so MS 2019 printed page 84 opens `#page=83`. The model abstains only when no passage is about the question, with the sentence `Os guias oficiais indexados não respondem isso.` When the passages cover only part of the question, the answer covers that part, cites it, and says what the guides do not cover. If the model still appends the abstention sentence after a citation, that sentence is removed. A fixed line is always added: this cites the indexed official guides and does not replace a pediatrician. Each OpenRouter call times out after 60 seconds and retries once.
+
+```bash
+export OPENROUTER_API_KEY=...   # never commit this
+baby-food ask "Pode dar mel?"
+streamlit run app/streamlit_app.py
+```
+
+Download the PDFs and build the index first (`python scripts/download.py` then `baby-food index`). The PDFs stay out of git. The default model is `openai/gpt-4o-mini` (`--model` changes it). The chat is one column, in Portuguese: example questions, a running history, and a button to clear it. Each `[source_id p.N]` opens that chunk, the guide title, the printed page, and the PDF link (`#page=` is the PDF page). The retrieved-passage list is hidden when the answer abstains. The disclaimer stays as a short caption. Each question is retrieved on its own; earlier turns are not sent back to the model.
+
+`baby-food ask-eval` runs the 37 labeled questions and a judge in the style of rag-eval-harness judge v2: claim extraction, then supported / contradicted / not_found. It also scores citation page match, answer relevance, and abstention on the 5 unanswerable questions. A partial answer is not an abstention, so faithfulness, citation correctness, and relevance still apply. A claim that the guides do not cover something is supported when the retrieved text never says it. Relevance is 0.5 when only part of the question is answered. The metric names are unchanged. On this machine `OPENROUTER_API_KEY` was not set, so that command wrote `results/phase4-generation/summary.md` with status not run. No scores were estimated.
+
+The weekly menu is not in this version. That is phase 4b.
+
 ## Harness
 
-[rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness) is a reference, not a dependency. Its chunk is `(chunk_id, doc_id, text, index)` over a whole document, and its tokenizer drops accents, so a page citation cannot be produced by calling it. Three pieces are adapted, with the MIT notice in the modules: the recursive word splitter, Okapi BM25, and reciprocal rank fusion. Judge v2 is `raglab.generation.judge_claims(..., version="v2")`. Nothing in this phase calls it.
+[rag-eval-harness](https://github.com/ramigonzalez/rag-eval-harness) is a reference, not a dependency. Its chunk is `(chunk_id, doc_id, text, index)` over a whole document, and its tokenizer drops accents, so a page citation cannot be produced by calling it. Three pieces are adapted, with the MIT notice in the modules: the recursive word splitter, Okapi BM25, and reciprocal rank fusion. The generation judge follows that repo's judge v2 (extract claims, then verify each one) and lives in `src/baby_food_rag/judge.py`.
 
 ## Roadmap
 
 1. **Corpus and search.** Done. Download, page text, chunk metadata, BM25 and dense search, tests, CI. No generated answers.
 2. **Evaluation questions and a retrieval baseline.** The labeled set and the BM25, dense, and hybrid numbers are in `eval/set.yaml` and `results/phase2-baseline/`. No generated answers and no judge.
 3. **Compared configurations.** The sweep that fits on this CPU is in `results/phase3-sweep/`. Judge v2, abstention, and mixing countries are not in it. Dense BGE-M3 did not run.
-4. **Chat UI.** Not started. A short answer, a clickable page, a fixed warning, and a weekly menu where each item cites the rule it follows.
+4. **Chat UI.** The Portuguese answer command and Streamlit screen are in this repo. The weekly menu is phase 4b and is not built yet.
 5. **Public write-up.** Not started. A results table only after those measurements exist.
 
 ## Tests
