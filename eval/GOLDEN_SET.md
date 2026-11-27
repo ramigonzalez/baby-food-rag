@@ -84,10 +84,10 @@ These rows are the first candidates for expert review. Gold pages are also not e
 
 On 2026-11-27 the owner reviewed 20 items drawn with seed 20261127 from the verified rows: 14 `syn2-`, 3 older answerable, and 3 `unans2-`. The reviewer is not a clinician. For each item they checked that the question reads like a parent's, that the quote is on the linked PDF page, and that it answers the question.
 
-- 19 items are `human_verified: true`. No gold page was wrong.
+- All 20 items are `human_verified: true`. No gold page was wrong.
 - `syn2-042`: the quote now includes the table header, so the unit (litres/day) is visible.
 - `syn2-003`, `syn2-017`, `syn2-039`, `syn2-058`: the gold page is right, but the quote is only part of the answer. The rest is on the same page, so recall is unaffected. The review note in each row lists what a complete answer needs.
-- `plan-12` stays `false`. The reviewer thinks its second gold page (water offered in a cup) is only weakly related to a question about juice. It is waiting for a second look.
+- `plan-12`: on a second look both gold pages stand, and the quotes now hold the full sentences. The first quote keeps a stray "3" that the extractor inserted mid-sentence (likely a figure label).
 
 The quote is a pointer to the evidence. It is not a reference answer. Scoring whether a generated answer is complete needs its own label: the key facts the answer must contain.
 

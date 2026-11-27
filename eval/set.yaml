@@ -369,18 +369,18 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Pode dar suco no lugar da fruta ou da água?"
-    notes: "Human review 2026-11-27: flagged; reviewer says the second gold page (water in a cup) is weakly related. Pending a second look; human_verified stays false."
+    notes: "Human review 2026-11-27: both gold pages confirmed; quotes widened to the full sentences. The second page is about water, which covers the 'instead of water' part. The extracted text has a stray '3' inside the first sentence (likely a figure label), kept here because quotes must match the extracted text."
     gold:
       - source_id: MS-2019
         pdf_page: 84
         printed_page: 85
-        quote: "menor de 1 ano, mesmo aqueles feitos somente com fruta"
+        quote: "recomenda-se que não sejam 3 oferecidos sucos de frutas à criança menor de 1 ano, mesmo aqueles feitos somente com fruta"
       - source_id: MS-2019
         pdf_page: 88
         printed_page: 89
-        quote: "a água deve ser oferecida em copo principalmente nos intervalos entre as refeições"
+        quote: "A partir dos 6 meses, quando a criança começar a receber outros alimentos, a água deve ser oferecida em copo principalmente nos intervalos entre as refeições"
 
   - id: plan-13
     origin: plan
