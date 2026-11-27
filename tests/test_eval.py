@@ -116,15 +116,23 @@ def test_recall_counts_neighbor_page_and_skips_unanswerable(tmp_path):
 def test_labeled_set_shape():
     root = ROOT
     questions = load_questions(root / "eval" / "set.yaml")
-    assert 30 <= len(questions) <= 50
+    assert 100 <= len(questions) <= 130
     origins = {}
     for item in questions:
         origins[item["origin"]] = origins.get(item["origin"], 0) + 1
     assert origins["real"] == 10
     assert origins["plan"] == 15
-    assert origins["synthetic"] >= 8
+    assert origins["synthetic"] >= 80
     unanswerable = [item for item in questions if not item["answerable"]]
-    assert 3 <= len(unanswerable) <= 5
+    assert 10 <= len(unanswerable) <= 20
+    answerable = [item for item in questions if item["answerable"]]
+    assert all(item["split"] in {"dev", "test"} for item in questions)
+    assert all(isinstance(item["human_verified"], bool) for item in questions)
+    dev_share = sum(item["split"] == "dev" for item in answerable) / len(answerable)
+    assert 0.55 <= dev_share <= 0.65
+    for origin in ("real", "plan", "synthetic"):
+        splits = {item["split"] for item in answerable if item["origin"] == origin}
+        assert splits == {"dev", "test"}, origin
     reais = yaml.safe_load((root / "eval" / "perguntas_reais.yaml").read_text(encoding="utf-8"))
     plan = yaml.safe_load((root / "eval" / "questions.yaml").read_text(encoding="utf-8"))
     texts = {item["question"] for item in questions}
@@ -142,6 +150,70 @@ def test_labeled_set_shape():
             assert gold["source_id"] in known
             assert gold["pdf_page"] >= 1
             assert gold["quote"]
+
+
+def test_loader_checks_split_and_human_verified():
+    base = {
+        "id": "x",
+        "origin": "synthetic",
+        "question": "pode dar mel",
+        "answerable": True,
+        "gold_status": "verified",
+        "gold": [{"source_id": "MS-2019", "pdf_page": 2, "quote": "mel"}],
+    }
+    loaded = load_questions_from([{**base, "split": "test", "human_verified": True}])
+    assert loaded[0]["split"] == "test"
+    assert loaded[0]["human_verified"] is True
+    assert load_questions_from([base])[0]["split"] is None
+    with pytest.raises(ValueError, match="split"):
+        load_questions_from([{**base, "split": "train"}])
+    with pytest.raises(ValueError, match="human_verified"):
+        load_questions_from([{**base, "human_verified": "no"}])
+
+
+def test_split_filter_and_breakdown(tmp_path):
+    chunks = [
+        _chunk("MS-2019", 10, "Pode dar mel antes dos dois anos por causa do botulismo."),
+        _chunk("MS-2019", 40, "Pipoca não entra antes dos dois anos."),
+    ]
+
+    def item(qid, origin, split, text, page):
+        return {
+            "id": qid,
+            "origin": origin,
+            "question": text,
+            "answerable": True,
+            "gold_status": "verified",
+            "split": split,
+            "gold": [{"source_id": "MS-2019", "pdf_page": page, "quote": "x"}],
+        }
+
+    questions = load_questions_from(
+        [
+            item("a", "real", "dev", "pode dar mel", 10),
+            item("b", "synthetic", "test", "pipoca no lanche", 40),
+            item("c", "synthetic", "dev", "pipoca no lanche", 10),
+        ]
+    )
+    common = {"embedder": HashEmbedder(dim=64), "tolerance": 0, "retrievers": ("bm25",)}
+    dev = run_eval(_index(chunks), questions, split="dev", **common)
+    assert dev["split"] == "dev"
+    assert dev["n_answerable"] == 2
+    with pytest.raises(ValueError, match="split"):
+        run_eval(_index(chunks), questions, split="train", **common)
+    report = run_eval(_index(chunks), questions, **common)
+    groups = {(g["split"], g["origin"]): g for g in report["retrievers"][0]["groups"]}
+    assert groups[("all", "all")]["n"] == 3
+    assert groups[("dev", "all")]["n"] == 2
+    assert groups[("test", "synthetic")]["recall_at_5"] == 1.0
+    assert groups[("dev", "synthetic")]["recall_at_5"] == 0.0
+    assert ("test", "real") not in groups
+    write_results(report, tmp_path)
+    text = (tmp_path / "results.md").read_text(encoding="utf-8")
+    assert "### By split" in text
+    assert "| bm25 | dev | real |" in text
+    header = (tmp_path / "per_question.csv").read_text(encoding="utf-8").splitlines()[0]
+    assert header.startswith("id,origin,split,")
 
 
 def load_questions_from(items: list[dict]) -> list:

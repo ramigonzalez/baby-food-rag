@@ -1,0 +1,6972 @@
+{
+  "page_tolerance": 1,
+  "split": "all",
+  "hit_rule": "same source_id and abs(retrieved pdf_page - gold pdf_page) <= 1",
+  "fusion_pool": 50,
+  "rrf_k": 60,
+  "n_questions": 115,
+  "n_answerable": 100,
+  "n_unanswerable": 15,
+  "embedder": "intfloat/multilingual-e5-large",
+  "retrievers": [
+    {
+      "retriever": "bm25",
+      "n": 100,
+      "recall_at_5": 0.2583333333333333,
+      "recall_at_10": 0.4016666666666666,
+      "mrr": 0.27008152325637597,
+      "groups": [
+        {
+          "split": "all",
+          "origin": "all",
+          "n": 100,
+          "recall_at_5": 0.2583333333333333,
+          "recall_at_10": 0.4016666666666666,
+          "mrr": 0.27008152325637597
+        },
+        {
+          "split": "all",
+          "origin": "real",
+          "n": 8,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.041666666666666664,
+          "mrr": 0.04765364843489844
+        },
+        {
+          "split": "all",
+          "origin": "plan",
+          "n": 12,
+          "recall_at_5": 0.4166666666666667,
+          "recall_at_10": 0.4583333333333333,
+          "mrr": 0.6435042735042735
+        },
+        {
+          "split": "all",
+          "origin": "synthetic",
+          "n": 80,
+          "recall_at_5": 0.26041666666666663,
+          "recall_at_10": 0.4291666666666667,
+          "mrr": 0.23631089820133905
+        },
+        {
+          "split": "dev",
+          "origin": "all",
+          "n": 60,
+          "recall_at_5": 0.28611111111111115,
+          "recall_at_10": 0.39166666666666666,
+          "mrr": 0.311288195428421
+        },
+        {
+          "split": "dev",
+          "origin": "real",
+          "n": 4,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.08333333333333333,
+          "mrr": 0.057995650183150185
+        },
+        {
+          "split": "dev",
+          "origin": "plan",
+          "n": 8,
+          "recall_at_5": 0.47916666666666663,
+          "recall_at_10": 0.5416666666666666,
+          "mrr": 0.705448717948718
+        },
+        {
+          "split": "dev",
+          "origin": "synthetic",
+          "n": 48,
+          "recall_at_5": 0.2777777777777778,
+          "recall_at_10": 0.3923611111111111,
+          "mrr": 0.26670248711214406
+        },
+        {
+          "split": "test",
+          "origin": "all",
+          "n": 40,
+          "recall_at_5": 0.21666666666666665,
+          "recall_at_10": 0.4166666666666667,
+          "mrr": 0.2082715149983084
+        },
+        {
+          "split": "test",
+          "origin": "real",
+          "n": 4,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "mrr": 0.03731164668664669
+        },
+        {
+          "split": "test",
+          "origin": "plan",
+          "n": 4,
+          "recall_at_5": 0.29166666666666663,
+          "recall_at_10": 0.29166666666666663,
+          "mrr": 0.5196153846153846
+        },
+        {
+          "split": "test",
+          "origin": "synthetic",
+          "n": 32,
+          "recall_at_5": 0.234375,
+          "recall_at_10": 0.484375,
+          "mrr": 0.1907235148351316
+        }
+      ]
+    },
+    {
+      "retriever": "dense",
+      "n": 100,
+      "recall_at_5": 0.45833333333333337,
+      "recall_at_10": 0.5666666666666667,
+      "mrr": 0.3834966924025837,
+      "groups": [
+        {
+          "split": "all",
+          "origin": "all",
+          "n": 100,
+          "recall_at_5": 0.45833333333333337,
+          "recall_at_10": 0.5666666666666667,
+          "mrr": 0.3834966924025837
+        },
+        {
+          "split": "all",
+          "origin": "real",
+          "n": 8,
+          "recall_at_5": 0.125,
+          "recall_at_10": 0.125,
+          "mrr": 0.16206489218495168
+        },
+        {
+          "split": "all",
+          "origin": "plan",
+          "n": 12,
+          "recall_at_5": 0.47222222222222227,
+          "recall_at_10": 0.625,
+          "mrr": 0.6840277777777778
+        },
+        {
+          "split": "all",
+          "origin": "synthetic",
+          "n": 80,
+          "recall_at_5": 0.4895833333333333,
+          "recall_at_10": 0.6020833333333333,
+          "mrr": 0.36056020961806784
+        },
+        {
+          "split": "dev",
+          "origin": "all",
+          "n": 60,
+          "recall_at_5": 0.49166666666666664,
+          "recall_at_10": 0.5972222222222222,
+          "mrr": 0.4198928076064823
+        },
+        {
+          "split": "dev",
+          "origin": "real",
+          "n": 4,
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "mrr": 0.03720167979473996
+        },
+        {
+          "split": "dev",
+          "origin": "plan",
+          "n": 8,
+          "recall_at_5": 0.5208333333333334,
+          "recall_at_10": 0.6875,
+          "mrr": 0.640625
+        },
+        {
+          "split": "dev",
+          "origin": "synthetic",
+          "n": 48,
+          "recall_at_5": 0.5277777777777778,
+          "recall_at_10": 0.6319444444444444,
+          "mrr": 0.4149950361918746
+        },
+        {
+          "split": "test",
+          "origin": "all",
+          "n": 40,
+          "recall_at_5": 0.4083333333333333,
+          "recall_at_10": 0.5208333333333333,
+          "mrr": 0.32890251959673583
+        },
+        {
+          "split": "test",
+          "origin": "real",
+          "n": 4,
+          "recall_at_5": 0.25,
+          "recall_at_10": 0.25,
+          "mrr": 0.2869281045751634
+        },
+        {
+          "split": "test",
+          "origin": "plan",
+          "n": 4,
+          "recall_at_5": 0.375,
+          "recall_at_10": 0.5,
+          "mrr": 0.7708333333333334
+        },
+        {
+          "split": "test",
+          "origin": "synthetic",
+          "n": 32,
+          "recall_at_5": 0.4322916666666667,
+          "recall_at_10": 0.5572916666666666,
+          "mrr": 0.2789079697573577
+        }
+      ]
+    },
+    {
+      "retriever": "hybrid",
+      "n": 100,
+      "recall_at_5": 0.44333333333333336,
+      "recall_at_10": 0.5733333333333334,
+      "mrr": 0.39031897037988517,
+      "groups": [
+        {
+          "split": "all",
+          "origin": "all",
+          "n": 100,
+          "recall_at_5": 0.44333333333333336,
+          "recall_at_10": 0.5733333333333334,
+          "mrr": 0.39031897037988517
+        },
+        {
+          "split": "all",
+          "origin": "real",
+          "n": 8,
+          "recall_at_5": 0.2916666666666667,
+          "recall_at_10": 0.3541666666666667,
+          "mrr": 0.16453611203907517
+        },
+        {
+          "split": "all",
+          "origin": "plan",
+          "n": 12,
+          "recall_at_5": 0.5694444444444444,
+          "recall_at_10": 0.8611111111111112,
+          "mrr": 0.636904761904762
+        },
+        {
+          "split": "all",
+          "origin": "synthetic",
+          "n": 80,
+          "recall_at_5": 0.4395833333333333,
+          "recall_at_10": 0.5520833333333333,
+          "mrr": 0.37590938748523467
+        },
+        {
+          "split": "dev",
+          "origin": "all",
+          "n": 60,
+          "recall_at_5": 0.4888888888888889,
+          "recall_at_10": 0.6277777777777778,
+          "mrr": 0.4314296263156326
+        },
+        {
+          "split": "dev",
+          "origin": "real",
+          "n": 4,
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "mrr": 0.14995507637017072
+        },
+        {
+          "split": "dev",
+          "origin": "plan",
+          "n": 8,
+          "recall_at_5": 0.6041666666666666,
+          "recall_at_10": 0.8958333333333334,
+          "mrr": 0.6678571428571428
+        },
+        {
+          "split": "dev",
+          "origin": "synthetic",
+          "n": 48,
+          "recall_at_5": 0.4826388888888889,
+          "recall_at_10": 0.607638888888889,
+          "mrr": 0.415481252720836
+        },
+        {
+          "split": "test",
+          "origin": "all",
+          "n": 40,
+          "recall_at_5": 0.375,
+          "recall_at_10": 0.4916666666666667,
+          "mrr": 0.32865298647626406
+        },
+        {
+          "split": "test",
+          "origin": "real",
+          "n": 4,
+          "recall_at_5": 0.25,
+          "recall_at_10": 0.375,
+          "mrr": 0.17911714770797962
+        },
+        {
+          "split": "test",
+          "origin": "plan",
+          "n": 4,
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.7916666666666666,
+          "mrr": 0.575
+        },
+        {
+          "split": "test",
+          "origin": "synthetic",
+          "n": 32,
+          "recall_at_5": 0.375,
+          "recall_at_10": 0.46875,
+          "mrr": 0.3165515896318326
+        }
+      ]
+    }
+  ],
+  "by_tolerance": {
+    "0": {
+      "retrievers": [
+        {
+          "retriever": "bm25",
+          "n": 100,
+          "recall_at_5": 0.175,
+          "recall_at_10": 0.30833333333333335,
+          "mrr": 0.18548066692175968,
+          "groups": [
+            {
+              "split": "all",
+              "origin": "all",
+              "n": 100,
+              "recall_at_5": 0.175,
+              "recall_at_10": 0.30833333333333335,
+              "mrr": 0.18548066692175968
+            },
+            {
+              "split": "all",
+              "origin": "real",
+              "n": 8,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.0,
+              "mrr": 0.034852362819967626
+            },
+            {
+              "split": "all",
+              "origin": "plan",
+              "n": 12,
+              "recall_at_5": 0.34722222222222227,
+              "recall_at_10": 0.4166666666666667,
+              "mrr": 0.5437919719169719
+            },
+            {
+              "split": "all",
+              "origin": "synthetic",
+              "n": 80,
+              "recall_at_5": 0.16666666666666669,
+              "recall_at_10": 0.32291666666666663,
+              "mrr": 0.14679680158265707
+            },
+            {
+              "split": "dev",
+              "origin": "all",
+              "n": 60,
+              "recall_at_5": 0.18055555555555555,
+              "recall_at_10": 0.28611111111111115,
+              "mrr": 0.20348799461194134
+            },
+            {
+              "split": "dev",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.0,
+              "mrr": 0.04057140775890776
+            },
+            {
+              "split": "dev",
+              "origin": "plan",
+              "n": 8,
+              "recall_at_5": 0.375,
+              "recall_at_10": 0.47916666666666663,
+              "mrr": 0.5590945512820513
+            },
+            {
+              "split": "dev",
+              "origin": "synthetic",
+              "n": 48,
+              "recall_at_5": 0.16319444444444445,
+              "recall_at_10": 0.2777777777777778,
+              "mrr": 0.1577966174046758
+            },
+            {
+              "split": "test",
+              "origin": "all",
+              "n": 40,
+              "recall_at_5": 0.16666666666666669,
+              "recall_at_10": 0.3416666666666667,
+              "mrr": 0.15846967538648726
+            },
+            {
+              "split": "test",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.0,
+              "mrr": 0.029133317881027496
+            },
+            {
+              "split": "test",
+              "origin": "plan",
+              "n": 4,
+              "recall_at_5": 0.29166666666666663,
+              "recall_at_10": 0.29166666666666663,
+              "mrr": 0.5131868131868131
+            },
+            {
+              "split": "test",
+              "origin": "synthetic",
+              "n": 32,
+              "recall_at_5": 0.171875,
+              "recall_at_10": 0.390625,
+              "mrr": 0.130297077849629
+            }
+          ]
+        },
+        {
+          "retriever": "dense",
+          "n": 100,
+          "recall_at_5": 0.4033333333333334,
+          "recall_at_10": 0.5016666666666666,
+          "mrr": 0.3303303542790595,
+          "groups": [
+            {
+              "split": "all",
+              "origin": "all",
+              "n": 100,
+              "recall_at_5": 0.4033333333333334,
+              "recall_at_10": 0.5016666666666666,
+              "mrr": 0.3303303542790595
+            },
+            {
+              "split": "all",
+              "origin": "real",
+              "n": 8,
+              "recall_at_5": 0.125,
+              "recall_at_10": 0.125,
+              "mrr": 0.15111124361136935
+            },
+            {
+              "split": "all",
+              "origin": "plan",
+              "n": 12,
+              "recall_at_5": 0.34722222222222227,
+              "recall_at_10": 0.5,
+              "mrr": 0.4769382255389718
+            },
+            {
+              "split": "all",
+              "origin": "synthetic",
+              "n": 80,
+              "recall_at_5": 0.4395833333333333,
+              "recall_at_10": 0.5395833333333333,
+              "mrr": 0.32626108465684167
+            },
+            {
+              "split": "dev",
+              "origin": "all",
+              "n": 60,
+              "recall_at_5": 0.4,
+              "recall_at_10": 0.4972222222222222,
+              "mrr": 0.34783419082297473
+            },
+            {
+              "split": "dev",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.0,
+              "mrr": 0.03719732135680412
+            },
+            {
+              "split": "dev",
+              "origin": "plan",
+              "n": 8,
+              "recall_at_5": 0.3333333333333333,
+              "recall_at_10": 0.5,
+              "mrr": 0.423740671641791
+            },
+            {
+              "split": "dev",
+              "origin": "synthetic",
+              "n": 48,
+              "recall_at_5": 0.4444444444444444,
+              "recall_at_10": 0.5381944444444444,
+              "mrr": 0.36106951647535285
+            },
+            {
+              "split": "test",
+              "origin": "all",
+              "n": 40,
+              "recall_at_5": 0.4083333333333333,
+              "recall_at_10": 0.5083333333333333,
+              "mrr": 0.3040745994631867
+            },
+            {
+              "split": "test",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.25,
+              "recall_at_10": 0.25,
+              "mrr": 0.26502516586593455
+            },
+            {
+              "split": "test",
+              "origin": "plan",
+              "n": 4,
+              "recall_at_5": 0.375,
+              "recall_at_10": 0.5,
+              "mrr": 0.5833333333333334
+            },
+            {
+              "split": "test",
+              "origin": "synthetic",
+              "n": 32,
+              "recall_at_5": 0.4322916666666667,
+              "recall_at_10": 0.5416666666666666,
+              "mrr": 0.2740484369290749
+            }
+          ]
+        },
+        {
+          "retriever": "hybrid",
+          "n": 100,
+          "recall_at_5": 0.375,
+          "recall_at_10": 0.48166666666666663,
+          "mrr": 0.3127196657751535,
+          "groups": [
+            {
+              "split": "all",
+              "origin": "all",
+              "n": 100,
+              "recall_at_5": 0.375,
+              "recall_at_10": 0.48166666666666663,
+              "mrr": 0.3127196657751535
+            },
+            {
+              "split": "all",
+              "origin": "real",
+              "n": 8,
+              "recall_at_5": 0.2916666666666667,
+              "recall_at_10": 0.2916666666666667,
+              "mrr": 0.10211606939515193
+            },
+            {
+              "split": "all",
+              "origin": "plan",
+              "n": 12,
+              "recall_at_5": 0.5,
+              "recall_at_10": 0.7222222222222222,
+              "mrr": 0.5475308641975308
+            },
+            {
+              "split": "all",
+              "origin": "synthetic",
+              "n": 80,
+              "recall_at_5": 0.36458333333333337,
+              "recall_at_10": 0.4645833333333333,
+              "mrr": 0.298558345649797
+            },
+            {
+              "split": "dev",
+              "origin": "all",
+              "n": 60,
+              "recall_at_5": 0.41388888888888886,
+              "recall_at_10": 0.5111111111111112,
+              "mrr": 0.3412256643079862
+            },
+            {
+              "split": "dev",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.3333333333333333,
+              "recall_at_10": 0.3333333333333333,
+              "mrr": 0.1417816577489909
+            },
+            {
+              "split": "dev",
+              "origin": "plan",
+              "n": 8,
+              "recall_at_5": 0.5416666666666666,
+              "recall_at_10": 0.7708333333333334,
+              "mrr": 0.5504629629629629
+            },
+            {
+              "split": "dev",
+              "origin": "synthetic",
+              "n": 48,
+              "recall_at_5": 0.3993055555555556,
+              "recall_at_10": 0.4826388888888889,
+              "mrr": 0.32297311507873966
+            },
+            {
+              "split": "test",
+              "origin": "all",
+              "n": 40,
+              "recall_at_5": 0.31666666666666665,
+              "recall_at_10": 0.4375,
+              "mrr": 0.26996066797590446
+            },
+            {
+              "split": "test",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.25,
+              "recall_at_10": 0.25,
+              "mrr": 0.06245048104131296
+            },
+            {
+              "split": "test",
+              "origin": "plan",
+              "n": 4,
+              "recall_at_5": 0.41666666666666663,
+              "recall_at_10": 0.625,
+              "mrr": 0.5416666666666666
+            },
+            {
+              "split": "test",
+              "origin": "synthetic",
+              "n": 32,
+              "recall_at_5": 0.3125,
+              "recall_at_10": 0.4375,
+              "mrr": 0.2619361915063831
+            }
+          ]
+        }
+      ],
+      "per_question": [
+        {
+          "retriever": "bm25",
+          "id": "real-01",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.030303030303030304,
+          "first_rank": 33
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-03",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02631578947368421,
+          "first_rank": 38
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-04",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.008849557522123894,
+          "first_rank": 113
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-06",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.023809523809523808,
+          "first_rank": 42
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-07",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-08",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03125,
+          "first_rank": 32
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-09",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-10",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.018867924528301886,
+          "first_rank": 53
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-01",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-02",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-03",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-04",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-05",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-06",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.014285714285714285,
+          "first_rank": 70
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-07",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-08",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-09",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-10",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-11",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.038461538461538464,
+          "first_rank": 26
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-12",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-01",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-02",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-03",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-04",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03225806451612903,
+          "first_rank": 31
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-05",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-06",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-07",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-08",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0058823529411764705,
+          "first_rank": 170
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-09",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.045454545454545456,
+          "first_rank": 22
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-10",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02857142857142857,
+          "first_rank": 35
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-11",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-12",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.01098901098901099,
+          "first_rank": 91
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-001",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02040816326530612,
+          "first_rank": 49
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-002",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-003",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.004347826086956522,
+          "first_rank": 230
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-004",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-005",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0040650406504065045,
+          "first_rank": 246
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-006",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-007",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0037735849056603774,
+          "first_rank": 265
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-008",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-009",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-010",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-011",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-012",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.011764705882352941,
+          "first_rank": 85
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-013",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-014",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-015",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.04,
+          "first_rank": 25
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-016",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.017857142857142856,
+          "first_rank": 56
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-017",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-018",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-019",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.020833333333333332,
+          "first_rank": 48
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-020",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-021",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.016129032258064516,
+          "first_rank": 62
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-022",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.015151515151515152,
+          "first_rank": 66
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-023",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-024",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.011363636363636364,
+          "first_rank": 88
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-025",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.014705882352941176,
+          "first_rank": 68
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-026",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.007142857142857143,
+          "first_rank": 140
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-027",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.003076923076923077,
+          "first_rank": 325
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-028",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02,
+          "first_rank": 50
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-029",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-030",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-031",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.009174311926605505,
+          "first_rank": 109
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-032",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.00909090909090909,
+          "first_rank": 110
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-033",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05,
+          "first_rank": 20
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-034",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.007407407407407408,
+          "first_rank": 135
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-035",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02564102564102564,
+          "first_rank": 39
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-036",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.025,
+          "first_rank": 40
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-037",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.016666666666666666,
+          "first_rank": 60
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-038",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-039",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-040",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.014492753623188406,
+          "first_rank": 69
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-041",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.005154639175257732,
+          "first_rank": 194
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-042",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-043",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.003703703703703704,
+          "first_rank": 270
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-044",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02564102564102564,
+          "first_rank": 39
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-045",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.009708737864077669,
+          "first_rank": 103
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-046",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0035587188612099642,
+          "first_rank": 281
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-047",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-048",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.013888888888888888,
+          "first_rank": 72
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-049",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-050",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-051",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-052",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.029411764705882353,
+          "first_rank": 34
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-053",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-054",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02857142857142857,
+          "first_rank": 35
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-055",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.022727272727272728,
+          "first_rank": 44
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-056",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-057",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.043478260869565216,
+          "first_rank": 23
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-058",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1111111111111111,
+          "first_rank": 9
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-059",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.005434782608695652,
+          "first_rank": 184
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-060",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-061",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-062",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-063",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.01098901098901099,
+          "first_rank": 91
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-064",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03225806451612903,
+          "first_rank": 31
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-065",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.012048192771084338,
+          "first_rank": 83
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-066",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-067",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.024390243902439025,
+          "first_rank": 41
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-068",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.014492753623188406,
+          "first_rank": 69
+        },
+        {
+          "retriever": "dense",
+          "id": "real-01",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.019230769230769232,
+          "first_rank": 52
+        },
+        {
+          "retriever": "dense",
+          "id": "real-03",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "real-04",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03333333333333333,
+          "first_rank": 30
+        },
+        {
+          "retriever": "dense",
+          "id": "real-06",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.034482758620689655,
+          "first_rank": 29
+        },
+        {
+          "retriever": "dense",
+          "id": "real-07",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "dense",
+          "id": "real-08",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.004166666666666667,
+          "first_rank": 240
+        },
+        {
+          "retriever": "dense",
+          "id": "real-09",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.010638297872340425,
+          "first_rank": 94
+        },
+        {
+          "retriever": "dense",
+          "id": "real-10",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.016129032258064516,
+          "first_rank": 62
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-01",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-02",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-03",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-04",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.014925373134328358,
+          "first_rank": 67
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-05",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-06",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-07",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-08",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-09",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-10",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-11",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-12",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-01",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-02",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-03",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-04",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.058823529411764705,
+          "first_rank": 17
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-05",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-06",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-07",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-08",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-09",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-10",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-11",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-12",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-001",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-002",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-003",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-004",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-005",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.00558659217877095,
+          "first_rank": 179
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-006",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-007",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05,
+          "first_rank": 20
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-008",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-009",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-010",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-011",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-012",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-013",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-014",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02857142857142857,
+          "first_rank": 35
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-015",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-016",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02,
+          "first_rank": 50
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-017",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-018",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-019",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-020",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.04,
+          "first_rank": 25
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-021",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.004878048780487805,
+          "first_rank": 205
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-022",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-023",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-024",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02,
+          "first_rank": 50
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-025",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-026",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-027",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.022222222222222223,
+          "first_rank": 45
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-028",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-029",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-030",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-031",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-032",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-033",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-034",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.011494252873563218,
+          "first_rank": 87
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-035",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-036",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-037",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-038",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-039",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-040",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-041",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.019230769230769232,
+          "first_rank": 52
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-042",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-043",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-044",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-045",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-046",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.005376344086021506,
+          "first_rank": 186
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-047",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-048",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-049",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-050",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.022727272727272728,
+          "first_rank": 44
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-051",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-052",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-053",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-054",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-055",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05555555555555555,
+          "first_rank": 18
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-056",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-057",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-058",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-059",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02040816326530612,
+          "first_rank": 49
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-060",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-061",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-062",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-063",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05555555555555555,
+          "first_rank": 18
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-064",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05263157894736842,
+          "first_rank": 19
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-065",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.012987012987012988,
+          "first_rank": 77
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-066",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-067",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05263157894736842,
+          "first_rank": 19
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-068",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-01",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.014925373134328358,
+          "first_rank": 67
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-03",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-04",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.017543859649122806,
+          "first_rank": 57
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-06",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-07",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-08",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.018867924528301886,
+          "first_rank": 53
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-09",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03225806451612903,
+          "first_rank": 31
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-10",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-01",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-02",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-03",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-04",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-05",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-06",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-07",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-08",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-09",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-10",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-11",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-12",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-01",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-02",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-03",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-04",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-05",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-06",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-07",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-08",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-09",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-10",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-11",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-12",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05555555555555555,
+          "first_rank": 18
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-001",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-002",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-003",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-004",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-005",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-006",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-007",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02702702702702703,
+          "first_rank": 37
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-008",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-009",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-010",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-011",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-012",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-013",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-014",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-015",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-016",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-017",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-018",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-019",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.020833333333333332,
+          "first_rank": 48
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-020",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-021",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-022",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-023",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-024",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-025",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-026",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-027",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-028",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-029",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-030",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-031",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-032",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.038461538461538464,
+          "first_rank": 26
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-033",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-034",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-035",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-036",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.015151515151515152,
+          "first_rank": 66
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-037",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.016666666666666666,
+          "first_rank": 60
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-038",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-039",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-040",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.034482758620689655,
+          "first_rank": 29
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-041",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-042",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-043",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-044",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-045",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.058823529411764705,
+          "first_rank": 17
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-046",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-047",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-048",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.034482758620689655,
+          "first_rank": 29
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-049",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-050",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-051",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-052",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-053",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-054",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-055",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02631578947368421,
+          "first_rank": 38
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-056",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-057",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-058",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-059",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-060",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-061",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-062",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-063",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-064",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.029411764705882353,
+          "first_rank": 34
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-065",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-066",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-067",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.030303030303030304,
+          "first_rank": 33
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-068",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        }
+      ]
+    },
+    "1": {
+      "retrievers": [
+        {
+          "retriever": "bm25",
+          "n": 100,
+          "recall_at_5": 0.2583333333333333,
+          "recall_at_10": 0.4016666666666666,
+          "mrr": 0.27008152325637597,
+          "groups": [
+            {
+              "split": "all",
+              "origin": "all",
+              "n": 100,
+              "recall_at_5": 0.2583333333333333,
+              "recall_at_10": 0.4016666666666666,
+              "mrr": 0.27008152325637597
+            },
+            {
+              "split": "all",
+              "origin": "real",
+              "n": 8,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.041666666666666664,
+              "mrr": 0.04765364843489844
+            },
+            {
+              "split": "all",
+              "origin": "plan",
+              "n": 12,
+              "recall_at_5": 0.4166666666666667,
+              "recall_at_10": 0.4583333333333333,
+              "mrr": 0.6435042735042735
+            },
+            {
+              "split": "all",
+              "origin": "synthetic",
+              "n": 80,
+              "recall_at_5": 0.26041666666666663,
+              "recall_at_10": 0.4291666666666667,
+              "mrr": 0.23631089820133905
+            },
+            {
+              "split": "dev",
+              "origin": "all",
+              "n": 60,
+              "recall_at_5": 0.28611111111111115,
+              "recall_at_10": 0.39166666666666666,
+              "mrr": 0.311288195428421
+            },
+            {
+              "split": "dev",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.08333333333333333,
+              "mrr": 0.057995650183150185
+            },
+            {
+              "split": "dev",
+              "origin": "plan",
+              "n": 8,
+              "recall_at_5": 0.47916666666666663,
+              "recall_at_10": 0.5416666666666666,
+              "mrr": 0.705448717948718
+            },
+            {
+              "split": "dev",
+              "origin": "synthetic",
+              "n": 48,
+              "recall_at_5": 0.2777777777777778,
+              "recall_at_10": 0.3923611111111111,
+              "mrr": 0.26670248711214406
+            },
+            {
+              "split": "test",
+              "origin": "all",
+              "n": 40,
+              "recall_at_5": 0.21666666666666665,
+              "recall_at_10": 0.4166666666666667,
+              "mrr": 0.2082715149983084
+            },
+            {
+              "split": "test",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.0,
+              "mrr": 0.03731164668664669
+            },
+            {
+              "split": "test",
+              "origin": "plan",
+              "n": 4,
+              "recall_at_5": 0.29166666666666663,
+              "recall_at_10": 0.29166666666666663,
+              "mrr": 0.5196153846153846
+            },
+            {
+              "split": "test",
+              "origin": "synthetic",
+              "n": 32,
+              "recall_at_5": 0.234375,
+              "recall_at_10": 0.484375,
+              "mrr": 0.1907235148351316
+            }
+          ]
+        },
+        {
+          "retriever": "dense",
+          "n": 100,
+          "recall_at_5": 0.45833333333333337,
+          "recall_at_10": 0.5666666666666667,
+          "mrr": 0.3834966924025837,
+          "groups": [
+            {
+              "split": "all",
+              "origin": "all",
+              "n": 100,
+              "recall_at_5": 0.45833333333333337,
+              "recall_at_10": 0.5666666666666667,
+              "mrr": 0.3834966924025837
+            },
+            {
+              "split": "all",
+              "origin": "real",
+              "n": 8,
+              "recall_at_5": 0.125,
+              "recall_at_10": 0.125,
+              "mrr": 0.16206489218495168
+            },
+            {
+              "split": "all",
+              "origin": "plan",
+              "n": 12,
+              "recall_at_5": 0.47222222222222227,
+              "recall_at_10": 0.625,
+              "mrr": 0.6840277777777778
+            },
+            {
+              "split": "all",
+              "origin": "synthetic",
+              "n": 80,
+              "recall_at_5": 0.4895833333333333,
+              "recall_at_10": 0.6020833333333333,
+              "mrr": 0.36056020961806784
+            },
+            {
+              "split": "dev",
+              "origin": "all",
+              "n": 60,
+              "recall_at_5": 0.49166666666666664,
+              "recall_at_10": 0.5972222222222222,
+              "mrr": 0.4198928076064823
+            },
+            {
+              "split": "dev",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.0,
+              "recall_at_10": 0.0,
+              "mrr": 0.03720167979473996
+            },
+            {
+              "split": "dev",
+              "origin": "plan",
+              "n": 8,
+              "recall_at_5": 0.5208333333333334,
+              "recall_at_10": 0.6875,
+              "mrr": 0.640625
+            },
+            {
+              "split": "dev",
+              "origin": "synthetic",
+              "n": 48,
+              "recall_at_5": 0.5277777777777778,
+              "recall_at_10": 0.6319444444444444,
+              "mrr": 0.4149950361918746
+            },
+            {
+              "split": "test",
+              "origin": "all",
+              "n": 40,
+              "recall_at_5": 0.4083333333333333,
+              "recall_at_10": 0.5208333333333333,
+              "mrr": 0.32890251959673583
+            },
+            {
+              "split": "test",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.25,
+              "recall_at_10": 0.25,
+              "mrr": 0.2869281045751634
+            },
+            {
+              "split": "test",
+              "origin": "plan",
+              "n": 4,
+              "recall_at_5": 0.375,
+              "recall_at_10": 0.5,
+              "mrr": 0.7708333333333334
+            },
+            {
+              "split": "test",
+              "origin": "synthetic",
+              "n": 32,
+              "recall_at_5": 0.4322916666666667,
+              "recall_at_10": 0.5572916666666666,
+              "mrr": 0.2789079697573577
+            }
+          ]
+        },
+        {
+          "retriever": "hybrid",
+          "n": 100,
+          "recall_at_5": 0.44333333333333336,
+          "recall_at_10": 0.5733333333333334,
+          "mrr": 0.39031897037988517,
+          "groups": [
+            {
+              "split": "all",
+              "origin": "all",
+              "n": 100,
+              "recall_at_5": 0.44333333333333336,
+              "recall_at_10": 0.5733333333333334,
+              "mrr": 0.39031897037988517
+            },
+            {
+              "split": "all",
+              "origin": "real",
+              "n": 8,
+              "recall_at_5": 0.2916666666666667,
+              "recall_at_10": 0.3541666666666667,
+              "mrr": 0.16453611203907517
+            },
+            {
+              "split": "all",
+              "origin": "plan",
+              "n": 12,
+              "recall_at_5": 0.5694444444444444,
+              "recall_at_10": 0.8611111111111112,
+              "mrr": 0.636904761904762
+            },
+            {
+              "split": "all",
+              "origin": "synthetic",
+              "n": 80,
+              "recall_at_5": 0.4395833333333333,
+              "recall_at_10": 0.5520833333333333,
+              "mrr": 0.37590938748523467
+            },
+            {
+              "split": "dev",
+              "origin": "all",
+              "n": 60,
+              "recall_at_5": 0.4888888888888889,
+              "recall_at_10": 0.6277777777777778,
+              "mrr": 0.4314296263156326
+            },
+            {
+              "split": "dev",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.3333333333333333,
+              "recall_at_10": 0.3333333333333333,
+              "mrr": 0.14995507637017072
+            },
+            {
+              "split": "dev",
+              "origin": "plan",
+              "n": 8,
+              "recall_at_5": 0.6041666666666666,
+              "recall_at_10": 0.8958333333333334,
+              "mrr": 0.6678571428571428
+            },
+            {
+              "split": "dev",
+              "origin": "synthetic",
+              "n": 48,
+              "recall_at_5": 0.4826388888888889,
+              "recall_at_10": 0.607638888888889,
+              "mrr": 0.415481252720836
+            },
+            {
+              "split": "test",
+              "origin": "all",
+              "n": 40,
+              "recall_at_5": 0.375,
+              "recall_at_10": 0.4916666666666667,
+              "mrr": 0.32865298647626406
+            },
+            {
+              "split": "test",
+              "origin": "real",
+              "n": 4,
+              "recall_at_5": 0.25,
+              "recall_at_10": 0.375,
+              "mrr": 0.17911714770797962
+            },
+            {
+              "split": "test",
+              "origin": "plan",
+              "n": 4,
+              "recall_at_5": 0.5,
+              "recall_at_10": 0.7916666666666666,
+              "mrr": 0.575
+            },
+            {
+              "split": "test",
+              "origin": "synthetic",
+              "n": 32,
+              "recall_at_5": 0.375,
+              "recall_at_10": 0.46875,
+              "mrr": 0.3165515896318326
+            }
+          ]
+        }
+      ],
+      "per_question": [
+        {
+          "retriever": "bm25",
+          "id": "real-01",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-03",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.030303030303030304,
+          "first_rank": 33
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-04",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.01098901098901099,
+          "first_rank": 91
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-06",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.023809523809523808,
+          "first_rank": 42
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-07",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-08",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03125,
+          "first_rank": 32
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-09",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "bm25",
+          "id": "real-10",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.045454545454545456,
+          "first_rank": 22
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-01",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-02",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-03",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-04",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-05",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-06",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.04,
+          "first_rank": 25
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-07",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-08",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-09",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-10",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-11",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.038461538461538464,
+          "first_rank": 26
+        },
+        {
+          "retriever": "bm25",
+          "id": "plan-12",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-01",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-02",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-03",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-04",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03225806451612903,
+          "first_rank": 31
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-05",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-06",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-07",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-08",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0058823529411764705,
+          "first_rank": 170
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-09",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.045454545454545456,
+          "first_rank": 22
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-10",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.034482758620689655,
+          "first_rank": 29
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-11",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn-12",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-001",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.030303030303030304,
+          "first_rank": 33
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-002",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-003",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02857142857142857,
+          "first_rank": 35
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-004",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-005",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0056179775280898875,
+          "first_rank": 178
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-006",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-007",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-008",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-009",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-010",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-011",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-012",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-013",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-014",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-015",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.04,
+          "first_rank": 25
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-016",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.017857142857142856,
+          "first_rank": 56
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-017",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-018",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-019",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.024390243902439025,
+          "first_rank": 41
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-020",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-021",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.016129032258064516,
+          "first_rank": 62
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-022",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.015625,
+          "first_rank": 64
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-023",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-024",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.011363636363636364,
+          "first_rank": 88
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-025",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-026",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-027",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.003703703703703704,
+          "first_rank": 270
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-028",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02,
+          "first_rank": 50
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-029",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-030",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-031",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.024390243902439025,
+          "first_rank": 41
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-032",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.00909090909090909,
+          "first_rank": 110
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-033",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05,
+          "first_rank": 20
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-034",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02564102564102564,
+          "first_rank": 39
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-035",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02564102564102564,
+          "first_rank": 39
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-036",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.038461538461538464,
+          "first_rank": 26
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-037",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.019230769230769232,
+          "first_rank": 52
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-038",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-039",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-040",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1111111111111111,
+          "first_rank": 9
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-041",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.01,
+          "first_rank": 100
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-042",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-043",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.00510204081632653,
+          "first_rank": 196
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-044",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.045454545454545456,
+          "first_rank": 22
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-045",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.009708737864077669,
+          "first_rank": 103
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-046",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-047",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-048",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.045454545454545456,
+          "first_rank": 22
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-049",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-050",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-051",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-052",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-053",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-054",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-055",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-056",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-057",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.043478260869565216,
+          "first_rank": 23
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-058",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1111111111111111,
+          "first_rank": 9
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-059",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-060",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-061",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-062",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-063",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0136986301369863,
+          "first_rank": 73
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-064",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-065",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-066",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-067",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.024390243902439025,
+          "first_rank": 41
+        },
+        {
+          "retriever": "bm25",
+          "id": "syn2-068",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.014492753623188406,
+          "first_rank": 69
+        },
+        {
+          "retriever": "dense",
+          "id": "real-01",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.019230769230769232,
+          "first_rank": 52
+        },
+        {
+          "retriever": "dense",
+          "id": "real-03",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "real-04",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03333333333333333,
+          "first_rank": 30
+        },
+        {
+          "retriever": "dense",
+          "id": "real-06",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.034482758620689655,
+          "first_rank": 29
+        },
+        {
+          "retriever": "dense",
+          "id": "real-07",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "dense",
+          "id": "real-08",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0041841004184100415,
+          "first_rank": 239
+        },
+        {
+          "retriever": "dense",
+          "id": "real-09",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.058823529411764705,
+          "first_rank": 17
+        },
+        {
+          "retriever": "dense",
+          "id": "real-10",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05555555555555555,
+          "first_rank": 18
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-01",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-02",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-03",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-04",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-05",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-06",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-07",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-08",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-09",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-10",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-11",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "dense",
+          "id": "plan-12",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-01",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-02",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-03",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-04",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.058823529411764705,
+          "first_rank": 17
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-05",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-06",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-07",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-08",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-09",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-10",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-11",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "syn-12",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-001",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-002",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-003",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-004",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-005",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.00558659217877095,
+          "first_rank": 179
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-006",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-007",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05,
+          "first_rank": 20
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-008",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-009",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-010",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-011",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-012",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-013",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-014",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02857142857142857,
+          "first_rank": 35
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-015",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-016",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-017",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-018",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-019",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-020",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.043478260869565216,
+          "first_rank": 23
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-021",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.004878048780487805,
+          "first_rank": 205
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-022",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-023",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-024",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-025",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-026",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-027",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.022222222222222223,
+          "first_rank": 45
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-028",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-029",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-030",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-031",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-032",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-033",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-034",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.016129032258064516,
+          "first_rank": 62
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-035",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-036",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-037",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-038",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-039",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-040",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-041",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.019230769230769232,
+          "first_rank": 52
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-042",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-043",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-044",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-045",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-046",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.005376344086021506,
+          "first_rank": 186
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-047",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-048",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-049",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-050",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.022727272727272728,
+          "first_rank": 44
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-051",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-052",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-053",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-054",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-055",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-056",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-057",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-058",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-059",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-060",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-061",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-062",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-063",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05555555555555555,
+          "first_rank": 18
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-064",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-065",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03571428571428571,
+          "first_rank": 28
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-066",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-067",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05263157894736842,
+          "first_rank": 19
+        },
+        {
+          "retriever": "dense",
+          "id": "syn2-068",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-01",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.047619047619047616,
+          "first_rank": 21
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-03",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-04",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.017543859649122806,
+          "first_rank": 57
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-06",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-07",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.3333333333333333,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-08",
+          "origin": "real",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.018867924528301886,
+          "first_rank": 53
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-09",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.03225806451612903,
+          "first_rank": 31
+        },
+        {
+          "retriever": "hybrid",
+          "id": "real-10",
+          "origin": "real",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-01",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-02",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-03",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-04",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-05",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-06",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.3333333333333333,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-07",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-08",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-09",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-10",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-11",
+          "origin": "plan",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "hybrid",
+          "id": "plan-12",
+          "origin": "plan",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-01",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-02",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-03",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-04",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-05",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-06",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-07",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-08",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-09",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-10",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-11",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn-12",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.05555555555555555,
+          "first_rank": 18
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-001",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-002",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.06666666666666667,
+          "first_rank": 15
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-003",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-004",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-005",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-006",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-007",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.043478260869565216,
+          "first_rank": 23
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-008",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-009",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-010",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-011",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-012",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-013",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-014",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07142857142857142,
+          "first_rank": 14
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-015",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-016",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-017",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.1,
+          "first_rank": 10
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-018",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-019",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.020833333333333332,
+          "first_rank": 48
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-020",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-021",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-022",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.1111111111111111,
+          "first_rank": 9
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-023",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.16666666666666666,
+          "first_rank": 6
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-024",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-025",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.5,
+          "first_rank": 2
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-026",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-027",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-028",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-029",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.6666666666666666,
+          "recall_at_10": 0.6666666666666666,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-030",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-031",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.07692307692307693,
+          "first_rank": 13
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-032",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.038461538461538464,
+          "first_rank": 26
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-033",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-034",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.013513513513513514,
+          "first_rank": 74
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-035",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-036",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.02,
+          "first_rank": 50
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-037",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.016666666666666666,
+          "first_rank": 60
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-038",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-039",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-040",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.047619047619047616,
+          "first_rank": 21
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-041",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0,
+          "first_rank": null
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-042",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-043",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.0625,
+          "first_rank": 16
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-044",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-045",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.058823529411764705,
+          "first_rank": 17
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-046",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-047",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-048",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-049",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-050",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.08333333333333333,
+          "first_rank": 12
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-051",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-052",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-053",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-054",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.3333333333333333,
+          "first_rank": 3
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-055",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.058823529411764705,
+          "first_rank": 17
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-056",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.25,
+          "first_rank": 4
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-057",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.125,
+          "first_rank": 8
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-058",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-059",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-060",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-061",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-062",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 0.14285714285714285,
+          "first_rank": 7
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-063",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.027777777777777776,
+          "first_rank": 36
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-064",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.5,
+          "recall_at_10": 0.5,
+          "reciprocal_rank": 0.2,
+          "first_rank": 5
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-065",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.09090909090909091,
+          "first_rank": 11
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-066",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 1.0,
+          "recall_at_10": 1.0,
+          "reciprocal_rank": 1.0,
+          "first_rank": 1
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-067",
+          "origin": "synthetic",
+          "split": "dev",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.030303030303030304,
+          "first_rank": 33
+        },
+        {
+          "retriever": "hybrid",
+          "id": "syn2-068",
+          "origin": "synthetic",
+          "split": "test",
+          "recall_at_5": 0.0,
+          "recall_at_10": 0.0,
+          "reciprocal_rank": 0.037037037037037035,
+          "first_rank": 27
+        }
+      ]
+    }
+  }
+}

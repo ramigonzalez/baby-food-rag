@@ -16,6 +16,11 @@ there is no hit. Unanswerable questions are left out of both.
 Hybrid is reciprocal rank fusion (k 60) of the top 50 BM25 chunks and the
 top 50 dense chunks, then collapsed to pages. That pool is wider than the
 search command's pool of 20 so recall@10 is not cut off by the pool.
+
+Each question may carry ``split: dev`` or ``split: test`` (see
+``golden.py``). ``split="all"``, the default, scores every question, so
+earlier result folders stay reproducible. Means are also broken down by
+split and by origin.
 """
 
 from __future__ import annotations
@@ -29,13 +34,15 @@ import yaml
 
 from baby_food_rag.embed import l2_normalize
 from baby_food_rag.fusion import reciprocal_rank_fusion
+from baby_food_rag.golden import SPLITS
 from baby_food_rag.index import RETRIEVERS, CorpusIndex, _bm25_tokens
 from baby_food_rag.types import Chunk
 
 DEFAULT_TOLERANCE = 1
 FUSION_POOL = 50
 RRF_K = 60
-KS = (5, 10)
+ORIGINS = ("real", "plan", "synthetic")
+SPLIT_CHOICES = ("all", *SPLITS)
 
 
 def load_questions(path: Path) -> list[dict]:
@@ -52,6 +59,15 @@ def load_questions(path: Path) -> list[dict]:
     return questions
 
 
+def select_split(questions: list[dict], split: str) -> list[dict]:
+    """``all`` keeps every question. ``dev`` or ``test`` keeps that split only."""
+    if split not in SPLIT_CHOICES:
+        raise ValueError(f"split must be one of {', '.join(SPLIT_CHOICES)}")
+    if split == "all":
+        return list(questions)
+    return [item for item in questions if item.get("split") == split]
+
+
 def run_eval(
     index: CorpusIndex,
     questions: list[dict],
@@ -59,9 +75,11 @@ def run_eval(
     embedder: object | None = None,
     tolerance: int = DEFAULT_TOLERANCE,
     retrievers: tuple[str, ...] = RETRIEVERS,
+    split: str = "all",
 ) -> dict:
     if tolerance < 0:
         raise ValueError("page tolerance must be >= 0")
+    questions = select_split(questions, split)
     answerable = [item for item in questions if item["answerable"]]
     rankings = {
         name: _rank_all(index, [item["question"] for item in answerable], name, embedder)
@@ -72,6 +90,7 @@ def run_eval(
         by_tolerance[str(tol)] = _score(answerable, rankings, tol)
     return {
         "page_tolerance": tolerance,
+        "split": split,
         "hit_rule": (f"same source_id and abs(retrieved pdf_page - gold pdf_page) <= {tolerance}"),
         "fusion_pool": FUSION_POOL,
         "rrf_k": RRF_K,
@@ -102,6 +121,7 @@ def render_results(report: dict) -> str:
         "",
         "Not medical advice. This file is retrieval only. No answer was generated.",
         "",
+        f"Split: `{report.get('split', 'all')}`.",
         f"Answerable questions: {report['n_answerable']} of {report['n_questions']}.",
         f"Unanswerable questions are excluded from the means: {report['n_unanswerable']}.",
         "",
@@ -124,9 +144,25 @@ def render_results(report: dict) -> str:
         "",
         _table(report["retrievers"]),
         "",
+        "### By split",
+        "",
+        _group_table(report["retrievers"], "split"),
+        "",
+        "### By origin",
+        "",
+        _group_table(report["retrievers"], "origin"),
+        "",
+        "### By split and origin",
+        "",
+        _group_table(report["retrievers"], "both"),
+        "",
         "## Exact page (tolerance 0)",
         "",
         _table(report["by_tolerance"]["0"]["retrievers"]),
+        "",
+        "### By split",
+        "",
+        _group_table(report["by_tolerance"]["0"]["retrievers"], "split"),
         "",
         "Gold pages were chosen by an agent reading the extracted text, not by a",
         "health professional. `needs_review` questions are included in these means.",
@@ -155,6 +191,12 @@ def _question(item: object) -> dict:
     status = item.get("gold_status")
     if answerable and status not in {"verified", "needs_review"}:
         raise ValueError(f"{item['id']} gold_status must be verified or needs_review")
+    split = item.get("split")
+    if split is not None and split not in SPLITS:
+        raise ValueError(f"{item['id']} split must be dev or test, not {split!r}")
+    human_verified = item.get("human_verified", False)
+    if not isinstance(human_verified, bool):
+        raise ValueError(f"{item['id']} human_verified must be true or false")
     pages = []
     for entry in gold:
         if not isinstance(entry, dict):
@@ -179,6 +221,8 @@ def _question(item: object) -> dict:
         "question": str(item["question"]).strip(),
         "answerable": answerable,
         "gold_status": status if answerable else None,
+        "split": split,
+        "human_verified": human_verified,
         "notes": str(item.get("notes") or "").strip(),
         "gold": pages,
     }
@@ -281,29 +325,54 @@ def _score(
     retrievers = []
     per_question = []
     for name, lists in rankings.items():
-        recalls = {k: [] for k in KS}
-        rr_values = []
-        for question, pages in zip(questions, lists, strict=True):
-            row = _one(question, pages, tolerance)
-            per_question.append({"retriever": name, **row})
-            for k in KS:
-                recalls[k].append(row[f"recall_at_{k}"])
-            rr_values.append(row["reciprocal_rank"])
+        rows = [
+            _one(question, pages, tolerance)
+            for question, pages in zip(questions, lists, strict=True)
+        ]
+        per_question.extend({"retriever": name, **row} for row in rows)
         retrievers.append(
             {
                 "retriever": name,
-                "n": len(questions),
-                "recall_at_5": _mean(recalls[5]),
-                "recall_at_10": _mean(recalls[10]),
-                "mrr": _mean(rr_values),
+                **_summary(rows),
+                "groups": group_means(rows),
             }
         )
     return {"retrievers": retrievers, "per_question": per_question}
 
 
+def group_means(rows: list[dict]) -> list[dict]:
+    """Means for every split and origin, with ``all`` for either side. Empty groups are skipped."""
+    splits = ["all", *[name for name in SPLITS if any(row.get("split") == name for row in rows)]]
+    groups = []
+    for split in splits:
+        for origin in ("all", *ORIGINS):
+            chosen = [
+                row
+                for row in rows
+                if split in ("all", row.get("split")) and origin in ("all", row["origin"])
+            ]
+            if chosen:
+                groups.append({"split": split, "origin": origin, **_summary(chosen)})
+    return groups
+
+
+def _summary(rows: list[dict]) -> dict:
+    return {
+        "n": len(rows),
+        "recall_at_5": _mean([row["recall_at_5"] for row in rows]),
+        "recall_at_10": _mean([row["recall_at_10"] for row in rows]),
+        "mrr": _mean([row["reciprocal_rank"] for row in rows]),
+    }
+
+
 def _one(question: dict, pages: list[tuple[str, int]], tolerance: int) -> dict:
     scored = score_page_list(pages, question["gold"], tolerance)
-    return {"id": question["id"], "origin": question["origin"], **scored}
+    return {
+        "id": question["id"],
+        "origin": question["origin"],
+        "split": question.get("split"),
+        **scored,
+    }
 
 
 def _recall(pages: list[tuple[str, int]], gold: list[dict], tolerance: int) -> float:
@@ -358,31 +427,67 @@ def _table(rows: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def _group_table(rows: list[dict], by: str) -> str:
+    """``by`` is ``split``, ``origin``, or ``both``. The all/all row is the table above."""
+    lines = [
+        "| Retriever | Split | Origin | Recall@5 | Recall@10 | MRR | n |",
+        "| --- | --- | --- | ---: | ---: | ---: | ---: |",
+    ]
+    for row in rows:
+        for group in row.get("groups", []):
+            split_all = group["split"] == "all"
+            origin_all = group["origin"] == "all"
+            wanted = {
+                "split": not split_all and origin_all,
+                "origin": split_all and not origin_all,
+                "both": not split_all and not origin_all,
+            }[by]
+            if not wanted:
+                continue
+            lines.append(
+                f"| {row['retriever']} | {group['split']} | {group['origin']} | "
+                f"{group['recall_at_5']:.4f} | {group['recall_at_10']:.4f} | "
+                f"{group['mrr']:.4f} | {group['n']} |"
+            )
+    return "\n".join(lines)
+
+
 def _write_metrics_csv(report: dict, path: Path) -> None:
+    fields = [
+        "retriever",
+        "page_tolerance",
+        "split",
+        "origin",
+        "recall_at_5",
+        "recall_at_10",
+        "mrr",
+        "n",
+    ]
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(
-            handle,
-            fieldnames=["retriever", "page_tolerance", "recall_at_5", "recall_at_10", "mrr", "n"],
-        )
+        writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
         for tolerance, block in report["by_tolerance"].items():
             for row in block["retrievers"]:
-                writer.writerow(
-                    {
-                        "retriever": row["retriever"],
-                        "page_tolerance": tolerance,
-                        "recall_at_5": f"{row['recall_at_5']:.6f}",
-                        "recall_at_10": f"{row['recall_at_10']:.6f}",
-                        "mrr": f"{row['mrr']:.6f}",
-                        "n": row["n"],
-                    }
-                )
+                for group in row["groups"]:
+                    writer.writerow(
+                        {
+                            "retriever": row["retriever"],
+                            "page_tolerance": tolerance,
+                            "split": group["split"],
+                            "origin": group["origin"],
+                            "recall_at_5": f"{group['recall_at_5']:.6f}",
+                            "recall_at_10": f"{group['recall_at_10']:.6f}",
+                            "mrr": f"{group['mrr']:.6f}",
+                            "n": group["n"],
+                        }
+                    )
 
 
 def _write_questions_csv(report: dict, path: Path) -> None:
     fields = [
         "id",
         "origin",
+        "split",
         "retriever",
         "page_tolerance",
         "recall_at_5",
@@ -399,6 +504,7 @@ def _write_questions_csv(report: dict, path: Path) -> None:
                     {
                         "id": row["id"],
                         "origin": row["origin"],
+                        "split": row["split"] or "",
                         "retriever": row["retriever"],
                         "page_tolerance": tolerance,
                         "recall_at_5": f"{row['recall_at_5']:.6f}",
