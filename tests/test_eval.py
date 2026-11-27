@@ -360,10 +360,20 @@ def test_gold_quotes_are_on_the_cited_page():
 def test_group_means_accepts_rows_without_the_newer_metrics():
     # baby-food sweep builds rows with recall and MRR only.
     rows = [
-        {"split": "dev", "origin": "real", "recall_at_5": 1.0, "recall_at_10": 1.0,
-         "reciprocal_rank": 0.5},
-        {"split": "test", "origin": "synthetic", "recall_at_5": 0.0, "recall_at_10": 0.5,
-         "reciprocal_rank": 0.25},
+        {
+            "split": "dev",
+            "origin": "real",
+            "recall_at_5": 1.0,
+            "recall_at_10": 1.0,
+            "reciprocal_rank": 0.5,
+        },
+        {
+            "split": "test",
+            "origin": "synthetic",
+            "recall_at_5": 0.0,
+            "recall_at_10": 0.5,
+            "reciprocal_rank": 0.25,
+        },
     ]
     groups = group_means(rows)
     overall = next(g for g in groups if g["split"] == "all" and g["origin"] == "all")
