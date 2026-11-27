@@ -128,6 +128,8 @@ The e5 tokenizer receives the prefixes. A check on this index decoded `query: co
 
 ## Evaluation
 
+Golden set v2 has since grown `eval/set.yaml` to 100 answerable and 15 unanswerable questions with a fixed dev/test split. The paragraphs and tables in this section and the next describe the original 37-question set (commit `0c8a40a`). See [`eval/GOLDEN_SET.md`](eval/GOLDEN_SET.md) and `results/phase0-golden-set-v2/`.
+
 `eval/set.yaml` is the labeled set. It has 37 questions: 10 real parent questions, 15 from the case plan, and 12 synthetic questions written in the same colloquial style. Five are `answerable: false` and are not scored: two of the real questions (whether strawberry is an allergen, and the daily protein intake) and the three plan questions about a drug dose, a commercial brand, and fever medicine. Six answerable questions are `needs_review` because the wording is broader than the page or the guides do not say the same thing. The other answerable questions are `verified`: the quote was found on that PDF page.
 
 A hit is the same `source_id` and a PDF page within 1 of a gold page (the exact page or ±1). One retrieved page credits only one gold page, the closest one still unmatched, so two neighboring gold pages are not both counted from a single hit. `--page-tolerance 0` scores the exact page only. Recall@k is the mean share of a question's gold pages found in the top k pages. MRR is the mean of 1/rank of the first hit. These numbers are from `baby-food eval` and are also in `results/phase2-baseline/`.
