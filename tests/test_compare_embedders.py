@@ -147,6 +147,8 @@ def test_comparison_writes_dev_then_test_once(tmp_path):
     assert saved["decision_rule"] == DECISION_RULE
     text = (tmp_path / "out" / "results.md").read_text(encoding="utf-8")
     assert text.index("## Dev") < text.index("## Test, held-out confirmation (n = 1)")
+    assert "- hybrid: dev [+0.0000, +0.0000] (includes 0)" in text
+    assert "The two splits agree." in text
     with (tmp_path / "out" / "metrics.csv").open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
     assert {row["split"] for row in rows} == {"dev", "test"}

@@ -339,6 +339,8 @@ def render_comparison(report: dict) -> str:
                 "",
             ]
         )
+        if "dev" in splits:
+            lines.extend([*_agreement(splits["dev"], splits["test"]), ""])
     lines.extend(_cost_section(report))
     lines.extend(
         [
@@ -426,6 +428,29 @@ def _split_section(block: dict, title: str) -> list[str]:
         )
     lines.append("")
     return lines
+
+
+def _agreement(dev: dict, test: dict) -> list[str]:
+    """Does the test interval point the same way as dev, retriever by retriever?"""
+    lines = []
+    for retriever in RETRIEVERS:
+        left, right = dev["comparisons"][retriever], test["comparisons"][retriever]
+        verdicts = [_direction(left), _direction(right)]
+        same = "agree" if verdicts[0] == verdicts[1] else "do not agree"
+        lines.append(
+            f"- {retriever}: dev [{left['ci95_low']:+.4f}, {left['ci95_high']:+.4f}] "
+            f"({verdicts[0]}), test [{right['ci95_low']:+.4f}, {right['ci95_high']:+.4f}] "
+            f"({verdicts[1]}). The two splits {same}."
+        )
+    return lines
+
+
+def _direction(item: dict) -> str:
+    if item["ci95_low"] > 0:
+        return "te3-large higher"
+    if item["ci95_high"] < 0:
+        return "te3-large lower"
+    return "includes 0"
 
 
 def _cost_section(report: dict) -> list[str]:
