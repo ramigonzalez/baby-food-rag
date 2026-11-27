@@ -78,7 +78,18 @@ Two caveats. The number depends on quote length, and the real quotes are short p
 | syn2-048 | Breastfeeding and allergy: ASBAI/SBP 2025 says protection is unproven; MS 2019 says it protects. |
 | syn2-067 | Formula-fed baby at 4 months: the SBP BLW guide says 6 months for all; the SBP manual allows 4 or 6. |
 
-These rows are the first candidates for expert review. Gold pages are also not exhaustive: another page may answer a question too, and a retriever that finds it gets no credit. `human_verified` is `false` everywhere; the owner plans to review a sample.
+These rows are the first candidates for expert review. Gold pages are also not exhaustive: another page may answer a question too, and a retriever that finds it gets no credit.
+
+## Human review
+
+On 2026-11-27 the owner reviewed 20 items drawn with seed 20261127 from the verified rows: 14 `syn2-`, 3 older answerable, and 3 `unans2-`. The reviewer is not a clinician. For each item they checked that the question reads like a parent's, that the quote is on the linked PDF page, and that it answers the question.
+
+- 19 items are `human_verified: true`. No gold page was wrong.
+- `syn2-042`: the quote now includes the table header, so the unit (litres/day) is visible.
+- `syn2-003`, `syn2-017`, `syn2-039`, `syn2-058`: the gold page is right, but the quote is only part of the answer. The rest is on the same page, so recall is unaffected. The review note in each row lists what a complete answer needs.
+- `plan-12` stays `false`. The reviewer thinks its second gold page (water offered in a cup) is only weakly related to a question about juice. It is waiting for a second look.
+
+The quote is a pointer to the evidence. It is not a reference answer. Scoring whether a generated answer is complete needs its own label: the key facts the answer must contain.
 
 ## Split
 
@@ -127,7 +138,7 @@ What these numbers show, without a significance test:
 
 ## Limitations
 
-- An agent wrote the synthetic questions and chose every gold page and quote. No clinician checked them. Treat `needs_review` rows as candidates for expert review.
+- An agent wrote the synthetic questions and chose every gold page and quote. The owner reviewed a sample of 20 (see Human review). No clinician has checked them. Treat `needs_review` rows as candidates for expert review.
 - 80 of the 100 answerable questions are synthetic. The real-question row is the most honest number and the smallest.
 - Quotes were checked against extracted text, not against the rendered page.
 - Gold pages are not exhaustive, so recall can understate a retriever that finds a different page that also answers.

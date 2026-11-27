@@ -127,7 +127,7 @@ def test_labeled_set_shape():
     assert 10 <= len(unanswerable) <= 20
     answerable = [item for item in questions if item["answerable"]]
     assert all(item["split"] in {"dev", "test"} for item in questions)
-    assert all(item["human_verified"] is False for item in questions)
+    assert all(isinstance(item["human_verified"], bool) for item in questions)
     dev_share = sum(item["split"] == "dev" for item in answerable) / len(answerable)
     assert 0.55 <= dev_share <= 0.65
     for origin in ("real", "plan", "synthetic"):

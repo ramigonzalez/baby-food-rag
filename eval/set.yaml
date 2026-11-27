@@ -206,7 +206,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Qual a melhor ordem: ovo, amendoim, peixe, trigo, leite?"
     gold:
       - source_id: ASBAI-SBP-2025
@@ -371,6 +371,7 @@ questions:
     split: dev
     human_verified: false
     question: "Pode dar suco no lugar da fruta ou da água?"
+    notes: "Human review 2026-11-27: flagged; reviewer says the second gold page (water in a cup) is weakly related. Pending a second look; human_verified stays false."
     gold:
       - source_id: MS-2019
         pdf_page: 84
@@ -561,7 +562,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Posso colocar um pouco de açúcar no iogurte natural?"
     gold:
       - source_id: MS-2019
@@ -608,8 +609,9 @@ questions:
     answerable: true
     gold_status: verified
     split: test
-    human_verified: false
+    human_verified: true
     question: "Aquele pãozinho de pacote que criança adora, pode no lanche?"
+    notes: "Human review 2026-11-27: gold page right; the full answer also needs the next paragraph on the same page (ultra-processed breads have more than five ingredients and should not be offered)."
     gold:
       - source_id: MS-2019
         pdf_page: 78
@@ -647,7 +649,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Se eu prometer um docinho quando ela raspar o prato, é uma boa?"
     gold:
       - source_id: MS-2019
@@ -703,7 +705,7 @@ questions:
     answerable: true
     gold_status: verified
     split: test
-    human_verified: false
+    human_verified: true
     question: "Ela comeu metade do pratinho. O resto eu guardo na geladeira pro jantar?"
     gold:
       - source_id: MS-2019
@@ -720,7 +722,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Chego do mercado e já passo uma água nos ovos antes de guardar. Tá certo?"
     gold:
       - source_id: MS-2019
@@ -789,7 +791,7 @@ questions:
     answerable: true
     gold_status: verified
     split: test
-    human_verified: false
+    human_verified: true
     question: "Minha sogra quer dar um chazinho e um golinho de café com leite pra ela. Pode?"
     gold:
       - source_id: MS-2019
@@ -806,8 +808,9 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Uso aquele tempero de cubinho de galinha pra dar gosto na papinha. Pode?"
+    notes: "Human review 2026-11-27: gold pages right; the full answer also needs the next sentence on MS p.89 (not to be used in food served to the child)."
     gold:
       - source_id: MS-2019
         pdf_page: 88
@@ -823,7 +826,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Vi um pó de leitinho infantil bem mais barato que a lata que o pediatra passou. Dá pra substituir?"
     gold:
       - source_id: MS-2019
@@ -836,7 +839,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Pra não usar açúcar, posso adoçar a fruta dela com stevia?"
     gold:
       - source_id: MS-2019
@@ -853,7 +856,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Como eu percebo que ela já encheu a barriga e é hora de parar de dar colher?"
     gold:
       - source_id: MS-2019
@@ -971,7 +974,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "O pai dela tem asma e rinite. Mesmo assim posso dar pasta de amendoim cedo?"
     gold:
       - source_id: SBP-MAN-2024
@@ -1140,8 +1143,9 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Na hora de bater o leite em pó do bebê (da lata), uso água gelada, morna ou fervendo?"
+    notes: "Human review 2026-11-27: the MS quote is partial; the full procedure (boil 5 minutes, add the powder within 15 minutes, never while boiling) is on the same page."
     gold:
       - source_id: SBP-MAN-2024
         pdf_page: 27
@@ -1183,13 +1187,14 @@ questions:
     answerable: true
     gold_status: verified
     split: test
-    human_verified: false
+    human_verified: true
     question: "Bebê de 8 meses precisa de quanto de água no dia? Fico na dúvida se tá bebendo pouco."
+    notes: "Human review 2026-11-27: quote now includes the table header so the unit (litres/day) is explicit."
     gold:
       - source_id: SBP-MAN-2024
         pdf_page: 37
         printed_page: 35
-        quote: "7 – 12 meses 0,8"
+        quote: "Recomendação Idade Particularidades (litros/dia)\n\n0 – 6 meses 0,7 Leite humano\n\nLeite humano e/ou fórmula infantil e 7 – 12 meses 0,8"
 
   - id: syn2-043
     origin: synthetic
@@ -1408,8 +1413,9 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "A caneta de adrenalina do meu filho venceu mês passado. Se ele tiver uma crise, ainda posso usar?"
+    notes: "Human review 2026-11-27: the same page adds that expired auto-injectors keep 80-90% of adrenaline and that paediatric doses degrade faster."
     gold:
       - source_id: ASBAI-SBP-2025
         pdf_page: 61
@@ -1421,7 +1427,7 @@ questions:
     answerable: true
     gold_status: verified
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Ela tem alergia a proteína do leite. A introdução da comida atrasa por causa disso?"
     gold:
       - source_id: ASBAI-SBP-2025
@@ -1567,7 +1573,7 @@ questions:
     origin: synthetic
     answerable: false
     split: dev
-    human_verified: false
+    human_verified: true
     question: "Quantas gotinhas de simeticona posso dar quando ela tem cólica?"
     notes: "Drug dose. No indexed page names simeticone or gives a colic medicine dose."
     gold: []
@@ -1585,7 +1591,7 @@ questions:
     origin: synthetic
     answerable: false
     split: test
-    human_verified: false
+    human_verified: true
     question: "O dentinho tá nascendo e ela chora muito. Que gel posso passar na gengiva?"
     notes: "Teething medicine. MS 2019 says gums harden before teeth come out; no page covers a gel or pain relief."
     gold: []
@@ -1594,7 +1600,7 @@ questions:
     origin: synthetic
     answerable: false
     split: test
-    human_verified: false
+    human_verified: true
     question: "Com que idade dou vermífugo e de quanto em quanto tempo repete?"
     notes: "Deworming schedule. MS 2019 mentions handwashing against worms; no page gives a vermifuge or interval."
     gold: []
