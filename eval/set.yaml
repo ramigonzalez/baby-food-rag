@@ -9,6 +9,9 @@
 # split dev or test: the fixed split from golden.py (seed 20261127). See
 # eval/GOLDEN_SET.md. human_verified false: no person has checked the label.
 # syn2-* and unans2-* were added in golden set v2.
+# key_facts: short statements a complete answer must contain, each stated on
+# one of the gold pages. Used by ask-eval for completeness, not by retrieval.
+# key_facts_status draft: written by an agent; verified: checked by a person.
 
 questions:
   - id: real-01
@@ -19,6 +22,12 @@ questions:
     human_verified: false
     question: "Pilar pode comer morango? Minha mãe falou que não tenho que dar morango nem tomate, mas não explicou por quê."
     notes: "The guide lists morango as a fruit and tomate as a vegetable, and says every fruit may be offered. It does not explain a ban, so the grandmother's reason is not in the corpus."
+    key_facts_status: draft
+    key_facts:
+      - "Todas as frutas podem ser oferecidas às crianças."
+      - "O morango está entre as frutas listadas pelo guia."
+      - "O tomate está entre os legumes listados pelo guia."
+      - "Legumes e verduras, sem exceção, devem ser oferecidos às crianças."
     gold:
       - source_id: MS-2019
         pdf_page: 83
@@ -50,6 +59,11 @@ questions:
     human_verified: false
     question: "Qual é a ordem das frutas sugerida pelo Ministério da Saúde?"
     notes: "The guide does not give an order of fruits. The nearest text says every fruit may be offered and that it is good to vary them."
+    key_facts_status: draft
+    key_facts:
+      - "Todas as frutas podem ser oferecidas às crianças."
+      - "É bom variar as frutas, porque as vitaminas e os minerais mudam de uma fruta para outra."
+      - "Dar preferência às frutas da região e da estação."
     gold:
       - source_id: MS-2019
         pdf_page: 83
@@ -64,6 +78,11 @@ questions:
     human_verified: false
     question: "Preciso dar proteína para meu bebê?"
     notes: "The guide does not use the word protein as a daily target. It does say lunch and dinner should include the beans group and the meat-and-egg group."
+    key_facts_status: draft
+    key_facts:
+      - "Carnes e ovos contêm proteína, além de ferro, zinco e vitamina B12."
+      - "Todos os alimentos do grupo das carnes e ovos podem ser oferecidos à criança, variando sempre que possível."
+      - "Carne de porco, peixe e clara de ovo são liberados a partir dos 6 meses."
     gold:
       - source_id: MS-2019
         pdf_page: 128
@@ -91,6 +110,10 @@ questions:
     human_verified: false
     question: "Estou preocupado porque estou dando só frutas, isso molda/altera o paladar dela?"
     notes: "The guide says the foods offered shape the palate. It does not discuss a diet of fruit alone."
+    key_facts_status: draft
+    key_facts:
+      - "A variedade e a forma como os alimentos são oferecidos nos primeiros anos influenciam a formação do paladar."
+      - "A criança que come alimentos saudáveis quando pequena tem mais chance de fazer boas escolhas alimentares quando adulta."
     gold:
       - source_id: MS-2019
         pdf_page: 16
@@ -104,6 +127,12 @@ questions:
     split: dev
     human_verified: false
     question: "Tem hora para frutas, legumes e leguminosas?"
+    key_facts_status: draft
+    key_facts:
+      - "Aos 6 meses, a criança começa com 3 refeições: almoço (ou jantar) e 2 lanches, ou almoço, jantar e 1 lanche."
+      - "Não há regra sobre qual refeição iniciar primeiro."
+      - "Entre 7 e 8 meses, passam a ser 4 refeições: almoço, jantar e 2 lanches com fruta."
+      - "Uma fruta rica em vitamina C depois da refeição aumenta a absorção do ferro dos alimentos vegetais."
     gold:
       - source_id: MS-2019
         pdf_page: 113
@@ -126,6 +155,10 @@ questions:
     human_verified: false
     question: "Posso misturar batata com banana?"
     notes: "The guide says to keep foods separate on the plate. It does not name potato with banana."
+    key_facts_status: draft
+    key_facts:
+      - "O ideal é servir os alimentos separados no prato, sem misturar."
+      - "Servir separado ajuda a criança a conhecer sabores, cores e texturas diferentes."
     gold:
       - source_id: MS-2019
         pdf_page: 101
@@ -139,6 +172,11 @@ questions:
     split: test
     human_verified: false
     question: "Posso dar comidas fritas em banha de porco?"
+    key_facts_status: draft
+    key_facts:
+      - "Frituras não devem fazer parte das refeições da criança."
+      - "A fritura usa óleo em excesso e produz substâncias que fazem mal à saúde."
+      - "A comida da criança deve ser preparada com óleo vegetal em pequena quantidade."
     gold:
       - source_id: MS-2019
         pdf_page: 179
@@ -157,6 +195,13 @@ questions:
     human_verified: false
     question: "Como preparar as comidas de forma saudável?"
     notes: "The question is broad. The cited pages are the clearest rules on salt, frying, and seasoning, not a complete cooking chapter."
+    key_facts_status: draft
+    key_facts:
+      - "Preparar a comida com óleo vegetal em pequena quantidade."
+      - "Temperar com temperos naturais, como cebola, alho, salsa e coentro."
+      - "Usar a quantidade mínima de sal."
+      - "Evitar preparações fritas."
+      - "Não usar temperos prontos em cubo, pó, sachê ou líquido."
     gold:
       - source_id: MS-2019
         pdf_page: 102
@@ -208,6 +253,11 @@ questions:
     split: dev
     human_verified: true
     question: "Qual a melhor ordem: ovo, amendoim, peixe, trigo, leite?"
+    key_facts_status: draft
+    key_facts:
+      - "Não há evidência de que a ordem de introdução dos alimentos sólidos mude o risco de alergia alimentar."
+      - "A introdução deve seguir os hábitos da família, com contato com todos os grupos alimentares entre 6 e 12 meses."
+      - "Depois que um alérgeno é introduzido, é preciso oferecê-lo com frequência para manter a tolerância."
     gold:
       - source_id: ASBAI-SBP-2025
         pdf_page: 23
@@ -372,6 +422,12 @@ questions:
     human_verified: true
     question: "Pode dar suco no lugar da fruta ou da água?"
     notes: "Human review 2026-11-27: both gold pages confirmed; quotes widened to the full sentences. The second page is about water, which covers the 'instead of water' part. The extracted text has a stray '3' inside the first sentence (likely a figure label), kept here because quotes must match the extracted text."
+    key_facts_status: draft
+    key_facts:
+      - "Não oferecer suco de fruta à criança menor de 1 ano, mesmo feito só com fruta."
+      - "Entre 1 e 3 anos o suco não é necessário; se oferecido, cerca de 120 mL por dia, natural e sem açúcar."
+      - "A criança que se acostuma a tomar suco para matar a sede pode ter dificuldade em beber água pura."
+      - "A partir dos 6 meses, a água deve ser oferecida em copo, nos intervalos entre as refeições."
     gold:
       - source_id: MS-2019
         pdf_page: 84
@@ -564,6 +620,11 @@ questions:
     split: dev
     human_verified: true
     question: "Posso colocar um pouco de açúcar no iogurte natural?"
+    key_facts_status: draft
+    key_facts:
+      - "Não oferecer açúcar de nenhum tipo, nem mel, à criança menor de 2 anos."
+      - "O açúcar não é necessário e causa danos como cáries e obesidade."
+      - "Adoçantes também não devem ser usados até os 2 anos."
     gold:
       - source_id: MS-2019
         pdf_page: 66
@@ -612,6 +673,11 @@ questions:
     human_verified: true
     question: "Aquele pãozinho de pacote que criança adora, pode no lanche?"
     notes: "Human review 2026-11-27: gold page right; the full answer also needs the next paragraph on the same page (ultra-processed breads have more than five ingredients and should not be offered)."
+    key_facts_status: draft
+    key_facts:
+      - "Pães industrializados, como pão de forma e bisnaguinha, em geral são ultraprocessados."
+      - "Pães ultraprocessados não devem ser oferecidos à criança."
+      - "Pães com poucos ingredientes (farinha, água, sal e leveduras) podem ser dados em pequenas quantidades."
     gold:
       - source_id: MS-2019
         pdf_page: 78
@@ -651,6 +717,11 @@ questions:
     split: dev
     human_verified: true
     question: "Se eu prometer um docinho quando ela raspar o prato, é uma boa?"
+    key_facts_status: draft
+    key_facts:
+      - "Não oferecer recompensas, como doce, para a criança comer."
+      - "A recompensa pode criar uma relação de dependência entre a comida e o prêmio."
+      - "Parar de alimentar a criança quando ela estiver satisfeita."
     gold:
       - source_id: MS-2019
         pdf_page: 96
@@ -707,6 +778,11 @@ questions:
     split: test
     human_verified: true
     question: "Ela comeu metade do pratinho. O resto eu guardo na geladeira pro jantar?"
+    key_facts_status: draft
+    key_facts:
+      - "Restos do prato da criança não devem ser oferecidos de novo em outra refeição."
+      - "Os restos do prato não devem ser reoferecidos mesmo que a criança não tenha tocado neles."
+      - "Sobras que ficaram na panela, sem ir ao prato, podem ser guardadas na geladeira."
     gold:
       - source_id: MS-2019
         pdf_page: 186
@@ -724,6 +800,11 @@ questions:
     split: dev
     human_verified: true
     question: "Chego do mercado e já passo uma água nos ovos antes de guardar. Tá certo?"
+    key_facts_status: draft
+    key_facts:
+      - "Os ovos não devem ser lavados antes de ir para a geladeira."
+      - "Ovos muito sujos podem ser limpos com pano limpo ou papel toalha úmido."
+      - "O ovo deve ser lavado só antes de ser quebrado para uso."
     gold:
       - source_id: MS-2019
         pdf_page: 168
@@ -793,6 +874,11 @@ questions:
     split: test
     human_verified: true
     question: "Minha sogra quer dar um chazinho e um golinho de café com leite pra ela. Pode?"
+    key_facts_status: draft
+    key_facts:
+      - "Café, erva-mate, chá verde e chá preto não são recomendados para crianças."
+      - "Crianças de 6 meses a 2 anos não devem tomar café com leite."
+      - "A cafeína deixa a criança agitada e atrapalha a absorção de ferro, zinco e cálcio."
     gold:
       - source_id: MS-2019
         pdf_page: 65
@@ -811,6 +897,11 @@ questions:
     human_verified: true
     question: "Uso aquele tempero de cubinho de galinha pra dar gosto na papinha. Pode?"
     notes: "Human review 2026-11-27: gold pages right; the full answer also needs the next sentence on MS p.89 (not to be used in food served to the child)."
+    key_facts_status: draft
+    key_facts:
+      - "Caldos em cubo, em pó ou líquidos são ultraprocessados, com muito sal, gordura e aditivos."
+      - "Esses caldos não devem ser usados na comida servida à criança."
+      - "Temperos in natura, como salsinha, cebolinha e manjericão, são permitidos."
     gold:
       - source_id: MS-2019
         pdf_page: 88
@@ -828,6 +919,12 @@ questions:
     split: dev
     human_verified: true
     question: "Vi um pó de leitinho infantil bem mais barato que a lata que o pediatra passou. Dá pra substituir?"
+    key_facts_status: draft
+    key_facts:
+      - "Composto lácteo não é fórmula infantil nem leite de vaca integral."
+      - "Composto lácteo não é indicado para menores de 2 anos, por ter açúcar e aditivos."
+      - "Composto lácteo não substitui o leite materno nem a fórmula infantil."
+      - "A embalagem do composto lácteo traz esse nome, por isso é preciso ler o rótulo."
     gold:
       - source_id: MS-2019
         pdf_page: 143
@@ -841,6 +938,11 @@ questions:
     split: dev
     human_verified: true
     question: "Pra não usar açúcar, posso adoçar a fruta dela com stevia?"
+    key_facts_status: draft
+    key_facts:
+      - "Adoçantes, inclusive a estévia, não devem ser oferecidos à criança."
+      - "Os efeitos dos adoçantes na saúde da criança não são plenamente conhecidos."
+      - "Acostumar a criança ao sabor muito doce estimula o consumo excessivo de açúcar e adoçantes."
     gold:
       - source_id: MS-2019
         pdf_page: 70
@@ -858,6 +960,11 @@ questions:
     split: dev
     human_verified: true
     question: "Como eu percebo que ela já encheu a barriga e é hora de parar de dar colher?"
+    key_facts_status: draft
+    key_facts:
+      - "Virar a cabeça ou o corpo e perder o interesse pela comida são sinais de saciedade."
+      - "Empurrar a mão de quem oferece a comida e fechar a boca são sinais de saciedade."
+      - "Parecer angustiada ou chorar também pode ser sinal de saciedade."
     gold:
       - source_id: MS-2019
         pdf_page: 113
@@ -976,6 +1083,10 @@ questions:
     split: dev
     human_verified: true
     question: "O pai dela tem asma e rinite. Mesmo assim posso dar pasta de amendoim cedo?"
+    key_facts_status: draft
+    key_facts:
+      - "O amendoim deve ser introduzido entre 4 e 11 meses, mesmo com história familiar de atopia."
+      - "Amendoim e ovo bem cozidos são os dois alérgenos estudados com bons resultados na introdução precoce."
     gold:
       - source_id: SBP-MAN-2024
         pdf_page: 38
@@ -1146,6 +1257,12 @@ questions:
     human_verified: true
     question: "Na hora de bater o leite em pó do bebê (da lata), uso água gelada, morna ou fervendo?"
     notes: "Human review 2026-11-27: the MS quote is partial; the full procedure (boil 5 minutes, add the powder within 15 minutes, never while boiling) is on the same page."
+    key_facts_status: draft
+    key_facts:
+      - "Ferver a água por 5 minutos."
+      - "Misturar o pó na água bem quente, no máximo 15 minutos depois da fervura."
+      - "Não misturar o pó enquanto a água estiver fervendo."
+      - "O manual da SBP pede água filtrada e aquecida a 70°C."
     gold:
       - source_id: SBP-MAN-2024
         pdf_page: 27
@@ -1190,6 +1307,11 @@ questions:
     human_verified: true
     question: "Bebê de 8 meses precisa de quanto de água no dia? Fico na dúvida se tá bebendo pouco."
     notes: "Human review 2026-11-27: quote now includes the table header so the unit (litres/day) is explicit."
+    key_facts_status: draft
+    key_facts:
+      - "De 7 a 12 meses, a recomendação é de 0,8 litro por dia, com leite materno ou fórmula e alimentação complementar."
+      - "Oferecer água potável a partir da introdução da alimentação complementar."
+      - "É importante monitorar a diurese, observando a cor da urina na fralda."
     gold:
       - source_id: SBP-MAN-2024
         pdf_page: 37
@@ -1416,6 +1538,11 @@ questions:
     human_verified: true
     question: "A caneta de adrenalina do meu filho venceu mês passado. Se ele tiver uma crise, ainda posso usar?"
     notes: "Human review 2026-11-27: the same page adds that expired auto-injectors keep 80-90% of adrenaline and that paediatric doses degrade faster."
+    key_facts_status: draft
+    key_facts:
+      - "É preferível usar o autoinjetor vencido a não usar nenhum."
+      - "Autoinjetores vencidos ainda têm de 80% a 90% da concentração de adrenalina."
+      - "Doses pediátricas podem se degradar mais rápido depois do vencimento."
     gold:
       - source_id: ASBAI-SBP-2025
         pdf_page: 61
@@ -1429,6 +1556,10 @@ questions:
     split: dev
     human_verified: true
     question: "Ela tem alergia a proteína do leite. A introdução da comida atrasa por causa disso?"
+    key_facts_status: draft
+    key_facts:
+      - "Na APLV, a alimentação complementar começa na mesma idade que nas outras crianças."
+      - "A alimentação complementar segue as mesmas recomendações, exceto os laticínios."
     gold:
       - source_id: ASBAI-SBP-2025
         pdf_page: 57

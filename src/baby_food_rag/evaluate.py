@@ -30,6 +30,9 @@ Each question may carry ``split: dev`` or ``split: test`` (see
 ``golden.py``). ``split="all"``, the default, scores every question, so
 earlier result folders stay reproducible. Means are also broken down by
 split and by origin.
+
+``key_facts`` and ``key_facts_status`` are read and checked here but not
+scored: ``baby-food ask-eval`` uses them for answer completeness.
 """
 
 from __future__ import annotations
@@ -54,6 +57,8 @@ FUSION_POOL = 50
 RRF_K = 60
 ORIGINS = ("real", "plan", "synthetic")
 SPLIT_CHOICES = ("all", *SPLITS)
+# draft: written by an agent from the gold pages. verified: checked by a person.
+KEY_FACTS_STATUSES = ("draft", "verified")
 
 
 def load_questions(path: Path) -> list[dict]:
@@ -217,6 +222,7 @@ def _question(item: object) -> dict:
     human_verified = item.get("human_verified", False)
     if not isinstance(human_verified, bool):
         raise ValueError(f"{item['id']} human_verified must be true or false")
+    key_facts, key_facts_status = _key_facts(item, answerable)
     pages = []
     for entry in gold:
         if not isinstance(entry, dict):
@@ -245,7 +251,31 @@ def _question(item: object) -> dict:
         "human_verified": human_verified,
         "notes": str(item.get("notes") or "").strip(),
         "gold": pages,
+        "key_facts": key_facts,
+        "key_facts_status": key_facts_status,
     }
+
+
+def _key_facts(item: dict, answerable: bool) -> tuple[list[str], str | None]:
+    """What a complete answer must contain. Each fact is stated on a gold page."""
+    facts = item.get("key_facts")
+    status = item.get("key_facts_status")
+    if facts is None:
+        if status is not None:
+            raise ValueError(f"{item['id']} has key_facts_status and no key_facts")
+        return [], None
+    if not isinstance(facts, list) or not facts:
+        raise ValueError(f"{item['id']} key_facts must be a non-empty list")
+    if not answerable:
+        raise ValueError(f"{item['id']} is unanswerable and still has key_facts")
+    kept = []
+    for fact in facts:
+        if not isinstance(fact, str) or not fact.strip():
+            raise ValueError(f"{item['id']} key_facts entries must be non-empty strings")
+        kept.append(fact.strip())
+    if status not in KEY_FACTS_STATUSES:
+        raise ValueError(f"{item['id']} key_facts_status must be draft or verified")
+    return kept, status
 
 
 def _rank_all(
