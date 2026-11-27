@@ -10,6 +10,7 @@ import sys
 import time
 from pathlib import Path
 
+from baby_food_rag.compare_embedders import run_comparison
 from baby_food_rag.download import download_sources, select_for_download
 from baby_food_rag.embed import (
     DEFAULT_MAX_USD,
@@ -127,6 +128,26 @@ def main(argv: list[str] | None = None) -> int:
         help="Choose the winner on the dev or test questions only. Default all.",
     )
 
+    compare = sub.add_parser(
+        "compare-embedders",
+        help="Score e5 against text-embedding-3-large, dense and hybrid, on one split",
+    )
+    compare.add_argument("--set", type=Path, default=Path("eval/set.yaml"), dest="question_set")
+    compare.add_argument("--baseline", type=Path, default=Path("data/index"))
+    compare.add_argument("--candidate", type=Path, default=Path("data/index-te3-large"))
+    compare.add_argument("--out", type=Path, default=Path("results/phase1-embedders"))
+    compare.add_argument(
+        "--split",
+        required=True,
+        choices=["dev", "test"],
+        help="dev decides; test is the held-out confirmation and runs once.",
+    )
+    compare.add_argument(
+        "--rerun-test",
+        action="store_true",
+        help="Replace a test split that is already in the results.",
+    )
+
     ask_cmd = sub.add_parser("ask", help="Answer in Portuguese from the hybrid index")
     ask_cmd.add_argument("question")
     ask_cmd.add_argument("-k", type=int, default=DEFAULT_K)
@@ -153,6 +174,8 @@ def main(argv: list[str] | None = None) -> int:
         return _eval(args)
     if args.command == "sweep":
         return _sweep(args)
+    if args.command == "compare-embedders":
+        return _compare_embedders(args)
     if args.command == "ask":
         return _ask(args)
     if args.command == "ask-eval":
@@ -263,6 +286,33 @@ def _sweep(args: argparse.Namespace) -> int:
         f"{comparison['baseline']} {comparison['baseline_recall_at_10']:.4f}) "
         f"ci95 [{comparison['ci95_low']:.4f}, {comparison['ci95_high']:.4f}]"
     )
+    print(f"wrote {args.out}")
+    return 0
+
+
+def _compare_embedders(args: argparse.Namespace) -> int:
+    try:
+        report = run_comparison(
+            question_path=args.question_set,
+            baseline_index=args.baseline,
+            candidate_index=args.candidate,
+            out_dir=args.out,
+            split=args.split,
+            rerun_test=args.rerun_test,
+        )
+    except (FileNotFoundError, ValueError, MissingAPIKey) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    block = report["splits"][args.split]
+    for retriever, item in block["comparisons"].items():
+        print(
+            f"{args.split} {retriever}: te3-large minus e5 recall@10 {item['diff']:+.4f} "
+            f"ci95 [{item['ci95_low']:+.4f}, {item['ci95_high']:+.4f}]"
+        )
+    for label, item in block["embedders"].items():
+        print(f"{args.split} {label}: median query latency {item['latency']['median_ms']:.1f} ms")
+    if report.get("decision"):
+        print(report["decision"]["verdict"])
     print(f"wrote {args.out}")
     return 0
 
