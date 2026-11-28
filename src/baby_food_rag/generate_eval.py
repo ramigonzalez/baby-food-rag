@@ -16,6 +16,10 @@ costs less.
 
 ``build_label_sheet`` draws answered items for a person to label, so the
 judge can be checked against a human. It carries no judge score.
+
+Answers, claims, and retrieved chunks restate guide text, so they stay
+local: ``metrics.json`` keeps scores and page references only, and the
+full rows go to ``answers.json``, which is gitignored like the label sheet.
 """
 
 from __future__ import annotations
@@ -58,7 +62,11 @@ TYPICAL_CLAIMS = 6
 # needs in the 2-question smoke run of 2026-11-27 (8 calls), rounded up.
 REASONING_TOKENS_PER_CALL = {
     "anthropic/claude-haiku-5.5": 500,
+    # Not measured before its first run; a guess on the high side.
+    "google/gemini-2.5-flash": 1000,
 }
+# Row fields that hold generated or guide text. They go to answers.json only.
+TEXT_FIELDS = ("question", "answer", "claims", "facts", "key_facts")
 LABEL_SHEET_SIZE = 30
 LABEL_SHEET_SEED = 20261127
 
@@ -106,8 +114,8 @@ def estimate_run(
                 _tokens(coverage_prompt(question, linked, facts)),
                 _tokens(json.dumps({"facts": covered})),
             )
-    generator.completion_tokens += generator.calls * REASONING_TOKENS_PER_CALL.get(model, 0)
-    judge.completion_tokens += judge.calls * REASONING_TOKENS_PER_CALL.get(judge_model, 0)
+    add_reasoning_allowance(generator, model)
+    add_reasoning_allowance(judge, judge_model)
     models = {
         "generator": _usage_block(model, generator),
         "judge": _usage_block(judge_model, judge),
@@ -135,7 +143,7 @@ def render_estimate(estimate: dict, *, split: str, max_usd: float) -> str:
         f"estimate before any call: {estimate['n_questions']} questions, split {split}, "
         f"{estimate['n_with_key_facts']} with key facts",
         "",
-        _usage_table(estimate["models"], estimate["total_usd"]),
+        usage_table(estimate["models"], estimate["total_usd"]),
         "",
         (
             f"Tokens are characters / 3. Each answer is taken as {TYPICAL_ANSWER_CHARS} "
@@ -154,6 +162,12 @@ def render_estimate(estimate: dict, *, split: str, max_usd: float) -> str:
     else:
         lines.append(f"Under --max-usd {max_usd:.2f}.")
     return "\n".join(lines) + "\n"
+
+
+def add_reasoning_allowance(usage: Usage, model: str) -> None:
+    extra = usage.calls * REASONING_TOKENS_PER_CALL.get(model, 0)
+    usage.completion_tokens += extra
+    usage.reasoning_tokens += extra
 
 
 def within_cap(estimate: dict, max_usd: float) -> bool:
@@ -187,12 +201,34 @@ def run_generation_eval(
 
 
 def write_generation_report(report: dict, out_dir: Path) -> None:
+    """``metrics.json`` and ``summary.md`` hold no answer or guide text.
+
+    ``answers.json`` keeps the full rows and is gitignored.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
+    rows = report.get("rows")
+    public = dict(report)
+    if rows is not None:
+        public["rows"] = [score_row(row) for row in rows]
+        (out_dir / "answers.json").write_text(
+            json.dumps(rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
     (out_dir / "metrics.json").write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        json.dumps(public, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     (out_dir / "summary.md").write_text(render_generation_report(report), encoding="utf-8")
+
+
+def score_row(row: dict) -> dict:
+    """A row without text: scores, verdict counts, fact coverage flags, page refs."""
+    kept = {key: value for key, value in row.items() if key not in TEXT_FIELDS}
+    verdicts = [claim["verdict"] for claim in row.get("claims", [])]
+    kept["n_claims"] = len(verdicts)
+    for name in ("supported", "contradicted", "not_found"):
+        kept[f"n_{name}"] = verdicts.count(name)
+    kept["facts_covered"] = [item["covered"] for item in row.get("facts", [])]
+    return kept
 
 
 def write_label_sheet(sheet: dict, out_dir: Path) -> Path:
@@ -221,7 +257,7 @@ def render_generation_report(report: dict) -> str:
         "",
         "## Tokens and cost",
         "",
-        _usage_table(report["usage"], report["total_usd"]),
+        usage_table(report["usage"], report["total_usd"]),
         "",
     ]
     estimate = report.get("estimate")
@@ -378,7 +414,9 @@ def _usage_block(model: str, usage: Usage) -> dict:
         "calls": usage.calls,
         "prompt_tokens": usage.prompt_tokens,
         "completion_tokens": usage.completion_tokens,
+        "reasoning_tokens": usage.reasoning_tokens,
         "usd": usage.estimated_usd(model),
+        "reported_usd": usage.reported_usd,
     }
 
 
@@ -389,24 +427,32 @@ def _total_usd(models: dict) -> float | None:
     return sum(costs)
 
 
-def _usage_table(models: dict, total_usd: float | None) -> str:
+def usage_table(models: dict, total_usd: float | None) -> str:
+    """Output tokens include reasoning tokens; the next column shows that part."""
+
     def usd(value: float | None) -> str:
         return "—" if value is None else f"${value:.4f}"
 
+    def total(key: str) -> int:
+        return sum(block.get(key, 0) for block in models.values())
+
     lines = [
-        "| Role | Model | Calls | Input tokens | Output tokens | USD |",
-        "| --- | --- | ---: | ---: | ---: | ---: |",
+        "| Role | Model | Calls | Input tokens | Output tokens | of which reasoning | USD |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     for role, block in models.items():
         lines.append(
             f"| {role} | `{block['model']}` | {block['calls']} | {block['prompt_tokens']} | "
-            f"{block['completion_tokens']} | {usd(block['usd'])} |"
+            f"{block['completion_tokens']} | {block.get('reasoning_tokens', 0)} | "
+            f"{usd(block['usd'])} |"
         )
     lines.append(
-        f"| total | | {sum(block['calls'] for block in models.values())} | "
-        f"{sum(block['prompt_tokens'] for block in models.values())} | "
-        f"{sum(block['completion_tokens'] for block in models.values())} | {usd(total_usd)} |"
+        f"| total | | {total('calls')} | {total('prompt_tokens')} | "
+        f"{total('completion_tokens')} | {total('reasoning_tokens')} | {usd(total_usd)} |"
     )
+    reported = [block.get("reported_usd") for block in models.values()]
+    if all(value is not None for value in reported):
+        lines.extend(["", f"OpenRouter reported ${sum(reported):.4f} for these calls."])
     return "\n".join(lines)
 
 

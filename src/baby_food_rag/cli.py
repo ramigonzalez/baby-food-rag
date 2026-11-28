@@ -59,6 +59,13 @@ from baby_food_rag.index import (
 )
 from baby_food_rag.judge import DEFAULT_JUDGE_MODEL, same_family
 from baby_food_rag.manifest import find_manifest, load_manifest, sources_for_index
+from baby_food_rag.rejudge import (
+    estimate_rejudge,
+    load_sheet,
+    render_rejudge,
+    run_rejudge,
+    write_rejudge,
+)
 from baby_food_rag.sweep import run_sweep
 
 
@@ -192,6 +199,24 @@ def main(argv: list[str] | None = None) -> int:
         help="Retrieve, build the prompts, and print the estimate. No model is called.",
     )
 
+    rejudge = sub.add_parser(
+        "rejudge", help="Judge the saved label-sheet answers again, without generating"
+    )
+    rejudge.add_argument("--sheet", type=Path, required=True, help="label_sheet.json")
+    rejudge.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL)
+    rejudge.add_argument("--temperature", type=float, default=None, help="Sent only when given.")
+    rejudge.add_argument("--seed", type=int, default=None, help="Sent only when given.")
+    rejudge.add_argument("--out", type=Path, required=True)
+    rejudge.add_argument(
+        "--max-usd",
+        type=float,
+        default=EVAL_MAX_USD,
+        help="Refuse when the estimate is above this, and stop once the spend is. Default 1.00.",
+    )
+    rejudge.add_argument(
+        "--dry-run", action="store_true", help="Print the estimate. No model is called."
+    )
+
     args = parser.parse_args(argv)
     if args.command == "download":
         return _download(args)
@@ -211,6 +236,8 @@ def main(argv: list[str] | None = None) -> int:
         return _ask(args)
     if args.command == "ask-eval":
         return _ask_eval(args)
+    if args.command == "rejudge":
+        return _rejudge(args)
     parser.error(f"unknown command {args.command}")
     return 2
 
@@ -389,7 +416,7 @@ def _ask_eval(args: argparse.Namespace) -> int:
         return 0
     try:
         llm = OpenRouterLLM(model=args.model)
-        judge = OpenRouterLLM(model=args.judge_model)
+        judge = OpenRouterLLM(model=args.judge_model, temperature=None)
     except MissingAPIKey as exc:
         report = not_run_report(str(exc))
         write_generation_report(report, out_dir)
@@ -412,6 +439,47 @@ def _ask_eval(args: argparse.Namespace) -> int:
     print(render_generation_report(report), end="")
     print(f"wrote {out_dir}")
     return 0
+
+
+def _rejudge(args: argparse.Namespace) -> int:
+    try:
+        sheet = load_sheet(args.sheet)
+    except (FileNotFoundError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    generator = sheet.get("generator") or ""
+    if generator and same_family(generator, args.judge_model):
+        print(
+            f"The judge {args.judge_model} is the same family as the generator {generator}.",
+            file=sys.stderr,
+        )
+        return 2
+    estimate = estimate_rejudge(sheet, args.judge_model)
+    usd = estimate["usd"]
+    print(
+        f"estimate before any call: {estimate['n_items']} items, judge {estimate['model']}, "
+        f"{estimate['calls']} calls, input {estimate['prompt_tokens']}, output "
+        f"{estimate['completion_tokens']} (reasoning allowance {estimate['reasoning_tokens']}), "
+        f"usd {'—' if usd is None else f'{usd:.4f}'}"
+    )
+    if usd is None or usd > args.max_usd:
+        print(f"Not under --max-usd {args.max_usd:.2f}. Refusing to run.")
+        return 1
+    if args.dry_run:
+        return 0
+    try:
+        judge = OpenRouterLLM(model=args.judge_model, temperature=args.temperature, seed=args.seed)
+    except MissingAPIKey as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    report = run_rejudge(
+        sheet, judge, temperature=args.temperature, seed=args.seed, max_usd=args.max_usd
+    )
+    report["estimate"] = estimate
+    write_rejudge(report, args.out)
+    print(render_rejudge(report), end="")
+    print(f"wrote {args.out}")
+    return 0 if report["status"] == "ok" else 1
 
 
 def _stats(args: argparse.Namespace) -> int:

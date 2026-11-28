@@ -262,7 +262,7 @@ def test_ask_eval_loads_the_embedder_once(monkeypatch, tmp_path):
     sentinel = object()
     monkeypatch.setattr("baby_food_rag.cli.load_index", lambda path: index)
     monkeypatch.setattr("baby_food_rag.cli.load_eval_questions", lambda path: [])
-    monkeypatch.setattr("baby_food_rag.cli.OpenRouterLLM", lambda model: FakeLLM([]))
+    monkeypatch.setattr("baby_food_rag.cli.OpenRouterLLM", lambda model, **kw: FakeLLM([]))
     monkeypatch.setattr("baby_food_rag.index.load_embedder", lambda name: sentinel)
     seen = {}
 
@@ -820,7 +820,7 @@ def _patch_cli(monkeypatch, questions):
     monkeypatch.setattr("baby_food_rag.cli.load_eval_questions", lambda path: questions)
     monkeypatch.setattr("baby_food_rag.cli.query_embedder", lambda index: HashEmbedder(dim=32))
 
-    def no_model(model):
+    def no_model(model, **kwargs):
         raise AssertionError("a dry run must not build a model client")
 
     monkeypatch.setattr("baby_food_rag.cli.OpenRouterLLM", no_model)
@@ -857,3 +857,31 @@ def test_ask_eval_refuses_above_the_cap_and_a_same_family_judge(monkeypatch, tmp
     code = main([*base, "--dry-run", "--judge-model", "openai/gpt-4o"])
     assert code == 2
     assert "same family" in capsys.readouterr().err
+
+
+def test_metrics_json_keeps_scores_and_answers_json_keeps_the_text(tmp_path):
+    from baby_food_rag.generate_eval import write_generation_report
+
+    llm = FakeLLM(["Não ofereça mel antes dos 2 anos [MS-2019 p.104].", ABSTAIN])
+    judge = FakeLLM(
+        [
+            '{"claims": ["Não ofereça mel antes dos 2 anos"]}',
+            '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
+            '{"relevance": 1}',
+            '{"facts": [{"fact": 1, "covered": true}, {"fact": 2, "covered": false}]}',
+        ]
+    )
+    report = run_generation_eval(
+        _index(), _eval_questions(), llm, judge=judge, k=2, embedder=HashEmbedder(dim=32)
+    )
+    write_generation_report(report, tmp_path)
+    metrics = (tmp_path / "metrics.json").read_text(encoding="utf-8")
+    for text in ("Não ofereça mel", "Não dar mel", "pode dar mel", "Não é recomendado"):
+        assert text not in metrics
+    row = json.loads(metrics)["rows"][0]
+    assert row["n_claims"] == 1 and row["n_supported"] == 1
+    assert row["facts_covered"] == [True, False]
+    assert row["retrieved"][0]["source_id"] == "MS-2019"
+    answers = json.loads((tmp_path / "answers.json").read_text(encoding="utf-8"))
+    assert "Não ofereça mel" in answers[0]["answer"]
+    assert report["rows"][0]["answer"] == answers[0]["answer"]

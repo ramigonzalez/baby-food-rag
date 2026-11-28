@@ -30,6 +30,7 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 PRICE_PER_MILLION = {
     "openai/gpt-4o-mini": (0.15, 0.60),
     "anthropic/claude-haiku-5.5": (0.10, 0.50),
+    "google/gemini-2.5-flash": (0.30, 2.50),
 }
 
 DISCLAIMER = (
@@ -94,10 +95,19 @@ class Usage:
     prompt_tokens: int = 0
     completion_tokens: int = 0
     calls: int = 0
+    # Part of completion_tokens, when the response says so.
+    reasoning_tokens: int = 0
+    # Sum of the cost OpenRouter puts in each response. None if it never did.
+    reported_usd: float | None = None
 
-    def add(self, prompt: int, completion: int) -> None:
+    def add(
+        self, prompt: int, completion: int, *, reasoning: int = 0, cost: float | None = None
+    ) -> None:
         self.prompt_tokens += prompt
         self.completion_tokens += completion
+        self.reasoning_tokens += reasoning
+        if cost is not None:
+            self.reported_usd = (self.reported_usd or 0.0) + cost
         self.calls += 1
 
     def estimated_usd(self, model: str) -> float | None:
@@ -141,6 +151,12 @@ class LLM:
 
 
 class OpenRouterLLM(LLM):
+    """``temperature`` and ``seed`` are sent only when they are not None.
+
+    The generator answers at temperature 0. Some judges reject a temperature
+    (Claude Haiku 5.5), so the judge passes None unless asked.
+    """
+
     def __init__(
         self,
         model: str = DEFAULT_MODEL,
@@ -148,8 +164,12 @@ class OpenRouterLLM(LLM):
         *,
         timeout_s: float = CALL_TIMEOUT_S,
         opener: object | None = None,
+        temperature: float | None = 0.0,
+        seed: int | None = None,
     ) -> None:
         self._model = model
+        self._temperature = temperature
+        self._seed = seed
         key = api_key if api_key is not None else os.environ.get("OPENROUTER_API_KEY")
         if not key:
             raise MissingAPIKey("OPENROUTER_API_KEY is not set")
@@ -182,11 +202,14 @@ class OpenRouterLLM(LLM):
         raise RuntimeError("OpenRouter timed out") from last
 
     def _complete_once(self, prompt: str) -> str:
-        payload = {
+        payload: dict = {
             "model": self._model,
-            "temperature": 0,
             "messages": [{"role": "user", "content": prompt}],
         }
+        if self._temperature is not None:
+            payload["temperature"] = self._temperature
+        if self._seed is not None:
+            payload["seed"] = self._seed
         request = urllib.request.Request(
             OPENROUTER_URL,
             data=json.dumps(payload).encode("utf-8"),
@@ -200,9 +223,14 @@ class OpenRouterLLM(LLM):
             body = json.loads(response.read().decode("utf-8"))
         choice = body["choices"][0]["message"]["content"]
         usage = body.get("usage") or {}
-        prompt_tokens = int(usage.get("prompt_tokens") or 0)
-        completion_tokens = int(usage.get("completion_tokens") or 0)
-        self._usage.add(prompt_tokens, completion_tokens)
+        details = usage.get("completion_tokens_details") or {}
+        cost = usage.get("cost")
+        self._usage.add(
+            int(usage.get("prompt_tokens") or 0),
+            int(usage.get("completion_tokens") or 0),
+            reasoning=int(details.get("reasoning_tokens") or 0),
+            cost=None if cost is None else float(cost),
+        )
         return str(choice).strip()
 
 

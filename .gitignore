@@ -5,6 +5,10 @@ data/index/
 data/index-*/
 # Embedding vectors from paid APIs, keyed by model and text.
 data/cache/
+# Generated answers, judge claims, and retrieved guide text stay local.
+results/**/answers.json
+results/**/claims.json
+results/**/label_sheet.json
 
 *.pdf
 *.npy
