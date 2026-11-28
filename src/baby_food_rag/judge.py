@@ -194,7 +194,8 @@ def _verify(llm: LLM, claims: list[str], hits: list[Hit]) -> list[dict]:
         raise ValueError("verdict count does not match claims")
     parsed = []
     for claim, entry in zip(claims, verdicts, strict=True):
-        verdict = str(entry.get("verdict", "")).strip().lower().replace(" ", "_")
+        raw = entry.get("verdict", "") if isinstance(entry, dict) else ""
+        verdict = str(raw).strip().lower().replace(" ", "_")
         if verdict not in {"supported", "contradicted", "not_found"}:
             raise ValueError(f"bad verdict {verdict!r}")
         parsed.append({"claim": claim, "verdict": verdict})

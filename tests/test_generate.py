@@ -1,6 +1,8 @@
 import json
 import urllib.error
 
+import pytest
+
 from baby_food_rag.embed import HashEmbedder, l2_normalize
 from baby_food_rag.generate import (
     ABSTAIN,
@@ -885,3 +887,17 @@ def test_metrics_json_keeps_scores_and_answers_json_keeps_the_text(tmp_path):
     answers = json.loads((tmp_path / "answers.json").read_text(encoding="utf-8"))
     assert "Não ofereça mel" in answers[0]["answer"]
     assert report["rows"][0]["answer"] == answers[0]["answer"]
+
+
+def test_verdicts_that_are_not_objects_are_a_parse_error():
+    # A judge may answer ["supported"] instead of [{"verdict": "supported"}]. That must be a
+    # ValueError, which rejudge records as the item's error, not an AttributeError.
+    judge = FakeLLM(
+        [
+            '{"claims": ["Não ofereça mel antes dos 2 anos"]}',
+            '{"verdicts": ["supported"]}',
+        ]
+    )
+    answer = _answer("Não ofereça mel antes dos 2 anos [MS-2019 p.104].")
+    with pytest.raises(ValueError, match="bad verdict"):
+        judge_answer(judge, answer, expect_abstention=False)
