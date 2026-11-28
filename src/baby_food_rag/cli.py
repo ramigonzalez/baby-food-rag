@@ -24,6 +24,7 @@ from baby_food_rag.evaluate import (
     load_questions,
     render_results,
     run_eval,
+    select_split,
     write_results,
 )
 from baby_food_rag.generate import (
@@ -34,11 +35,18 @@ from baby_food_rag.generate import (
     format_answer_markdown,
 )
 from baby_food_rag.generate_eval import (
+    EVAL_MAX_USD,
+    build_label_sheet,
+    estimate_run,
     load_eval_questions,
     not_run_report,
+    render_estimate,
     render_generation_report,
+    retrieve_all,
     run_generation_eval,
+    within_cap,
     write_generation_report,
+    write_label_sheet,
 )
 from baby_food_rag.index import (
     build_index,
@@ -49,7 +57,15 @@ from baby_food_rag.index import (
     query_embedder,
     search,
 )
+from baby_food_rag.judge import DEFAULT_JUDGE_MODEL, same_family
 from baby_food_rag.manifest import find_manifest, load_manifest, sources_for_index
+from baby_food_rag.rejudge import (
+    estimate_rejudge,
+    load_sheet,
+    render_rejudge,
+    run_rejudge,
+    write_rejudge,
+)
 from baby_food_rag.sweep import run_sweep
 
 
@@ -157,9 +173,49 @@ def main(argv: list[str] | None = None) -> int:
     ask_eval = sub.add_parser("ask-eval", help="Generate and judge the labeled set")
     ask_eval.add_argument("--set", type=Path, default=Path("eval/set.yaml"), dest="question_set")
     ask_eval.add_argument("--index", type=Path, default=Path("data/index"))
-    ask_eval.add_argument("--out", type=Path, default=Path("results/phase4-generation"))
-    ask_eval.add_argument("--model", default=DEFAULT_MODEL)
+    ask_eval.add_argument("--out", type=Path, default=Path("results/phase1b-generation"))
+    ask_eval.add_argument("--model", default=DEFAULT_MODEL, help="Generator model.")
+    ask_eval.add_argument(
+        "--judge-model",
+        default=DEFAULT_JUDGE_MODEL,
+        help=f"Judge model, from another family than the generator. Default {DEFAULT_JUDGE_MODEL}.",
+    )
     ask_eval.add_argument("-k", type=int, default=DEFAULT_K)
+    ask_eval.add_argument(
+        "--split",
+        default="all",
+        choices=SPLIT_CHOICES,
+        help="Run only the dev or test questions. Default all.",
+    )
+    ask_eval.add_argument(
+        "--max-usd",
+        type=float,
+        default=EVAL_MAX_USD,
+        help="Refuse when the estimate is above this. Default 1.00.",
+    )
+    ask_eval.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Retrieve, build the prompts, and print the estimate. No model is called.",
+    )
+
+    rejudge = sub.add_parser(
+        "rejudge", help="Judge the saved label-sheet answers again, without generating"
+    )
+    rejudge.add_argument("--sheet", type=Path, required=True, help="label_sheet.json")
+    rejudge.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL)
+    rejudge.add_argument("--temperature", type=float, default=None, help="Sent only when given.")
+    rejudge.add_argument("--seed", type=int, default=None, help="Sent only when given.")
+    rejudge.add_argument("--out", type=Path, required=True)
+    rejudge.add_argument(
+        "--max-usd",
+        type=float,
+        default=EVAL_MAX_USD,
+        help="Refuse when the estimate is above this, and stop once the spend is. Default 1.00.",
+    )
+    rejudge.add_argument(
+        "--dry-run", action="store_true", help="Print the estimate. No model is called."
+    )
 
     args = parser.parse_args(argv)
     if args.command == "download":
@@ -180,6 +236,8 @@ def main(argv: list[str] | None = None) -> int:
         return _ask(args)
     if args.command == "ask-eval":
         return _ask_eval(args)
+    if args.command == "rejudge":
+        return _rejudge(args)
     parser.error(f"unknown command {args.command}")
     return 2
 
@@ -335,31 +393,93 @@ def _ask(args: argparse.Namespace) -> int:
 
 def _ask_eval(args: argparse.Namespace) -> int:
     out_dir = args.out
+    if same_family(args.model, args.judge_model):
+        print(
+            f"The judge {args.judge_model} is the same family as the generator {args.model}. "
+            "Use a judge from another family (self-preference bias).",
+            file=sys.stderr,
+        )
+        return 2
+    try:
+        index = load_index(args.index)
+        questions = select_split(load_eval_questions(args.question_set), args.split)
+    except (FileNotFoundError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    embedder = query_embedder(index)
+    hits = retrieve_all(index, questions, embedder=embedder, k=args.k)
+    estimate = estimate_run(questions, hits, model=args.model, judge_model=args.judge_model)
+    print(render_estimate(estimate, split=args.split, max_usd=args.max_usd), end="")
+    if not within_cap(estimate, args.max_usd):
+        return 1
+    if args.dry_run:
+        return 0
     try:
         llm = OpenRouterLLM(model=args.model)
+        judge = OpenRouterLLM(model=args.judge_model, temperature=None)
     except MissingAPIKey as exc:
         report = not_run_report(str(exc))
         write_generation_report(report, out_dir)
         print(render_generation_report(report), end="")
         print(f"wrote {out_dir}", file=sys.stderr)
         return 1
-    try:
-        index = load_index(args.index)
-        questions = load_eval_questions(args.question_set)
-    except (FileNotFoundError, ValueError) as exc:
-        print(str(exc), file=sys.stderr)
-        return 1
     report = run_generation_eval(
         index,
         questions,
         llm,
+        judge=judge,
         k=args.k,
-        embedder=query_embedder(index),
+        embedder=embedder,
+        hits=hits,
     )
+    report["split"] = args.split
+    report["estimate"] = estimate
     write_generation_report(report, out_dir)
+    write_label_sheet(build_label_sheet(report, index), out_dir)
     print(render_generation_report(report), end="")
     print(f"wrote {out_dir}")
     return 0
+
+
+def _rejudge(args: argparse.Namespace) -> int:
+    try:
+        sheet = load_sheet(args.sheet)
+    except (FileNotFoundError, ValueError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    generator = sheet.get("generator") or ""
+    if generator and same_family(generator, args.judge_model):
+        print(
+            f"The judge {args.judge_model} is the same family as the generator {generator}.",
+            file=sys.stderr,
+        )
+        return 2
+    estimate = estimate_rejudge(sheet, args.judge_model)
+    usd = estimate["usd"]
+    print(
+        f"estimate before any call: {estimate['n_items']} items, judge {estimate['model']}, "
+        f"{estimate['calls']} calls, input {estimate['prompt_tokens']}, output "
+        f"{estimate['completion_tokens']} (reasoning allowance {estimate['reasoning_tokens']}), "
+        f"usd {'—' if usd is None else f'{usd:.4f}'}"
+    )
+    if usd is None or usd > args.max_usd:
+        print(f"Not under --max-usd {args.max_usd:.2f}. Refusing to run.")
+        return 1
+    if args.dry_run:
+        return 0
+    try:
+        judge = OpenRouterLLM(model=args.judge_model, temperature=args.temperature, seed=args.seed)
+    except MissingAPIKey as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    report = run_rejudge(
+        sheet, judge, temperature=args.temperature, seed=args.seed, max_usd=args.max_usd
+    )
+    report["estimate"] = estimate
+    write_rejudge(report, args.out)
+    print(render_rejudge(report), end="")
+    print(f"wrote {args.out}")
+    return 0 if report["status"] == "ok" else 1
 
 
 def _stats(args: argparse.Namespace) -> int:

@@ -91,6 +91,14 @@ On 2026-11-27 the owner reviewed 20 items drawn with seed 20261127 from the veri
 
 The quote is a pointer to the evidence. It is not a reference answer. Scoring whether a generated answer is complete needs its own label: the key facts the answer must contain.
 
+## Key facts
+
+25 answerable questions have `key_facts`: the 8 answerable real questions and the 17 answerable questions with `human_verified: true`. The other 3 reviewed items are `unans2-` questions with no gold page; the expected answer there is the abstention, so they have no key facts. There are 78 facts, 2 to 5 per question, as short Portuguese sentences. An agent wrote each one from the extracted text of one of the question's gold pages (what `extract_pdf` returns), and the fact is stated on that page, usually not word for word. Where an owner review note lists what a complete answer needs (`syn2-003`, `syn2-017`, `syn2-039`, `syn2-058`), those points are facts. All 25 are `key_facts_status: draft` until the owner reviews them; `verified` is the other accepted value.
+
+A fact says only what a gold page says. When the page does not answer a real question (the grandmother's reason in `real-01`, an order of fruits in `real-03`), the facts cover what the page does say. MS 2019 PDF page 128, a gold page of `real-04` and `real-07`, lists the daily lunch and dinner groups inside the section on vegetarian children, so that list is not used as a general rule; `real-07` keeps that page's sentence on a vitamin C fruit after the meal.
+
+`baby-food ask-eval` uses the facts for completeness. Retrieval metrics ignore them.
+
 ## Split
 
 `golden.assign_splits` with seed `20261127`. Strata are `(answerable, origin, cohort, first gold source)`. Inside a stratum, questions are ordered by `sha256("20261127:<id>")`. The strata are walked in sorted order, and a question goes to dev whenever that keeps the running dev count at ceil(3/5 of the questions seen), with one counter for answerable and one for unanswerable questions. The result is 60/40 overall and close to 60/40 inside each cohort and source.

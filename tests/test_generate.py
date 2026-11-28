@@ -1,6 +1,8 @@
 import json
 import urllib.error
 
+import pytest
+
 from baby_food_rag.embed import HashEmbedder, l2_normalize
 from baby_food_rag.generate import (
     ABSTAIN,
@@ -23,9 +25,15 @@ from baby_food_rag.generate import (
     run_question,
 )
 from baby_food_rag.generate_eval import (
+    REASONING_TOKENS_PER_CALL,
+    TYPICAL_ANSWER_CHARS,
+    build_label_sheet,
+    estimate_run,
     not_run_report,
     render_generation_report,
+    retrieve_all,
     run_generation_eval,
+    sample_for_labels,
 )
 from baby_food_rag.index import CorpusIndex
 from baby_food_rag.judge import abstention_accuracy, citation_marks, judge_answer
@@ -140,19 +148,21 @@ def test_generation_eval_with_a_fake_model_writes_no_live_cost():
             "notes": "",
         }
     ]
-    llm = FakeLLM(
+    llm = FakeLLM(["Não ofereça mel [MS-2019 p.104]."])
+    judge = FakeLLM(
         [
-            "Não ofereça mel [MS-2019 p.104].",
             '{"claims": ["Não ofereça mel"]}',
             '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
             '{"relevance": 1}',
         ]
     )
-    report = run_generation_eval(_index(), questions, llm, k=1, embedder=HashEmbedder(dim=32))
+    report = run_generation_eval(
+        _index(), questions, llm, judge=judge, k=1, embedder=HashEmbedder(dim=32)
+    )
     assert report["status"] == "ok"
     assert report["overall"]["faithfulness"] == 1.0
-    assert report["real"]["n"] == 1
-    assert report["estimated_usd"] is None
+    assert report["by_origin"]["real"]["n"] == 1
+    assert report["total_usd"] is None
     missing = render_generation_report(not_run_report("OPENROUTER_API_KEY is not set"))
     assert "Not run" in missing
     assert "0.99" not in missing
@@ -235,7 +245,14 @@ def test_generation_eval_reuses_the_embedder():
         },
     ]
     embedder = Counting()
-    run_generation_eval(_index(), questions, FakeLLM([ABSTAIN, ABSTAIN]), k=1, embedder=embedder)
+    run_generation_eval(
+        _index(),
+        questions,
+        FakeLLM([ABSTAIN, ABSTAIN]),
+        judge=FakeLLM([]),
+        k=1,
+        embedder=embedder,
+    )
     assert embedder.calls == 2
 
 
@@ -247,13 +264,13 @@ def test_ask_eval_loads_the_embedder_once(monkeypatch, tmp_path):
     sentinel = object()
     monkeypatch.setattr("baby_food_rag.cli.load_index", lambda path: index)
     monkeypatch.setattr("baby_food_rag.cli.load_eval_questions", lambda path: [])
-    monkeypatch.setattr("baby_food_rag.cli.OpenRouterLLM", lambda model: FakeLLM([]))
+    monkeypatch.setattr("baby_food_rag.cli.OpenRouterLLM", lambda model, **kw: FakeLLM([]))
     monkeypatch.setattr("baby_food_rag.index.load_embedder", lambda name: sentinel)
     seen = {}
 
-    def fake_run(index, questions, llm, embedder=None, k=8):
-        seen["embedder"] = embedder
-        return not_run_report("stopped")
+    def fake_run(index, questions, llm, **kwargs):
+        seen["embedder"] = kwargs["embedder"]
+        return run_generation_eval(index, questions, llm, **kwargs)
 
     monkeypatch.setattr("baby_food_rag.cli.run_generation_eval", fake_run)
     code = main(
@@ -526,3 +543,361 @@ def test_judge_scores_a_partial_answer_and_names_the_gap_rule():
     assert judged["citation_correctness"] == 1.0
     assert judged["relevance"] == 0.5
     assert "do not cover" in seen["prompts"][1]
+
+
+def _answer(text: str, *, abstained: bool = False) -> "object":
+    from baby_food_rag.generate import Answer
+
+    chunk = _chunk(103, "104", "Não é recomendado oferecer mel à criança menor de 2 anos.")
+    return Answer(
+        question="pode dar mel",
+        text=text,
+        hits=[Hit(score=1.0, chunk=chunk)],
+        abstained=abstained,
+        model="fake",
+        latency_s=0.1,
+    )
+
+
+def test_completeness_is_covered_facts_over_all_facts():
+    facts = ["Não dar mel antes dos 2 anos.", "O mel pode ter botulismo."]
+    seen = []
+
+    class Capture(FakeLLM):
+        def complete(self, prompt: str) -> str:
+            seen.append(prompt)
+            return super().complete(prompt)
+
+    judge = Capture(
+        [
+            '{"claims": ["Não ofereça mel antes dos 2 anos"]}',
+            '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
+            '{"relevance": 1}',
+            # Some judges wrap JSON in a code fence.
+            '```json\n{"facts": [{"fact": 1, "covered": true}, '
+            '{"fact": 2, "covered": false}]}\n```',
+        ]
+    )
+    answer = _answer("Não ofereça mel antes dos 2 anos [MS-2019 p.104].")
+    judged = judge_answer(judge, answer, expect_abstention=False, key_facts=facts)
+    assert judged["completeness"] == 0.5
+    assert judged["facts"] == [
+        {"fact": facts[0], "covered": True},
+        {"fact": facts[1], "covered": False},
+    ]
+    assert "1. Não dar mel antes dos 2 anos." in seen[3]
+    assert "2. O mel pode ter botulismo." in seen[3]
+    assert DISCLAIMER not in seen[3]
+
+
+def test_completeness_is_zero_for_an_abstention_and_none_without_facts():
+    judge = FakeLLM([])
+    abstained = judge_answer(
+        judge, _answer(ABSTAIN, abstained=True), expect_abstention=False, key_facts=["a", "b"]
+    )
+    assert abstained["completeness"] == 0.0
+    assert judge.usage.calls == 0
+    replies = [
+        '{"claims": ["Não ofereça mel"]}',
+        '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
+        '{"relevance": 1}',
+    ]
+    judge = FakeLLM(list(replies))
+    plain = judge_answer(
+        judge, _answer("Não ofereça mel [MS-2019 p.104]."), expect_abstention=False
+    )
+    assert plain["completeness"] is None
+    assert judge.usage.calls == 3
+
+
+def test_coverage_with_the_wrong_count_raises():
+    judge = FakeLLM(
+        [
+            '{"claims": ["Não ofereça mel"]}',
+            '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
+            '{"relevance": 1}',
+            '{"facts": [{"fact": 1, "covered": true}]}',
+        ]
+    )
+    try:
+        judge_answer(
+            judge,
+            _answer("Não ofereça mel [MS-2019 p.104]."),
+            expect_abstention=False,
+            key_facts=["a", "b"],
+        )
+    except ValueError as exc:
+        assert "coverage" in str(exc)
+    else:
+        raise AssertionError("a short coverage list should raise")
+
+
+def _eval_questions() -> list[dict]:
+    return [
+        {
+            "id": "q-mel",
+            "origin": "real",
+            "split": "dev",
+            "question": "pode dar mel",
+            "answerable": True,
+            "gold": [{"source_id": "MS-2019", "pdf_page": 103, "quote": "mel"}],
+            "key_facts": ["Não dar mel antes dos 2 anos.", "O mel é açúcar."],
+            "key_facts_status": "draft",
+        },
+        {
+            "id": "q-dose",
+            "origin": "synthetic",
+            "split": "test",
+            "question": "qual a dose de dipirona",
+            "answerable": False,
+            "gold": [],
+            "key_facts": [],
+            "key_facts_status": None,
+        },
+    ]
+
+
+def test_generation_eval_keeps_generator_and_judge_usage_apart_and_groups_rows():
+    llm = FakeLLM(["Não ofereça mel antes dos 2 anos [MS-2019 p.104].", ABSTAIN])
+    llm.model = "openai/gpt-4o-mini"
+    judge = FakeLLM(
+        [
+            '{"claims": ["Não ofereça mel antes dos 2 anos"]}',
+            '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
+            '{"relevance": 1}',
+            '{"facts": [{"fact": 1, "covered": true}, {"fact": 2, "covered": false}]}',
+        ]
+    )
+    judge.model = "anthropic/claude-haiku-5.5"
+    report = run_generation_eval(
+        _index(), _eval_questions(), llm, judge=judge, k=2, embedder=HashEmbedder(dim=32)
+    )
+    assert report["usage"]["generator"]["calls"] == 2
+    assert report["usage"]["judge"]["calls"] == 4
+    assert report["usage"]["generator"]["usd"] == (24 * 0.15 + 8 * 0.60) / 1_000_000
+    assert report["usage"]["judge"]["usd"] == (48 * 0.10 + 16 * 0.50) / 1_000_000
+    assert (
+        report["total_usd"]
+        == report["usage"]["generator"]["usd"] + (report["usage"]["judge"]["usd"])
+    )
+    assert report["overall"]["completeness"] == 0.5
+    assert report["overall"]["hallucination_rate"] == 0.0
+    assert report["by_split"]["dev"]["n"] == 1
+    assert report["by_split"]["test"]["abstention_accuracy"] == 1.0
+    assert report["by_origin"]["real"]["completeness"] == 0.5
+    assert set(report["by_origin"]) == {"real", "synthetic"}
+    text = render_generation_report(report)
+    assert "| dev | 1 |" in text
+    assert "| real | 1 |" in text
+    assert "Completeness" in text
+
+
+def test_label_sheet_shows_claims_and_facts_but_no_judge_score():
+    llm = FakeLLM(["Não ofereça mel antes dos 2 anos [MS-2019 p.104].", ABSTAIN])
+    judge = FakeLLM(
+        [
+            '{"claims": ["Não ofereça mel antes dos 2 anos"]}',
+            '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
+            '{"relevance": 1}',
+            '{"facts": [{"fact": 1, "covered": true}, {"fact": 2, "covered": false}]}',
+        ]
+    )
+    index = _index()
+    report = run_generation_eval(
+        index, _eval_questions(), llm, judge=judge, k=2, embedder=HashEmbedder(dim=32)
+    )
+    sheet = build_label_sheet(report, index)
+    assert sheet["size"] == 1
+    assert sheet["strata"] == {"dev/real": 1}
+    item = sheet["items"][0]
+    assert set(item) == {
+        "id",
+        "split",
+        "origin",
+        "answerable",
+        "question",
+        "retrieved",
+        "answer",
+        "claims",
+        "key_facts",
+        "human_relevance",
+        "human_notes",
+    }
+    assert item["id"] == "q-mel"
+    texts = {chunk.text for chunk in index.chunks}
+    assert all(entry["text"] in texts for entry in item["retrieved"])
+    assert {"source_id", "page", "pdf_page", "text"} == set(item["retrieved"][0])
+    assert item["claims"] == [
+        {
+            "claim": "Não ofereça mel antes dos 2 anos",
+            "judge_verdict": "supported",
+            "human_verdict": None,
+        }
+    ]
+    assert item["key_facts"] == [
+        {"fact": "Não dar mel antes dos 2 anos.", "human_covered": None},
+        {"fact": "O mel é açúcar.", "human_covered": None},
+    ]
+    assert item["human_relevance"] is None
+
+
+def test_label_sample_is_stratified_seeded_and_skips_abstentions():
+    sizes = {
+        ("dev", "real"): 4,
+        ("test", "real"): 4,
+        ("dev", "plan"): 8,
+        ("test", "plan"): 4,
+        ("dev", "synthetic"): 48,
+        ("test", "synthetic"): 32,
+    }
+    rows = []
+    for (split, origin), count in sizes.items():
+        for number in range(count):
+            rows.append(
+                {
+                    "id": f"{split}-{origin}-{number}",
+                    "split": split,
+                    "origin": origin,
+                    "abstained": False,
+                }
+            )
+        rows.append(
+            {"id": f"{split}-{origin}-x", "split": split, "origin": origin, "abstained": True}
+        )
+    picked = sample_for_labels(rows, size=30, seed=7)
+    assert len(picked) == 30
+    assert not any(row["abstained"] for row in picked)
+    counts: dict[tuple[str, str], int] = {}
+    for row in picked:
+        key = (row["split"], row["origin"])
+        counts[key] = counts.get(key, 0) + 1
+    # 30 of 100 answered: floors 1, 1, 2, 1, 14, 9; the two largest remainders
+    # (test/synthetic 60, then dev/plan 40, which wins the tie with dev/synthetic on key order).
+    assert counts == {
+        ("dev", "real"): 1,
+        ("test", "real"): 1,
+        ("dev", "plan"): 3,
+        ("test", "plan"): 1,
+        ("dev", "synthetic"): 14,
+        ("test", "synthetic"): 10,
+    }
+    ids = [row["id"] for row in picked]
+    assert ids == [row["id"] for row in sample_for_labels(rows[::-1], size=30, seed=7)]
+    assert ids != [row["id"] for row in sample_for_labels(rows, size=30, seed=8)]
+    assert len(sample_for_labels(rows[:5], size=30, seed=7)) == 4
+
+
+def test_estimate_prices_both_models_from_the_prompts():
+    index = _index()
+    questions = _eval_questions()
+    hits = retrieve_all(index, questions, embedder=HashEmbedder(dim=32), k=2)
+    estimate = estimate_run(
+        questions, hits, model="openai/gpt-4o-mini", judge_model="anthropic/claude-haiku-5.5"
+    )
+    generator = estimate["models"]["generator"]
+    judge = estimate["models"]["judge"]
+    assert generator["calls"] == 2
+    # Three judge calls per question, plus one for the question with key facts.
+    assert judge["calls"] == 7
+    # The judge reasons before it answers, and that output is billed.
+    assert judge["completion_tokens"] > 7 * REASONING_TOKENS_PER_CALL["anthropic/claude-haiku-5.5"]
+    assert generator["completion_tokens"] >= 2 * TYPICAL_ANSWER_CHARS // 3
+    assert judge["prompt_tokens"] > generator["prompt_tokens"]
+    assert (
+        generator["usd"]
+        == (generator["prompt_tokens"] * 0.15 + generator["completion_tokens"] * 0.60) / 1_000_000
+    )
+    assert judge["usd"] == (judge["prompt_tokens"] * 0.10 + judge["completion_tokens"] * 0.50) / (
+        1_000_000
+    )
+    assert estimate["total_usd"] == generator["usd"] + judge["usd"]
+    unknown = estimate_run(questions, hits, model="openai/gpt-4o-mini", judge_model="x/unknown")
+    assert unknown["models"]["judge"]["usd"] is None
+    assert unknown["total_usd"] is None
+
+
+def _patch_cli(monkeypatch, questions):
+    index = _index()
+    monkeypatch.setattr("baby_food_rag.cli.load_index", lambda path: index)
+    monkeypatch.setattr("baby_food_rag.cli.load_eval_questions", lambda path: questions)
+    monkeypatch.setattr("baby_food_rag.cli.query_embedder", lambda index: HashEmbedder(dim=32))
+
+    def no_model(model, **kwargs):
+        raise AssertionError("a dry run must not build a model client")
+
+    monkeypatch.setattr("baby_food_rag.cli.OpenRouterLLM", no_model)
+
+
+def test_ask_eval_dry_run_prints_the_estimate_and_calls_no_model(monkeypatch, tmp_path, capsys):
+    from baby_food_rag.cli import main
+
+    _patch_cli(monkeypatch, _eval_questions())
+    out = tmp_path / "out"
+    args = ["ask-eval", "--dry-run", "--index", str(tmp_path), "--set", str(tmp_path)]
+    code = main([*args, "--out", str(out)])
+    printed = capsys.readouterr().out
+    assert code == 0
+    assert "2 questions, split all, 1 with key facts" in printed
+    assert "`openai/gpt-4o-mini`" in printed
+    assert "`anthropic/claude-haiku-5.5`" in printed
+    assert "Under --max-usd 1.00" in printed
+    assert not out.exists()
+    code = main([*args, "--split", "test", "--out", str(out)])
+    assert code == 0
+    assert "1 questions, split test, 0 with key facts" in capsys.readouterr().out
+
+
+def test_ask_eval_refuses_above_the_cap_and_a_same_family_judge(monkeypatch, tmp_path, capsys):
+    from baby_food_rag.cli import main
+
+    _patch_cli(monkeypatch, _eval_questions())
+    base = ["ask-eval", "--index", str(tmp_path), "--set", str(tmp_path)]
+    code = main([*base, "--out", str(tmp_path / "out"), "--max-usd", "0.000001"])
+    assert code == 1
+    assert "Refusing to run" in capsys.readouterr().out
+    assert not (tmp_path / "out").exists()
+    code = main([*base, "--dry-run", "--judge-model", "openai/gpt-4o"])
+    assert code == 2
+    assert "same family" in capsys.readouterr().err
+
+
+def test_metrics_json_keeps_scores_and_answers_json_keeps_the_text(tmp_path):
+    from baby_food_rag.generate_eval import write_generation_report
+
+    llm = FakeLLM(["Não ofereça mel antes dos 2 anos [MS-2019 p.104].", ABSTAIN])
+    judge = FakeLLM(
+        [
+            '{"claims": ["Não ofereça mel antes dos 2 anos"]}',
+            '{"verdicts": [{"claim": 1, "verdict": "supported"}]}',
+            '{"relevance": 1}',
+            '{"facts": [{"fact": 1, "covered": true}, {"fact": 2, "covered": false}]}',
+        ]
+    )
+    report = run_generation_eval(
+        _index(), _eval_questions(), llm, judge=judge, k=2, embedder=HashEmbedder(dim=32)
+    )
+    write_generation_report(report, tmp_path)
+    metrics = (tmp_path / "metrics.json").read_text(encoding="utf-8")
+    for text in ("Não ofereça mel", "Não dar mel", "pode dar mel", "Não é recomendado"):
+        assert text not in metrics
+    row = json.loads(metrics)["rows"][0]
+    assert row["n_claims"] == 1 and row["n_supported"] == 1
+    assert row["facts_covered"] == [True, False]
+    assert row["retrieved"][0]["source_id"] == "MS-2019"
+    answers = json.loads((tmp_path / "answers.json").read_text(encoding="utf-8"))
+    assert "Não ofereça mel" in answers[0]["answer"]
+    assert report["rows"][0]["answer"] == answers[0]["answer"]
+
+
+def test_verdicts_that_are_not_objects_are_a_parse_error():
+    # A judge may answer ["supported"] instead of [{"verdict": "supported"}]. That must be a
+    # ValueError, which rejudge records as the item's error, not an AttributeError.
+    judge = FakeLLM(
+        [
+            '{"claims": ["Não ofereça mel antes dos 2 anos"]}',
+            '{"verdicts": ["supported"]}',
+        ]
+    )
+    answer = _answer("Não ofereça mel antes dos 2 anos [MS-2019 p.104].")
+    with pytest.raises(ValueError, match="bad verdict"):
+        judge_answer(judge, answer, expect_abstention=False)

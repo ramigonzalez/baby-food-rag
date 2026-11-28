@@ -248,6 +248,52 @@ def test_loader_checks_split_and_human_verified():
         load_questions_from([{**base, "human_verified": "no"}])
 
 
+def test_loader_checks_key_facts():
+    base = {
+        "id": "x",
+        "origin": "synthetic",
+        "question": "pode dar mel",
+        "answerable": True,
+        "gold_status": "verified",
+        "gold": [{"source_id": "MS-2019", "pdf_page": 2, "quote": "mel"}],
+    }
+    plain = load_questions_from([base])[0]
+    assert plain["key_facts"] == []
+    assert plain["key_facts_status"] is None
+    facts = {"key_facts": ["  Não dar mel antes dos 2 anos. "], "key_facts_status": "draft"}
+    loaded = load_questions_from([{**base, **facts}])[0]
+    assert loaded["key_facts"] == ["Não dar mel antes dos 2 anos."]
+    assert loaded["key_facts_status"] == "draft"
+    bad = [
+        ({"key_facts": "Não dar mel.", "key_facts_status": "draft"}, "non-empty list"),
+        ({"key_facts": [], "key_facts_status": "draft"}, "non-empty list"),
+        ({"key_facts": ["ok", "  "], "key_facts_status": "draft"}, "non-empty strings"),
+        ({"key_facts": ["ok", 3], "key_facts_status": "draft"}, "non-empty strings"),
+        ({"key_facts": ["ok"]}, "key_facts_status"),
+        ({"key_facts": ["ok"], "key_facts_status": "final"}, "key_facts_status"),
+        ({"key_facts_status": "draft"}, "no key_facts"),
+    ]
+    for extra, message in bad:
+        with pytest.raises(ValueError, match=message):
+            load_questions_from([{**base, **extra}])
+    unanswerable = {**base, "answerable": False, "gold": [], **facts}
+    with pytest.raises(ValueError, match="unanswerable"):
+        load_questions_from([unanswerable])
+
+
+def test_labeled_set_key_facts_are_drafts_on_answerable_reviewed_questions():
+    questions = load_questions(ROOT / "eval" / "set.yaml")
+    with_facts = [item for item in questions if item["key_facts"]]
+    assert {item["key_facts_status"] for item in with_facts} == {"draft"}
+    expected = {
+        item["id"]
+        for item in questions
+        if item["answerable"] and (item["origin"] == "real" or item["human_verified"])
+    }
+    assert {item["id"] for item in with_facts} == expected
+    assert len(with_facts) == 25
+
+
 def test_split_filter_and_breakdown(tmp_path):
     chunks = [
         _chunk("MS-2019", 10, "Pode dar mel antes dos dois anos por causa do botulismo."),
