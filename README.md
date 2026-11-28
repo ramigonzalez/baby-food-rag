@@ -214,14 +214,44 @@ Download the PDFs and build the index first (`python scripts/download.py` then `
 
 `baby-food ask-eval` answers the labeled questions with the generator and scores each answer with a judge from another model family, `anthropic/claude-haiku-5.5` by default (`--judge-model`), because a model rates its own text higher (Panickssery et al., NeurIPS 2024, [arXiv 2404.13076](https://arxiv.org/abs/2404.13076)). The judge follows rag-eval-harness judge v2: claim extraction, then supported / contradicted / not_found from the retrieved chunks only. Hallucination rate is 1 minus faithfulness. It also scores citation page match, answer relevance, abstention on the unanswerable questions, and completeness: the share of a question's key facts that the answer states. Key facts are in `eval/set.yaml` for 25 questions, as drafts (see [`eval/GOLDEN_SET.md`](eval/GOLDEN_SET.md)). An abstention covers no key fact. A partial answer is not an abstention, so faithfulness, citation correctness, and relevance still apply. A claim that the guides do not cover something is supported when the retrieved text never says it. Relevance is 0.5 when only part of the question is answered. Scores are reported overall, by split, and by origin.
 
-Before any call, the command retrieves for every question, builds every generation prompt, and builds the judge prompts from their templates with a typical answer (900 characters, 3 citations, 6 claims). It prints tokens and USD per model and stops if the total is above `--max-usd` (default 1.00). `--dry-run` stops there in any case. Tokens are characters / 3. In a 2-question run, Claude Haiku 5.5 billed about 450 more output tokens per call than its JSON needs, most likely reasoning, so the judge estimate adds 500 output tokens per call. After a run, `metrics.json` has the measured tokens per model and their cost at the rates in `generate.py`, and `label_sheet.json` has 30 answered items for a person to label (seed 20261127, stratified by split and origin): question, retrieved chunks, answer, the judge's claims and verdicts, and key facts, with empty human fields and no judge score. The label sheet quotes guide text, so check the source licenses before committing it.
+Before any call, the command retrieves for every question, builds every generation prompt, and builds the judge prompts from their templates with a typical answer (900 characters, 3 citations, 6 claims). It prints tokens and USD per model and stops if the total is above `--max-usd` (default 1.00). `--dry-run` stops there in any case. Tokens are characters / 3. In a 2-question run, Claude Haiku 5.5 billed about 450 more output tokens per call than its JSON needs, most likely reasoning, so the judge estimate adds 500 output tokens per call. After a run, `metrics.json` has the measured tokens per model (reasoning tokens included, and the cost OpenRouter reports), their cost at the rates in `generate.py`, and per-question scores with page references but no text. `answers.json` has the full answers and judge claims, and `label_sheet.json` has 30 answered items for a person to label (seed 20261127, stratified by split and origin): question, retrieved chunks, answer, the judge's claims and verdicts, and key facts, with empty human fields and no judge score. Both quote or restate guide text, so they are gitignored and stay local. The generator runs at temperature 0. The judge is sent no temperature, because Claude Haiku 5.5 does not accept one.
 
 ```bash
 baby-food ask-eval --dry-run            # estimate only, no model call
 baby-food ask-eval --split dev          # writes results/phase1b-generation/
 ```
 
-Dry run on all 115 questions, 2026-11-27: 485 calls, 799,317 input and 268,325 output tokens, $0.2342 ($0.0713 generator, $0.1629 judge). The full run has not been made.
+Dry run on all 115 questions, 2026-11-27: 485 calls, 799,317 input and 268,325 output tokens, $0.2342 ($0.0713 generator, $0.1629 judge).
+
+Full run, all 115 questions, 2026-11-27 ([`results/phase1b-generation/summary.md`](results/phase1b-generation/summary.md)):
+
+| Group | n | Faithfulness | Hallucination | Citation | Relevance | Completeness | Abstention acc. | False abstentions |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| all | 115 | 0.8187 | 0.1813 | 1.0000 | 0.9295 | 0.3847 (n 25) | 0.8667 | 22 |
+| dev | 69 | 0.8251 | 0.1749 | 1.0000 | 0.8958 | 0.4363 (n 17) | 1.0000 | 12 |
+| test | 46 | 0.8084 | 0.1916 | 1.0000 | 0.9833 | 0.2750 (n 8) | 0.6667 | 10 |
+| real | 10 | 0.7889 | 0.2111 | 1.0000 | 0.8333 | 0.1500 (n 8) | 0.5000 | 5 |
+| synthetic | 90 | 0.8120 | 0.1880 | 1.0000 | 0.9365 | 0.5389 (n 15) | 1.0000 | 17 |
+
+The model abstained on 22 of the 100 answerable questions, 5 of them among the 8 answerable real ones, and answered 2 of the 15 unanswerable ones (`real-05`, `plan-13`). Abstentions count as 0 completeness; on the 20 key-fact questions it answered, completeness is 0.4808. Citation correctness is 1.0 by construction: `ask` drops any mark that is not a retrieved page before the judge sees the answer. The 375 calls cost $0.1494 ($0.0464 generator, $0.1030 judge), the same as the cost OpenRouter reported; 91,782 of the judge's 131,624 output tokens were reasoning. The estimate was $0.2342.
+
+`baby-food rejudge` scores the label-sheet answers again with any judge, without generating them again. It sends `--temperature` and `--seed` only when given, prints an estimate, refuses above `--max-usd`, and stops once the measured spend passes it. `scores.json` holds the scores, verdict counts, and cost; `claims.json` holds the claim text and stays local. `scripts/compare_judges.py` compares runs on the items they share: the mean absolute difference (MAD) per item, and the share of items whose faithfulness moved by more than 0.1.
+
+```bash
+baby-food rejudge --sheet results/phase1b-generation/label_sheet.json \
+  --judge-model google/gemini-2.5-flash --temperature 0 --seed 7 \
+  --out results/phase1b-generation/rejudge/gemini-1
+```
+
+Judge check on the 30 label-sheet items, 2026-11-27 ([`results/phase1b-generation/judges.md`](results/phase1b-generation/judges.md)). Haiku run 1 is the full run; run 2 is `rejudge` with the same settings. Gemini 2.5 Flash ran twice at temperature 0, seed 7.
+
+| Pair | Faithfulness MAD | Faithfulness moved > 0.1 | Completeness MAD (n 8) |
+| --- | ---: | ---: | ---: |
+| Haiku run 1 vs run 2 | 0.0357 | 20% | 0.0417 |
+| Gemini run 1 vs run 2 | 0.0301 | 17% | 0.0000 |
+| Haiku vs Gemini, mean of 4 pairs | 0.0821 | 37–40% | 0.1250 |
+
+Temperature 0 and a seed did not make Gemini repeat itself on faithfulness: claim extraction still changed between runs. Gemini scored completeness higher than Haiku (0.61 against 0.46–0.50). Only 8 of the 30 items have key facts. No human labels exist yet, so this shows stability and agreement, not which judge is right. Gemini billed no reasoning tokens; its second run cost $0.0591 by tokens and rates, but OpenRouter reported $0.0505, likely a cache discount on the repeated prompts.
 
 The weekly menu is not in this version. That is phase 4b.
 

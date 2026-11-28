@@ -62,8 +62,8 @@ TYPICAL_CLAIMS = 6
 # needs in the 2-question smoke run of 2026-11-27 (8 calls), rounded up.
 REASONING_TOKENS_PER_CALL = {
     "anthropic/claude-haiku-5.5": 500,
-    # Not measured before its first run; a guess on the high side.
-    "google/gemini-2.5-flash": 1000,
+    # Billed no reasoning tokens in 98 judge calls on 2026-11-27 (temperature 0, seed 7).
+    "google/gemini-2.5-flash": 0,
 }
 # Row fields that hold generated or guide text. They go to answers.json only.
 TEXT_FIELDS = ("question", "answer", "claims", "facts", "key_facts")
