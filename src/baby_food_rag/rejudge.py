@@ -31,6 +31,7 @@ from baby_food_rag.types import Chunk, Hit
 
 # A faithfulness change above this counts as a changed item.
 CHANGE_THRESHOLD = 0.1
+SCORES = ("faithfulness", "completeness", "relevance", "citation_correctness")
 
 
 def load_sheet(path: Path) -> dict:
@@ -113,26 +114,26 @@ def run_rejudge(
     seed: int | None = None,
     max_usd: float | None = None,
 ) -> dict:
-    """Judge every item. Stops after the item that takes the spend above ``max_usd``."""
+    """Judge every item. Stops after the item that takes the spend above ``max_usd``.
+
+    A reply the judge code cannot parse is kept as that item's ``error``,
+    with no scores, so one bad reply does not throw away the paid calls.
+    """
     rows = []
     status = "ok"
     for item in sheet["items"]:
-        judged = judge_answer(
-            judge, item_answer(item), expect_abstention=False, key_facts=item_facts(item)
-        )
-        rows.append(
-            {
-                "id": item["id"],
-                "split": item.get("split"),
-                "origin": item["origin"],
-                "faithfulness": judged["faithfulness"],
-                "completeness": judged["completeness"],
-                "relevance": judged["relevance"],
-                "citation_correctness": judged["citation_correctness"],
-                "claims": judged["claims"],
-                "facts": judged["facts"],
-            }
-        )
+        row = {"id": item["id"], "split": item.get("split"), "origin": item["origin"]}
+        try:
+            judged = judge_answer(
+                judge, item_answer(item), expect_abstention=False, key_facts=item_facts(item)
+            )
+        except ValueError as exc:
+            judged = {name: None for name in SCORES}
+            judged.update(claims=[], facts=[])
+            row["error"] = str(exc)
+        for name in (*SCORES, "claims", "facts"):
+            row[name] = judged[name]
+        rows.append(row)
         spent = judge.usage.estimated_usd(judge.model)
         if max_usd is not None and spent is not None and spent > max_usd:
             status = "stopped_at_cap"
@@ -145,6 +146,7 @@ def run_rejudge(
         "seed": seed,
         "generator": sheet.get("generator"),
         "n_items": len(rows),
+        "n_errors": sum(1 for row in rows if "error" in row),
         "usage": {
             "calls": usage.calls,
             "prompt_tokens": usage.prompt_tokens,
@@ -153,10 +155,7 @@ def run_rejudge(
             "usd": usage.estimated_usd(judge.model),
             "reported_usd": usage.reported_usd,
         },
-        "means": {
-            name: _mean_present(row[name] for row in rows)
-            for name in ("faithfulness", "completeness", "relevance", "citation_correctness")
-        },
+        "means": {name: _mean_present(row[name] for row in rows) for name in SCORES},
         "rows": rows,
     }
 
@@ -184,7 +183,8 @@ def render_rejudge(report: dict) -> str:
     lines = [
         (
             f"judge {report['judge_model']}  temperature {report['temperature']}  "
-            f"seed {report['seed']}  items {report['n_items']}  status {report['status']}"
+            f"seed {report['seed']}  items {report['n_items']}  errors {report['n_errors']}  "
+            f"status {report['status']}"
         ),
         (
             f"faithfulness {cell(means['faithfulness'])}  completeness "

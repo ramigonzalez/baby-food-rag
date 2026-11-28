@@ -269,3 +269,26 @@ def test_render_comparison_labels_same_and_cross_judge_pairs():
     assert "Cross-judge mean over 4 pairs: faithfulness MAD 0.2000" in text
     assert "| haiku-1 | `anthropic/claude-haiku-5.5` | not sent | not sent |" in text
     assert "not which judge is right" in text
+
+
+def test_rejudge_keeps_going_after_a_reply_it_cannot_parse():
+    class Garbled(FakeOpenRouter):
+        def __call__(self, request, timeout):
+            response = super().__call__(request, timeout)
+            prompt = self.payloads[-1]["messages"][0]["content"]
+            if prompt.startswith("Task: key fact coverage"):
+                body = json.loads(response._data)
+                body["choices"][0]["message"]["content"] = '{"facts": "yes"}'
+                return _Response(body)
+            return response
+
+    judge = OpenRouterLLM(
+        "google/gemini-2.5-flash", api_key="test-key", opener=Garbled(), temperature=0
+    )
+    report = run_rejudge(_sheet(), judge)
+    assert report["status"] == "ok"
+    assert report["n_items"] == 2 and report["n_errors"] == 1
+    broken, fine = report["rows"]
+    assert "coverage" in broken["error"]
+    assert broken["faithfulness"] is None and broken["claims"] == []
+    assert fine["faithfulness"] == 0.0 and "error" not in fine
